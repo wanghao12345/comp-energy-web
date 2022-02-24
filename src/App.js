@@ -11,7 +11,7 @@ const Login = LoadableComponent(import('./pages/Login'))
 
 @withRouter
 class App extends React.Component {
-  render() {
+  render () {
     return (
       <Switch>
         <Route path='/login' component={Login} />

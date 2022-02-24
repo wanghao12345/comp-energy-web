@@ -2,13 +2,14 @@
 const path = require('path');
 const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
+const rewireSass = require('react-app-rewire-scss')
 const { getLessVars } = require('antd-theme-generator');
 
 function resolve (dir) {
     return path.join(__dirname, '.', dir)
 }
 
-module.exports = function override(config, env) {
+module.exports = function override (config, env) {
     //do stuff with the webpack config...
 
     //按需加载
@@ -22,12 +23,12 @@ module.exports = function override(config, env) {
         modifyVars: getLessVars(path.join(__dirname, './src/styles/vars.less')),
         javascriptEnabled: true
     })(config, env);
-
+    config = rewireSass(config, env);
     //配置别名
     config.resolve.alias = {
         '@': resolve('src')
     }
-    
+
     config.devtool = false; // 关掉 sourceMap 
 
     //启用ES7的修改器语法（babel 7）
