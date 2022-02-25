@@ -5,7 +5,7 @@ import { randomNum } from '@/utils/util'
 import Promptbox from '@/components/PromptBox/index'
 // import { post, get } from '@/utils/ajax'
 import { encrypt } from '@/utils/util'
-import { setToken } from '@/utils/storage'
+import { setStorage } from '@/utils/storage'
 import { withRouter } from 'react-router-dom'
 
 
@@ -33,7 +33,7 @@ class LoginForm extends React.Component {
         //     }
         // });
         localStorage.setItem('username', 'values.username')
-        setToken('res2.data.token')
+        setStorage('res2.data.token')
         this.props.history.push('/')
     }
     /**
@@ -72,7 +72,7 @@ class LoginForm extends React.Component {
             return
         }
         localStorage.setItem('username', 'values.username')
-        setToken('res2.data.token')
+        setStorage('res2.data.token')
         this.props.history.push('/')
     }
     /**

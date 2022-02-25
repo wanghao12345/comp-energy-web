@@ -1,7 +1,7 @@
 import React from 'react'
 import screenfull from 'screenfull'
 import { Icon, Menu, Avatar } from 'antd'
-import { removeToken } from '@/utils/storage'
+import { removeStorage } from '@/utils/storage'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 const SubMenu = Menu.SubMenu;
@@ -45,7 +45,7 @@ class MyHeader extends React.Component {
      * 退出登录
      */
     onLogout = () => {
-        removeToken()   //清空cookie
+        removeStorage()   //清空cookie
         this.props.history.push('/login')
     }
     render () {

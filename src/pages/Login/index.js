@@ -1,6 +1,6 @@
 import React from 'react'
 import './style.less'
-import { getToken, removeToken } from '../../utils/storage'
+import { getStorage, removeStorage } from '../../utils/storage'
 import { withRouter } from 'react-router-dom'
 import LoadableComponent from '@/utils/LoadableComponent'
 import { preloadingImages } from '../../utils/util'
@@ -25,9 +25,9 @@ class Login extends React.Component {
     componentDidMount () {
         // 防止用户通过浏览器的前进后退按钮来进行路由跳转
         // 当用户登陆后再通过浏览器的后退按钮回到登录页时，再点击前进按钮可以直接回到首页
-        if (!!getToken()) {
+        if (!!getStorage()) {
             this.props.history.go(1)   //不然他后退或者后退了直接登出
-            // removeToken()
+            // removeStorage()
         }
         preloadingImages(imgs)
     }

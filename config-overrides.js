@@ -1,3 +1,6 @@
+/**
+ * webpack.config.js 配置文件
+ */
 /* config-overrides.js */
 const path = require('path');
 const { injectBabelPlugin } = require('react-app-rewired');
