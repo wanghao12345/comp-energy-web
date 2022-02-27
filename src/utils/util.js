@@ -1,13 +1,28 @@
 import CryptoJS from 'crypto-js'
 import { SECRETKEY } from '../config/secret'
 import { Form } from 'antd'
-
+/**
+ * 
+ * @param {*} func 
+ * @param {*} wait 
+ * @returns 
+ */
+const globalResizeArr = []
+export function globalResize (data) {
+    globalResizeArr.push(data)
+    window.onresize = () => {
+        globalResizeArr.forEach(item => {
+            item.callback()
+        })
+    }
+}
+export const deleteGlobalResize = id => globalResizeArr.splice(globalResizeArr.findIndex(item => item.id === id), 1)
 /**
  * 防抖函数
  * @param {*} func 
  * @param {*} wait 
  */
-export function debounce(func, wait = 500) {
+export function debounce (func, wait = 500) {
     let timeout;  // 定时器变量
     return function (event) {
         clearTimeout(timeout);  // 每次触发时先清除上一次的定时器,然后重新计时
@@ -23,7 +38,7 @@ export function debounce(func, wait = 500) {
  * @param {*} func 
  * @param {*} interval 
  */
-export function throttle(func, interval = 100) {
+export function throttle (func, interval = 100) {
     let timeout;
     let startTime = new Date();
     return function (event) {
@@ -49,7 +64,7 @@ export function throttle(func, interval = 100) {
  * @param max
  * @returns {number}
  */
-export function randomNum(min, max) {
+export function randomNum (min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
@@ -57,7 +72,7 @@ export function randomNum(min, max) {
  * 加密函数，加密同一个字符串生成的都不相同
  * @param {*} str 
  */
-export function encrypt(str) {
+export function encrypt (str) {
     return CryptoJS.AES.encrypt(JSON.stringify(str), SECRETKEY).toString();
 }
 
@@ -65,7 +80,7 @@ export function encrypt(str) {
  * 解密函数
  * @param {*} str 
  */
-export function decrypt(str) {
+export function decrypt (str) {
     const bytes = CryptoJS.AES.decrypt(str, SECRETKEY);
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 }
@@ -74,7 +89,7 @@ export function decrypt(str) {
  * 判断是否是对象
  * @param {*} obj 
  */
-export function isObject(obj) {
+export function isObject (obj) {
     return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
@@ -82,7 +97,7 @@ export function isObject(obj) {
  * 创建表单回显的对象
  * @param {*} obj 
  */
-export function createFormField(obj) {
+export function createFormField (obj) {
     let target = {}
     if (isObject(obj)) {
         for (let [key, value] of Object.entries(obj)) {
@@ -98,8 +113,8 @@ export function createFormField(obj) {
  * 将img标签转换为【图片】
  * @param {string} str 
  */
-export function replaceImg(str){
-    if(typeof str === 'string'){
+export function replaceImg (str) {
+    if (typeof str === 'string') {
         str = str.replace(/<img(.*?)>/g, "[图片]")
     }
     return str
@@ -110,11 +125,11 @@ export function replaceImg(str){
  * @param arr
  * @constructor
  */
-export function preloadingImages(arr) {
-    if(Array.isArray(arr)){
-        arr.forEach(item=>{
+export function preloadingImages (arr) {
+    if (Array.isArray(arr)) {
+        arr.forEach(item => {
             const img = new Image()
             img.src = item
-          })
+        })
     }
-  }
+}

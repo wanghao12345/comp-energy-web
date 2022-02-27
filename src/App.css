@@ -33,15 +33,6 @@
     font-size: 18px;
 }
 
-.primary-color {
-    color: var(--primaryColor);
-}
-
-.my-a {
-    color: var(--primaryColor);
-    cursor: pointer;
-}
-
 .ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -7,7 +7,6 @@ const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 const rewireSass = require('react-app-rewire-scss')
 const { getLessVars } = require('antd-theme-generator');
-
 function resolve (dir) {
     return path.join(__dirname, '.', dir)
 }

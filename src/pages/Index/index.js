@@ -27,9 +27,8 @@ export default (props) => {
         })
     }
     useEffect(() => {
+        console.log(props)
         const localMenuData = getStorage('localMenuData') || {}
-        console.log(localMenuData)
-        // _setState(localMenuData)
         _setState({
             collapsed: localMenuData.collapsed || false,
             panes: (localMenuData.panes || []).map(item => ({
@@ -41,7 +40,7 @@ export default (props) => {
     }, [])
     return (
         <Layout style={{ height: '100vh' }}>
-            <Sider trigger={null} collapsible collapsed={collapsed} theme="dark">
+            <Sider trigger={null} collapsible collapsed={collapsed}>
                 <MySider
                     panes={panes}
                     activeMenu={activeMenu}
@@ -55,6 +54,7 @@ export default (props) => {
                 </Header>
                 <Content>
                     <MyContent
+                        {...props}
                         panes={panes}
                         activeMenu={activeMenu}
                         onChangeState={_setState.bind(this)} />

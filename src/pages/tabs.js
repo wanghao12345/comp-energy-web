@@ -11,12 +11,11 @@ const menu = [
         key: 'antd',
         children: [
             {
-                name: '按钮',
-                icon: '',
+                name: '表格',
                 key: 'ButtonDemo',
             },
             {
-                name: '图标',
+                name: '图表',
                 icon: '',
                 key: 'IconDemo',
             },
@@ -27,7 +26,16 @@ const menu = [
             }
         ]
     },
-
+    {
+        name: '看板',
+        icon: 'ant-design',
+        key: '看板'
+    },
+    {
+        name: '企业看板',
+        icon: 'ant-design',
+        key: '企业看板'
+    }
 ]
 
 const tabs = {

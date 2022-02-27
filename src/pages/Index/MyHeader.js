@@ -52,9 +52,9 @@ class MyHeader extends React.Component {
         const { isFullscreen } = this.state
         const { user } = this.props
         return (
-            <div style={{ background: '#fff', padding: '0 16px' }}>
+            <div style={{ padding: '0 16px' }}>
                 <Icon
-                    style={{ fontSize: 18 }}
+                    style={{ fontSize: 18, color: '#ccdaeb' }}
                     type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
                     onClick={this.toggleCollapsed}
                 />
