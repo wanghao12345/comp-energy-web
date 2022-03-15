@@ -1,7 +1,15 @@
-## 安装依赖
+# umi project
 
-### npm install or yarn
+## Getting Started
 
-## 启动项目
+Install dependencies,
 
-### npm run start or yarn start
+```bash
+$ yarn
+```
+
+Start the dev server,
+
+```bash
+$ yarn start
+```
