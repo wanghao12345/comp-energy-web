@@ -1,6 +1,25 @@
 export default [
-  { path: '/', name: '欢迎', component: '@/pages/index' },
-  { path: '/one', name: '欢迎1', component: '@/pages/index' },
-  { path: '/two', name: '欢迎2', component: '@/pages/index' },
-  { path: '/three', name: '欢迎3', component: '@/pages/index' },
+  {
+    path: '/',
+    name: '企业看板',
+    icon: 'dashboard',
+    component: '@/pages/index',
+  },
+  {
+    path: '/monitor',
+    name: '数据监控',
+    icon: 'dashboard',
+    routes: [
+      {
+        path: '/monitor/real',
+        name: '实时监控',
+        component: '@/pages/monitor/real',
+      },
+      {
+        path: '/monitor/board',
+        name: '数据看板',
+        component: '@/pages/monitor/board',
+      },
+    ],
+  },
 ];

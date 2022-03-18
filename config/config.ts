@@ -4,6 +4,7 @@ import routes from './routes';
 export default defineConfig({
   layout: {
     menu: {},
+    siderWidth: 216,
   },
   mfsu: {},
   nodeModulesTransform: {

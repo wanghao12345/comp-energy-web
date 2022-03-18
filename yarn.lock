@@ -9913,14 +9913,6 @@ umi-request@^1.2.14:
     isomorphic-fetch "^2.2.1"
     qs "^6.9.1"
 
-umi-request@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmmirror.com/umi-request/-/umi-request-1.4.0.tgz#ed0e54e47f043d2be06e691477f0890383f9dd8a"
-  integrity sha512-OknwtQZddZHi0Ggi+Vr/olJ7HNMx4AzlywyK0W3NZBT7B0stjeZ9lcztA85dBgdAj3KVk8uPJPZSnGaDjELhrA==
-  dependencies:
-    isomorphic-fetch "^2.2.1"
-    qs "^6.9.1"
-
 umi@^3.5.21:
   version "3.5.21"
   resolved "https://registry.npmmirror.com/umi/-/umi-3.5.21.tgz#3bef3b697a1f4b33368ffa04ac36a079e4efd39b"
