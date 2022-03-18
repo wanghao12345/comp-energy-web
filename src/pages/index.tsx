@@ -1,5 +1,6 @@
 import styles from './index.less';
 import { Line } from '@ant-design/charts';
+import '@/apis';
 export default function IndexPage() {
   const data = [
     { year: '1991', value: 3 },
