@@ -23,7 +23,7 @@ export const PageBox = styled.div`
           text-align: center;
           border: 1px solid rgba(67, 140, 172, 100);
           border-radius: 4px;
-          height: 121px;
+          height: 105px;
           .title {
             font-size: 24px;
             margin-bottom: 5px;
@@ -61,7 +61,7 @@ export const PageBox = styled.div`
 `;
 export const HeaderFilterBox = styled.div``;
 export const LineCartBox = styled(MyCard)`
-  height: 390px;
+  height: 320px;
   margin: 24px 0;
 `;
 export const BarCartBox = styled(MyCard)`

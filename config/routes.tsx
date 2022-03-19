@@ -38,9 +38,9 @@ export default [
             component: '@/pages/energyMerge/energyInclude',
           },
           {
-            path: '/energy/consumption',
+            path: '/energyMerge/expendBoard',
             name: '能耗看板',
-            component: '@/pages/monitor/board',
+            component: '@/pages/energyMerge/expendBoard',
           },
           {
             path: '/energy/trend',

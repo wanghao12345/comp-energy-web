@@ -32,6 +32,7 @@ export default () => {
       <PageBox>
         <HeaderFilterBox>
           <Select
+            size="large"
             value={form.typeValue}
             style={{ width: 120 }}
             onChange={handleChange}
@@ -43,6 +44,7 @@ export default () => {
             ))}
           </Select>
           <Select
+            size="large"
             placeholder="区域"
             value={form.areaValue}
             style={{ width: 320, marginLeft: '16px' }}
