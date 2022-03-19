@@ -55,3 +55,63 @@
 .ant-input-affix-wrapper .ant-input-suffix{
   color: rgba(255, 255, 255, 0.4) !important;
 }
+/* tree */
+.ant-tree{
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+.ant-tree .ant-tree-switcher{
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: rgba(255, 255, 255, 0.2) !important;
+}
+.ant-tree .ant-tree-node-content-wrapper:hover{
+  background-color: #347D9B !important;
+}
+.ant-tree .ant-tree-node-selected{
+  background-color: #347D9B !important;
+}
+.ant-tree .ant-tree-treenode {
+  padding-bottom: 10px;
+}
+
+/* tab */
+.ant-tabs .ant-tabs-nav{
+  margin-bottom: 0;
+  box-sizing: border-box;
+  padding-left: 24px;
+}
+
+.ant-tabs .ant-tabs-nav::before{
+  border-color: #438cac;
+}
+.ant-tabs .ant-tabs-tab{
+  padding: 4px 18px;
+  border-radius: 8px 8px 0 0 !important;
+  background-color: rgba(33, 52, 100, 100) !important;
+  border: 1px solid rgba(42, 95, 117, 100) !important;
+  color: white;
+  font-size: 14px;
+  font-family: SourceHanSansSC-regular;
+  position: relative;
+  margin-left: 0 !important;
+}
+.ant-tabs .ant-tabs-tab-active{
+  background-color: rgba(67, 140, 172, 100) !important;
+  color: white;
+  border: 0 !important;
+}
+.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn{
+  color: white;
+}
+.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-remove{
+  display: block;
+}
+.ant-tabs .ant-tabs-tab .ant-tabs-tab-remove {
+  position: absolute;
+  color: white;
+  top: 2px;
+  right: 3px;
+  display: none;
+}
+.ant-tabs .ant-tabs-content-holder {
+  display: none;
+}

@@ -16,15 +16,12 @@ export const RealOptionContainer = styled.div`
   .ant-select {
     width: 100%;
     margin-bottom: 12px;
-    .ant-select-selector {
-      /* background-color: rgba(52, 125, 155, 20); */
-      /* border: 1px solid rgba(67, 140, 172, 60); */
-    }
   }
   .ant-input {
     border-radius: 4px;
-    /* background-color: rgba(52, 125, 155, 20);
-    border: 1px solid rgba(67, 140, 172, 60); */
+  }
+  .ant-tree {
+    margin-top: 12px;
   }
 `;
 export const RealBodyContainer = styled.div`
@@ -32,4 +29,16 @@ export const RealBodyContainer = styled.div`
   height: 100%;
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
+  box-sizing: border-box;
+  padding: 24px;
+  .options-box {
+    .tab-box {
+      .ant-tabs-nav {
+        padding-left: 0;
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
 `;
