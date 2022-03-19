@@ -4029,7 +4029,11 @@ ecc-jsbn@~0.1.1:
 
 echarts@^5.3.1:
   version "5.3.1"
+<<<<<<< HEAD
   resolved "https://registry.npmmirror.com/echarts/-/echarts-5.3.1.tgz#709e03aaf8c7a4439788272ee5c500cf0dce7e5b"
+=======
+  resolved "https://registry.npmjs.org/echarts/-/echarts-5.3.1.tgz#709e03aaf8c7a4439788272ee5c500cf0dce7e5b"
+>>>>>>> f302495b8e339e58d25f5946e3206fef23250d13
   integrity sha512-nWdlbgX3OVY0hpqncSvp0gDt1FRSKWn7lsWEH+PHmfCuvE0QmSw17pczQvm8AvawnLEkmf1Cts7YwQJZNC0AEQ==
   dependencies:
     tslib "2.3.0"
@@ -9918,7 +9922,11 @@ ts-easing@^0.2.0:
 
 tslib@2.3.0:
   version "2.3.0"
+<<<<<<< HEAD
   resolved "https://registry.npmmirror.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+=======
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+>>>>>>> f302495b8e339e58d25f5946e3206fef23250d13
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tslib@^1.10.0, tslib@^1.9.0:
@@ -10522,7 +10530,11 @@ yorkie@^2.0.0:
 
 zrender@5.3.1:
   version "5.3.1"
+<<<<<<< HEAD
   resolved "https://registry.npmmirror.com/zrender/-/zrender-5.3.1.tgz#fa8e63ac7e719cfd563831fe8c42a9756c5af384"
+=======
+  resolved "https://registry.npmjs.org/zrender/-/zrender-5.3.1.tgz#fa8e63ac7e719cfd563831fe8c42a9756c5af384"
+>>>>>>> f302495b8e339e58d25f5946e3206fef23250d13
   integrity sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw==
   dependencies:
     tslib "2.3.0"

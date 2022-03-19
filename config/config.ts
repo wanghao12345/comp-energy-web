@@ -2,13 +2,13 @@ import { defineConfig } from 'umi';
 import routes from './routes';
 
 export default defineConfig({
-  // layout: {
-  //   menu: {},
-  //   siderWidth: 216,
-  //   contentStyle: {
-  //     backgroundColor: '#142655'
-  //   }
-  // },
+  theme: {
+    '@primary-color': '#347D9B',
+    '@font-size-base': '14px',
+    '@text-color': '#ffffff',
+    '@border-radius-base': '4px',
+    '@border-color-base': '#438CAC',
+  },
   mfsu: {},
   nodeModulesTransform: {
     type: 'none',
