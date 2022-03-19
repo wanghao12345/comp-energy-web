@@ -1,21 +1,25 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { history } from 'umi';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import type { BasicLayoutProps } from '@ant-design/pro-layout';
-
 import ProLayout, { PageContainer } from '@ant-design/pro-layout';
+import { TabMenu } from '@/components';
 import routes from '../../config/routes';
 
 const BasicLayout: FC = ({ children }) => {
-  const [pathname, setPathname] = useState('/welcome');
+  const [pathname, setPathname] = useState('/dashboard');
   const [collapsed, setCollapsed] = useState(false);
-  const Page = <PageContainer>123</PageContainer>;
   const props: BasicLayoutProps = {
     route: routes[0],
     location: {
       pathname,
     },
+    siderWidth: 216,
     navTheme: 'dark',
+    contentStyle: {
+      background: '#142655',
+      margin: 0,
+    },
     collapsed,
     fixSiderbar: true,
     collapsedButtonRender: false,
@@ -48,7 +52,7 @@ const BasicLayout: FC = ({ children }) => {
         );
       }}
     >
-      {children}
+      <TabMenu>{children}</TabMenu>
     </ProLayout>
   );
 };

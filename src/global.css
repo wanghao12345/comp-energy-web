@@ -1,0 +1,16 @@
+.ant-design-pro{
+
+}
+.ant-layout-sider{
+  background-color: #213464 !important;
+}
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected{
+  background-color: #347D9B !important;
+}
+.ant-menu-dark .ant-menu-inline.ant-menu-sub{
+  background-color: #213464 !important;
+}
+.ant-pro-global-header{
+  background-color: #213464 !important;
+  color: white;
+}
