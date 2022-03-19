@@ -28,6 +28,18 @@ export default [
           },
         ],
       },
+      {
+        // path: '/energyMerge',
+        name: '能源管理',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/energyMerge/energyInclude',
+            name: '用能概括',
+            component: '@/pages/energyMerge/energyInclude',
+          },
+        ],
+      },
     ],
   },
 ];
