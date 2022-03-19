@@ -1,51 +1,41 @@
 import React from 'react';
 import { Tabs } from 'antd';
-import styles from './index.less';
+import { TabMenuContainer, TabsContainer, BodyContainer } from './style';
 
 const { TabPane } = Tabs;
 export const TabMenu: React.FC = ({ children }) => {
   const tabs = [
     {
-      label: 'tab 1',
+      label: '数据看板',
     },
     {
-      label: 'tab 2',
+      label: '实时监控',
     },
     {
-      label: 'tab 3',
+      label: '能源管理',
     },
     {
-      label: 'tab 4',
+      label: '用电分析',
     },
     {
-      label: 'tab 5',
-    },
-    {
-      label: 'tab 6',
-    },
-    {
-      label: 'tab 7',
+      label: '报警管理',
     },
   ];
   return (
-    <div className={styles['tabMenuContainer']}>
-      <div className={styles['tabMenuHeader']}>
+    <TabMenuContainer>
+      <TabsContainer>
         <Tabs
-          className={styles['tabsBox']}
+          hideAdd
           defaultActiveKey="0"
-          type="card"
+          type="editable-card"
           tabPosition={'top'}
         >
           {tabs.map((tab: any, index: number) => (
-            <TabPane
-              className={styles['tabBox']}
-              tab={tab.label}
-              key={index + ''}
-            ></TabPane>
+            <TabPane tab={tab.label} key={index + ''}></TabPane>
           ))}
         </Tabs>
-      </div>
-      <div className={styles.tabMenuBody}>{children}</div>
-    </div>
+      </TabsContainer>
+      <BodyContainer></BodyContainer>
+    </TabMenuContainer>
   );
 };
