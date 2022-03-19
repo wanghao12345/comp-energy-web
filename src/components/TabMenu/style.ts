@@ -47,4 +47,7 @@ export const TabsContainer = styled.div`
   }
 `;
 
-export const BodyContainer = styled.div``;
+export const BodyContainer = styled.div`
+  box-sizing: border-box;
+  padding: 24px;
+`;
