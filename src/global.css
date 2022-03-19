@@ -20,7 +20,9 @@ html, body{
   padding-left: 20px !important;
   padding-right: 20px !important;
 }
-
+.ant-btn-default{
+  background-color: #203564 !important;
+}
 /* select */
 .ant-select .ant-select-selection-item{
   color: white !important;

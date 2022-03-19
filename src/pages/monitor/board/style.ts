@@ -9,7 +9,7 @@ export const BoardContainer = styled.div`
 
 export const BoardTopContainer = styled.div`
   width: 100%;
-  height: 45%;
+  height: 40%;
   box-sizing: border-box;
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
@@ -43,7 +43,7 @@ export const BoardTopContainer = styled.div`
 
 export const BoardBottomContainer = styled.div`
   width: 100%;
-  height: 55%;
+  height: 60%;
   display: flex;
 `;
 
@@ -53,6 +53,44 @@ export const BoardBottomLeftContainer = styled.div`
   margin-right: 24px;
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
+  flex-shrink: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  box-sizing: border-box;
+  h3 {
+    width: 100%;
+    height: 42px;
+    line-height: 50px;
+    text-align: center;
+    color: rgba(255, 255, 255);
+    font-size: 14px;
+  }
+  .data-item-box {
+    .title-box {
+      width: 100%;
+      height: 40px;
+      background-color: rgba(36, 67, 124);
+      box-sizing: border-box;
+      padding-left: 24px;
+      line-height: 40px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .item-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 5px 24px;
+      &:last-child {
+        margin-bottom: 10px;
+      }
+      span {
+        color: rgba(255, 255, 255);
+        font-size: 14px;
+      }
+    }
+  }
 `;
 
 export const BoardBottomRightContainer = styled.div`
@@ -60,4 +98,23 @@ export const BoardBottomRightContainer = styled.div`
   height: 100%;
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
+  padding: 16px 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  .option-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h3 {
+      color: rgba(255, 255, 255);
+      font-size: 14px;
+    }
+    .tab-box {
+    }
+  }
+  .charts-box {
+    flex: 1;
+    height: 100%;
+  }
 `;
