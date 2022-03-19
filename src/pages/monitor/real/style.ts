@@ -32,12 +32,26 @@ export const RealBodyContainer = styled.div`
   box-sizing: border-box;
   padding: 24px;
   .options-box {
+    display: flex;
+    align-items: center;
     .tab-box {
+      margin-right: 44px;
       .ant-tabs-nav {
         padding-left: 0;
+        margin-bottom: 0;
         &::before {
           display: none;
         }
+      }
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      .ant-select {
+        margin-right: 16px;
+      }
+      .ant-picker {
+        margin-right: 16px;
       }
     }
   }

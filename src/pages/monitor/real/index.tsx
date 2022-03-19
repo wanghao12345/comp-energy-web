@@ -1,4 +1,4 @@
-import { Select, Input, Tree, Tabs } from 'antd';
+import { Select, Input, Tree, Tabs, DatePicker, Button } from 'antd';
 import {
   SearchOutlined,
   CarryOutOutlined,
@@ -8,6 +8,7 @@ import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
     <RealContainer>
@@ -98,6 +99,27 @@ const RealBodyOption = () => {
             <TabPane tab={'报警信息'} key={'1'}></TabPane>
             <TabPane tab={'通讯状态'} key={'2'}></TabPane>
           </Tabs>
+        </div>
+        <div className="search-box">
+          <Select
+            size="large"
+            defaultValue="电流"
+            onChange={() => {}}
+            style={{
+              width: '160px',
+            }}
+          >
+            <Option value="电流">电流</Option>
+            <Option value="电压">电压</Option>
+            <Option value="功率因素">功率因素</Option>
+            <Option value="有功功率">有功功率</Option>
+            <Option value="频率">频率</Option>
+            <Option value="有功电能">有功电能</Option>
+          </Select>
+          <RangePicker size="large" />
+          <Button size="large" type="primary">
+            查询
+          </Button>
         </div>
       </div>
     </RealBodyContainer>
