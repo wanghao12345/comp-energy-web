@@ -1,3 +1,4 @@
+import React from 'react';
 import { LaptopOutlined } from '@ant-design/icons';
 export default [
   {
