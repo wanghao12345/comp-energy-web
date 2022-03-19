@@ -28,6 +28,136 @@ export default [
           },
         ],
       },
+      {
+        path: '/energy',
+        name: '能源管理',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/energy/general',
+            name: '用能概括',
+            component: '@/pages/monitor/real',
+          },
+          {
+            path: '/energy/consumption',
+            name: '能耗看板',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/energy/trend',
+            name: '趋势分析',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/energy/compare',
+            name: '对比（损耗）分析',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/energy/energyReport',
+            name: '用能报表',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/energy/lossReport',
+            name: '损耗报表',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/energy/flow',
+            name: '能源流向图',
+            component: '@/pages/monitor/board',
+          },
+        ],
+      },
+      {
+        path: '/comp',
+        name: '企业报表',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/comp/rate',
+            name: '复费率报表',
+            component: '@/pages/monitor/real',
+          },
+          {
+            path: '/comp/electric',
+            name: '电参量采集报表',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/comp/reading',
+            name: '能耗集抄报表',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/comp/param',
+            name: '电参量采集报表',
+            component: '@/pages/monitor/board',
+          },
+        ],
+      },
+      {
+        path: '/alarm',
+        name: '报警管理',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/alarm/rules',
+            name: '报警规则',
+            component: '@/pages/monitor/real',
+          },
+          {
+            path: '/alarm/event',
+            name: '事件记录',
+            component: '@/pages/monitor/board',
+          },
+        ],
+      },
+      {
+        path: '/device',
+        name: '设备管理',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/device/archives',
+            name: '设备档案',
+            component: '@/pages/monitor/real',
+          },
+          {
+            path: '/device/node',
+            name: '区域节点',
+            component: '@/pages/monitor/board',
+          },
+        ],
+      },
+      {
+        path: '/devops',
+        name: '运维管理',
+        icon: <LaptopOutlined />,
+        routes: [
+          {
+            path: '/devops/user',
+            name: '用户管理',
+            component: '@/pages/monitor/real',
+          },
+          {
+            path: '/devops/electricity',
+            name: '电价管理',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/devops/plan',
+            name: '巡检计划',
+            component: '@/pages/monitor/board',
+          },
+          {
+            path: '/devops/record',
+            name: '巡检记录',
+            component: '@/pages/monitor/board',
+          },
+        ],
+      },
     ],
   },
 ];
