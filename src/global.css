@@ -1,6 +1,4 @@
-.ant-design-pro{
-
-}
+/* layout */
 .ant-layout-sider{
   background-color: #213464 !important;
 }
@@ -13,4 +11,47 @@
 .ant-pro-global-header{
   background-color: #213464 !important;
   color: white;
+}
+
+/* select */
+.ant-select .ant-select-selection-item{
+  color: white !important;
+}
+.ant-select .ant-select-arrow{
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+.ant-select .ant-select-selector{
+  background-color: rgba(52, 125, 155, 0.2) !important;
+  border: 1px solid rgba(67, 140, 172, 0.6) !important;
+}
+
+.ant-select-dropdown{
+  background-color: #337d9b !important;
+  padding: 0 !important;
+}
+.ant-select-dropdown .ant-select-item{
+  padding: 10px 12px !important;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+  background-color: #528ea6 !important;
+}
+.ant-select-dropdown .ant-select-item-option-active{
+  background-color: #266a86 !important;
+}
+
+/* input */
+.ant-input{
+  background-color: rgba(52, 125, 155, 0.2) !important;
+  border: 1px solid rgba(67, 140, 172, 0.6) !important;
+}
+.ant-input-affix-wrapper{
+  background-color: rgba(52, 125, 155, 0.2) !important;
+  border: 1px solid rgba(67, 140, 172, 0.6) !important;
+}
+.ant-input-affix-wrapper .ant-input{
+  background-color: rgba(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+.ant-input-affix-wrapper .ant-input-suffix{
+  color: rgba(255, 255, 255, 0.4) !important;
 }
