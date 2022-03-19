@@ -1,3 +1,6 @@
+html, body{
+  font-family: SourceHanSansSC-regular;
+}
 /* layout */
 .ant-layout-sider{
   background-color: #213464 !important;
@@ -11,6 +14,11 @@
 .ant-pro-global-header{
   background-color: #213464 !important;
   color: white;
+}
+/* button */
+.ant-btn{
+  padding-left: 20px !important;
+  padding-right: 20px !important;
 }
 
 /* select */
@@ -100,7 +108,7 @@
   border: 0 !important;
 }
 .ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn{
-  color: white;
+  color: white !important;
 }
 .ant-tabs .ant-tabs-tab-active .ant-tabs-tab-remove{
   display: block;
@@ -111,9 +119,6 @@
   top: 2px;
   right: 3px;
   display: none;
-}
-.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
-  color: white;
 }
 .ant-tabs .ant-tabs-content-holder {
   display: none;
@@ -133,4 +138,32 @@
 }
 .ant-picker .ant-picker-suffix{
   color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* table */
+.ant-table{
+  background-color: #264A6B !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+.ant-table th{
+  background-color: rgba(52, 125, 155) !important;
+  color: rgba(45, 255, 194) !important;
+  font-size: 16px;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  padding: 9px 8px !important;
+}
+.ant-table th::before{
+  height: 100% !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+.ant-table td{
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  border-right: 1px solid;
+  background-color: #264A6B !important;
+}
+.ant-table td:last-child{
+  border-right: 0 ;
+}
+.ant-table tr:last-child td{
+  border-bottom: 0;
 }

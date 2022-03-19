@@ -55,4 +55,13 @@ export const RealBodyContainer = styled.div`
       }
     }
   }
+  .echart-box {
+    width: 100%;
+    height: 350px;
+  }
+  .table-box {
+    .ant-table {
+      margin-top: 16px;
+    }
+  }
 `;

@@ -1,4 +1,6 @@
-import { Select, Input, Tree, Tabs, DatePicker, Button } from 'antd';
+import { useRef, useEffect } from 'react';
+import { Select, Input, Tree, Tabs, DatePicker, Button, Table } from 'antd';
+import * as echarts from 'echarts';
 import {
   SearchOutlined,
   CarryOutOutlined,
@@ -81,6 +83,188 @@ const RealOption = () => {
 };
 
 const RealBodyOption = () => {
+  const chartDom: any = useRef(null);
+  const dataSource = [
+    {
+      key: '1',
+      name: '胡彦斌',
+      age: 32,
+      address: '西湖区湖底公园1号',
+    },
+    {
+      key: '2',
+      name: '胡彦祖',
+      age: 42,
+      address: '西湖区湖底公园1号',
+    },
+  ];
+
+  const columns = [
+    {
+      title: '采集时间',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Ia（A） ',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: 'Ib（A）',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: 'Ic（A）',
+      dataIndex: 'age',
+      key: 'age',
+    },
+  ];
+
+  useEffect(() => {
+    drawEcharts();
+  }, []);
+
+  const drawEcharts = () => {
+    var myChart = echarts.init(chartDom.current);
+    // 绘制图表
+    myChart.setOption({
+      grid: {
+        left: 40,
+        right: 20,
+        top: 80,
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      legend: {
+        top: 30,
+        textStyle: {
+          color: '#FFFFFF',
+        },
+      },
+      xAxis: {
+        type: 'category',
+        axisLine: {
+          lineStyle: {
+            color: '#6C6E79',
+          },
+        },
+        axisLabel: {
+          color: '#FFFFFF',
+        },
+        data: [
+          '00',
+          '01',
+          '02',
+          '03',
+          '04',
+          '05',
+          '06',
+          '07',
+          '08',
+          '09',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+          '20',
+          '21',
+          '22',
+          '23',
+        ],
+      },
+      yAxis: {
+        type: 'value',
+        name: 'A',
+        splitLine: {
+          lineStyle: {
+            color: ['#6C6E79'],
+            type: 'dashed',
+          },
+        },
+        axisLabel: {
+          formatter: '{value}',
+          color: '#FFFFFF',
+        },
+        nameTextStyle: {
+          color: '#FFFFFF',
+        },
+      },
+      series: [
+        {
+          name: 'la',
+          type: 'line',
+          smooth: true,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' },
+            ],
+            label: {
+              color: '#FFFFFF',
+            },
+          },
+          lineStyle: {
+            color: '#FFEF6C',
+          },
+          data: [
+            100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350,
+            300, 100, 200, 300, 500, 400, 350, 300, 350, 150, 450,
+          ],
+        },
+        {
+          name: 'lb',
+          type: 'line',
+          smooth: true,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' },
+            ],
+            label: {
+              color: '#FFFFFF',
+            },
+          },
+          lineStyle: {
+            color: '#FD264E',
+          },
+          data: [
+            200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300,
+            100, 200, 300, 500, 400, 350, 300, 350, 150, 450, 200,
+          ],
+        },
+        {
+          name: 'lc',
+          type: 'line',
+          smooth: true,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' },
+            ],
+            label: {
+              color: '#FFFFFF',
+            },
+          },
+          lineStyle: {
+            color: '#2DFCC0',
+          },
+          data: [
+            300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300, 100,
+            200, 300, 500, 400, 350, 300, 350, 150, 450, 200, 100,
+          ],
+        },
+      ],
+    });
+  };
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -121,6 +305,13 @@ const RealBodyOption = () => {
             查询
           </Button>
         </div>
+      </div>
+      <div className="echart-box" ref={chartDom}></div>
+      <div className="table-box">
+        <Button size="large" type="primary">
+          导出
+        </Button>
+        <Table size="middle" dataSource={dataSource} columns={columns} />
       </div>
     </RealBodyContainer>
   );
