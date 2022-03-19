@@ -1,9 +1,19 @@
-import styles from './index.less';
-import '@/apis';
-export default function IndexPage() {
+import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
+const RealPage = () => {
   return (
-    <div>
-      <h1 className={styles.title}>Page monitor real</h1>
-    </div>
+    <RealContainer>
+      <RealOption />
+      <RealBodyOption />
+    </RealContainer>
   );
-}
+};
+
+const RealOption = () => {
+  return <RealOptionContainer></RealOptionContainer>;
+};
+
+const RealBodyOption = () => {
+  return <RealBodyContainer></RealBodyContainer>;
+};
+
+export default RealPage;
