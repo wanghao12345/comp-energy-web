@@ -88,7 +88,7 @@ export default [
           {
             path: '/comp/reading',
             name: '能耗集抄报表',
-            component: '@/pages/monitor/board',
+            component: '@/pages/comp/reading',
           },
           {
             path: '/comp/param',
