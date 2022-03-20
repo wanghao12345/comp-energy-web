@@ -33,6 +33,7 @@ export const barCartDataOptions = {
       itemStyle: {
         color: '#72d5df',
       },
+      barWidth: '20%',
     },
   ],
 };

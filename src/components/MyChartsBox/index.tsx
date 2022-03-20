@@ -1,7 +1,7 @@
 import * as echarts from 'echarts';
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import { merge as _merge } from 'lodash';
+import { merge as _merge, cloneDeep as _cloneDeep } from 'lodash';
 const MyChartBox = styled.div`
   width: 100%;
   height: 100%;
@@ -17,6 +17,7 @@ const baseOptions = {
     right: 0,
     bottom: 0,
   },
+  tooltip: {},
   xAxis: {
     axisLabel: {
       color: '#fff',
@@ -49,7 +50,7 @@ export default (props: Iprops) => {
     return new Error('options type mismatch, need an object');
   useEffect(() => {
     const myChart = echarts.init(document.getElementById(id));
-    myChart.setOption(_merge(baseOptions, options));
+    myChart.setOption(_merge(_cloneDeep(baseOptions), options));
     const reSizeFn = () => {
       myChart.resize();
     };
@@ -58,5 +59,9 @@ export default (props: Iprops) => {
       window.removeEventListener('resize', reSizeFn);
     };
   }, [options]);
-  return <MyChartBox {...props} id={id} />;
+  return (
+    <>
+      <MyChartBox {...props} id={id} />;
+    </>
+  );
 };
