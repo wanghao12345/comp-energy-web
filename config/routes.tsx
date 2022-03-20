@@ -30,6 +30,7 @@ export default [
       },
       {
         name: '能源管理',
+        path: '/energyMerge',
         icon: <LaptopOutlined />,
         routes: [
           {
@@ -77,12 +78,12 @@ export default [
           {
             path: '/comp/rate',
             name: '复费率报表',
-            component: '@/pages/monitor/real',
+            component: '@/pages/comp/rate',
           },
           {
             path: '/comp/electric',
             name: '电参量采集报表',
-            component: '@/pages/monitor/board',
+            component: '@/pages/comp/electric',
           },
           {
             path: '/comp/reading',
