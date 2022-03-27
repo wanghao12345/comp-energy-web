@@ -178,3 +178,9 @@ body {
 .ant-pagination .anticon svg {
   color: #fff;
 }
+/* ant-table-row-expand-icon ant-table-row-expand-icon-expanded */
+.ant-table-row-expand-icon {
+  color: #31617c !important;
+  background-color: #51a6ae !important;
+  border-color: currentcolor !important;
+}

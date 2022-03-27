@@ -61,7 +61,7 @@ export default (props: Iprops) => {
   }, [options]);
   return (
     <>
-      <MyChartBox {...props} id={id} />;
+      <MyChartBox {...props} id={id} />
     </>
   );
 };

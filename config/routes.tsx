@@ -58,11 +58,11 @@ export default [
             name: '用能报表',
             component: '@/pages/energyMerge/consumptionReport',
           },
-          // {
-          //   path: '/energy/lossReport',
-          //   name: '损耗分析',
-          //   component: '@/pages/monitor/board',
-          // },
+          {
+            path: '/energyMerge/wastageReport',
+            name: '损耗报表',
+            component: '@/pages/energyMerge/wastageReport',
+          },
           {
             path: '/energyMerge/flowCart',
             name: '能源流向图',
