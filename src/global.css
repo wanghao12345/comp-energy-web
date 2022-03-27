@@ -141,6 +141,9 @@ body {
 .ant-picker .ant-picker-suffix {
   color: rgba(255, 255, 255, 0.5) !important;
 }
+.ant-picker-dropdown .ant-picker-time-panel-cell-inner{
+  color: #438cac !important;
+}
 
 /* table */
 .ant-table {
