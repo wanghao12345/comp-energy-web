@@ -121,19 +121,25 @@ export default [
         ],
       },
       {
-        path: '/device',
+        path: '/eqMerge',
         name: '设备管理',
         icon: <LaptopOutlined />,
         routes: [
           {
-            path: '/device/archives',
+            path: '/eqMerge/record',
             name: '设备档案',
-            component: '@/pages/monitor/real',
+            component: '@/pages/eqMerge/record',
           },
           {
-            path: '/device/node',
+            hideInMenu: true,
+            path: '/eqMerge/record/add',
+            name: '新增设备档案',
+            component: '@/pages/eqMerge/record/add',
+          },
+          {
+            path: '/eqMerge/areaNode',
             name: '区域节点',
-            component: '@/pages/monitor/board',
+            component: '@/pages/eqMerge/areaNode',
           },
         ],
       },

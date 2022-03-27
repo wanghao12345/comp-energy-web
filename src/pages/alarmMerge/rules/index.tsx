@@ -1,3 +1,4 @@
+// 报警管理=>报警规则
 import { Button, Table, Space } from 'antd';
 import { RulesPage } from './style';
 import { Link } from 'umi';
@@ -93,7 +94,6 @@ export default () => {
         pagination={{ pageSize: 50 }}
         scroll={{ y: 600 }}
       />
-      ,
     </RulesPage>
   );
 };
