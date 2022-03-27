@@ -105,7 +105,13 @@ export default [
           {
             path: '/alarm/rules',
             name: '报警规则',
-            component: '@/pages/monitor/real',
+            component: '@/pages/alarmMerge/rules',
+          },
+          {
+            hideInMenu: true,
+            path: '/alarm/rules/add',
+            name: '新增报警规则',
+            component: '@/pages/alarmMerge/rules/add',
           },
           {
             path: '/alarm/event',

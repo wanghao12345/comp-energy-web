@@ -141,7 +141,7 @@ body {
 .ant-picker .ant-picker-suffix {
   color: rgba(255, 255, 255, 0.5) !important;
 }
-.ant-picker-dropdown .ant-picker-time-panel-cell-inner{
+.ant-picker-dropdown .ant-picker-time-panel-cell-inner {
   color: #438cac !important;
 }
 
@@ -175,15 +175,46 @@ body {
 .ant-pagination-item a {
   color: #fff !important;
 }
-.ant-pagination-item.ant-pagination-item-active a {
-  color: #264a6b !important;
-}
+
 .ant-pagination .anticon svg {
   color: #fff;
 }
-/* ant-table-row-expand-icon ant-table-row-expand-icon-expanded */
 .ant-table-row-expand-icon {
   color: #31617c !important;
   background-color: #51a6ae !important;
   border-color: currentcolor !important;
+}
+.ant-pagination-item-link,
+.ant-pagination-item {
+  background: transparent !important;
+}
+.ant-pagination-item.ant-pagination-item-active {
+  background: #438cac !important;
+}
+.ant-pagination-item.ant-pagination-item-active a {
+  color: #fff !important;
+}
+.ant-btn + .ant-btn {
+  margin-left: 20px;
+}
+.ant-form-item-label > label {
+  color: #fff !important;
+}
+.ant-form-item-label > label::after {
+  margin-right: 20px !important;
+}
+.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  position: absolute;
+  right: 5px;
+  color: #fff !important;
+}
+.ant-select-clear {
+  color: #fff !important;
+  background: transparent !important;
+}
+.ant-switch {
+  background-color: #bfbfbf !important;
+}
+.ant-switch-checked {
+  background-color: #00e166 !important;
 }

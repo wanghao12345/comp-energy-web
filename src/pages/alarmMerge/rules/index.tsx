@@ -1,7 +1,17 @@
 import { Button, Table, Space } from 'antd';
 import { RulesPage } from './style';
 import { Link } from 'umi';
+import { useState } from 'react';
 export default () => {
+  const data = [];
+  for (let i = 0; i < 100; i++) {
+    data.push({
+      key: i,
+      name: `Edward King ${i}`,
+      age: 32,
+      address: `London, Park Lane no. ${i}`,
+    });
+  }
   const columns = [
     {
       title: '节点名称',
@@ -56,9 +66,9 @@ export default () => {
       dataIndex: 'address',
     },
     {
-      title: 'address',
+      title: '操作',
       // dataIndex: 'address',
-      render: (text, record) => {
+      render: (text, record, index) => {
         return (
           <Space size="middle">
             <a>编辑</a>
@@ -68,20 +78,10 @@ export default () => {
       },
     },
   ];
-
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
-    });
-  }
   return (
     <RulesPage>
       <div className="headerBox">
-        <Link to="">
+        <Link to="/alarm/rules/add">
           <Button size="large" type="primary">
             添加
           </Button>
