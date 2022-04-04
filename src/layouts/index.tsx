@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { history } from 'umi';
 import { connect } from 'dva';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
@@ -12,6 +12,11 @@ const BasicLayout: FC = (props: any) => {
     props;
   const [pathname, setPathname] = useState('/dashboard');
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const { pathname } = props.location;
+    setPathname(pathname || '/dashboard');
+  }, [props.location]);
 
   const handleChangeMenu = (item: any) => {
     let flag = false;
@@ -50,7 +55,6 @@ const BasicLayout: FC = (props: any) => {
         onClick={() => {
           onChangeActiveMenu(item.name);
           handleChangeMenu(item);
-          setPathname(item.path || '/dashboard');
           history.push(item.path);
         }}
       >
