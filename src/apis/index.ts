@@ -1,7 +1,42 @@
 import { request } from 'umi';
 
-export const getNews = async () => {
-  return await request('https://autumnfish.cn/api/joke', {
-    method: 'GET',
+// 新增设备
+export const addEquipment = async (data: any) => {
+  return await request('/energy_admin/tbEquipment/add', {
+    method: 'POST',
+    data,
+  });
+};
+
+// 新增区域
+export const addRegion = async (data: any) => {
+  return await request('/energy_admin/tbRegion/add', {
+    method: 'POST',
+    data,
+  });
+};
+
+// 区域详情接口
+export const getRegionById = async (id: any) => {
+  return await request('/energy_admin/tbRegion/selectById', {
+    method: 'POST',
+    data: {
+      id,
+    },
+  });
+};
+
+// 区域分页查询列表
+export const getRegionList = async (data: any) => {
+  return await request('/energy_admin/tbRegion/selectList', {
+    method: 'POST',
+    data,
+  });
+};
+
+// 区域树列表
+export const getRegionTreeList = async () => {
+  return await request('/energy_admin/tbRegion/selectTreeList', {
+    method: 'POST',
   });
 };

@@ -19,4 +19,11 @@ export default defineConfig({
     immer: true,
     hmr: true,
   },
+  proxy: {
+    '/api': {
+      target: 'http://117.50.98.136',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
 });

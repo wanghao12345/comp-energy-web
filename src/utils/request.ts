@@ -1,7 +1,8 @@
 // import { request } from "umi";
-import { message } from 'antd';
+import { extend } from 'umi-request';
+import { notification } from 'antd';
 
-const codeMessage = {
+const codeMessage: Record<number, string> = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
@@ -20,19 +21,40 @@ const codeMessage = {
   504: '网关超时。',
   555: 'token 失效',
 };
+/** 异常处理程序 */
+const errorHandler = (error: { response: Response }): Response => {
+  const { response } = error;
+  if (response && response.status) {
+    const errorText = codeMessage[response.status] || response.statusText;
+    const { status, url } = response;
+
+    notification.error({
+      message: `请求错误 ${status}: ${url}`,
+      description: errorText,
+    });
+  } else if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
+  }
+  return response;
+};
 /**
  * 配置request请求时的默认参数
  */
 const request = extend({
   // 前缀
-  // prefix: process.env.API_ENV === "development" ? "/server/api/" : "/api/",
+  prefix: process.env.API_ENV === 'development' ? '/api/' : '/api/',
+  errorHandler,
   credentials: 'include', // 默认请求是否带上cookie
 });
-request.interceptors.request.use((url, options) => {
+request.interceptors.request.use((url: string, options: any) => {
   // start NProgress
   // NProgress.start();
   return {
-    ...options,
+    url: `${url}`,
+    options: { ...options },
   };
 });
 /**
@@ -43,6 +65,11 @@ request.interceptors.request.use((url, options) => {
 request.interceptors.response.use(async (response) => {
   // close NProgress
   // NProgress.done();
+  const data = await response.clone().json();
+  if (data.code !== 200) {
+    // 界面报错处理
+  }
+
   return response;
 });
 export default request;
