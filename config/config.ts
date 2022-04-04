@@ -15,4 +15,8 @@ export default defineConfig({
   },
   routes: routes,
   fastRefresh: {},
+  dva: {
+    immer: true,
+    hmr: true,
+  },
 });

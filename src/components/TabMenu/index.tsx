@@ -1,36 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { history } from 'umi';
 import { Tabs } from 'antd';
 import { TabMenuContainer, TabsContainer, BodyContainer } from './style';
 
 const { TabPane } = Tabs;
-export const TabMenu: React.FC = ({ children }) => {
-  const [activeKey, setActiveKey] = useState('0');
-  const [tabs, setTabs] = useState([
-    {
-      label: '数据看板',
-    },
-    {
-      label: '实时监控',
-    },
-    {
-      label: '能源管理',
-    },
-    {
-      label: '用电分析',
-    },
-    {
-      label: '报警管理',
-    },
-  ]);
+
+type TabMenuProps = {
+  activeMenu: string;
+  tabMenu: any[];
+  onChangeActiveMenu: (name: string) => void;
+  onChangemenuTab: (menu: any[]) => void;
+};
+
+export const TabMenu: React.FC<TabMenuProps> = (props) => {
+  const { children, activeMenu, tabMenu, onChangeActiveMenu, onChangemenuTab } =
+    props;
+  const [activeKey, setActiveKey] = useState('1');
+  useEffect(() => {
+    if (activeMenu && tabMenu && tabMenu.length) {
+      let idx = '0';
+      tabMenu.forEach((menu: any, index: number) => {
+        if (activeMenu === menu.name) {
+          idx = index + '';
+        }
+      });
+      onChange(idx);
+      setActiveKey(() => idx);
+    }
+  }, [activeMenu, tabMenu]);
   const onChange = (activeKey: string) => {
+    history.push(tabMenu[Number(activeKey)].path);
     setActiveKey(activeKey);
   };
   const onEdit = (targetKey: any, action: any) => {
     remove(targetKey);
   };
   const remove = (targetKey: any) => {
+    let tabs = JSON.parse(JSON.stringify(tabMenu));
     tabs.splice(targetKey, 1);
-    setTabs([...tabs]);
+    onChangemenuTab([...tabs]);
+    if (tabs.length - 1 >= targetKey * 1) {
+      onChangeActiveMenu(tabs[targetKey * 1].name);
+      history.push(tabs[targetKey * 1].path);
+    } else {
+      if (tabs.length) {
+        let index = targetKey * 1 - 1 > -1 ? targetKey * 1 - 1 : 0;
+        onChangeActiveMenu(tabs[index].name);
+        history.push(tabs[index].path);
+      } else {
+        history.push('/dashboard');
+      }
+    }
   };
 
   return (
@@ -38,14 +58,14 @@ export const TabMenu: React.FC = ({ children }) => {
       <TabsContainer>
         <Tabs
           hideAdd
-          defaultActiveKey={activeKey}
+          activeKey={activeKey}
           type="editable-card"
           tabPosition={'top'}
           onEdit={onEdit}
           onChange={onChange}
         >
-          {tabs.map((tab: any, index: number) => (
-            <TabPane tab={tab.label} key={index + ''}></TabPane>
+          {tabMenu.map((tab: any, index: number) => (
+            <TabPane tab={tab.name} key={index + ''}></TabPane>
           ))}
         </Tabs>
       </TabsContainer>

@@ -22,6 +22,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-layout": "^6.5.0",
+    "@types/redux-logger": "^3.0.9",
     "antd": "^4.19.2",
     "echarts": "^5.3.1",
     "immer": "9.0.5",
@@ -29,6 +30,7 @@
     "moment": "^2.29.1",
     "react": "17.x",
     "react-dom": "17.x",
+    "redux-logger": "^3.0.6",
     "styled-components": "^5.3.3",
     "umi": "^3.5.21",
     "use-immer": "0.6.0"
