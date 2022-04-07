@@ -45,7 +45,7 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   // 前缀
-  prefix: process.env.API_ENV === 'development' ? '/api/' : '/api/',
+  prefix: process.env.API_ENV === 'development' ? '/api' : '/api',
   errorHandler,
   credentials: 'include', // 默认请求是否带上cookie
 });
@@ -66,7 +66,7 @@ request.interceptors.response.use(async (response) => {
   // close NProgress
   // NProgress.done();
   const data = await response.clone().json();
-  if (data.code !== 200) {
+  if (data.meta.code !== 200) {
     // 界面报错处理
   }
 

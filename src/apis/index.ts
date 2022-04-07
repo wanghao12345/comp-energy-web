@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import request from '@/utils/request';
 
 // 新增设备
 export const addEquipment = async (data: any) => {

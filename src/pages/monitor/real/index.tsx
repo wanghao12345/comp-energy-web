@@ -7,6 +7,7 @@ import {
   FormOutlined,
 } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
+import { getRegionTreeList } from '@/apis';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -60,6 +61,17 @@ const RealOption = () => {
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
   };
+
+  const getRegionTreeListRequest = () => {
+    getRegionTreeList().then((res: any) => {
+      console.log(res);
+    });
+  };
+
+  useEffect(() => {
+    getRegionTreeListRequest();
+  }, []);
+
   return (
     <RealOptionContainer>
       <Select size="large" defaultValue="电" onChange={() => {}}>
