@@ -2,7 +2,7 @@ import { request } from 'umi';
 
 // 新增设备
 export const addEquipment = async (data: any) => {
-  return await request('/energy_admin/tbEquipment/add', {
+  return await request('/ea/tbEquipment/add', {
     method: 'POST',
     data,
   });
@@ -10,7 +10,7 @@ export const addEquipment = async (data: any) => {
 
 // 新增区域
 export const addRegion = async (data: any) => {
-  return await request('/energy_admin/tbRegion/add', {
+  return await request('/ea/tbRegion/add', {
     method: 'POST',
     data,
   });
@@ -18,7 +18,7 @@ export const addRegion = async (data: any) => {
 
 // 区域详情接口
 export const getRegionById = async (id: any) => {
-  return await request('/energy_admin/tbRegion/selectById', {
+  return await request('/ea/tbRegion/selectById', {
     method: 'POST',
     data: {
       id,
@@ -28,7 +28,7 @@ export const getRegionById = async (id: any) => {
 
 // 区域分页查询列表
 export const getRegionList = async (data: any) => {
-  return await request('/energy_admin/tbRegion/selectList', {
+  return await request('/ea/tbRegion/selectList', {
     method: 'POST',
     data,
   });
@@ -36,7 +36,7 @@ export const getRegionList = async (data: any) => {
 
 // 区域树列表
 export const getRegionTreeList = async () => {
-  return await request('/energy_admin/tbRegion/selectTreeList', {
+  return await request('/ea/tbRegion/selectTreeList', {
     method: 'POST',
   });
 };
