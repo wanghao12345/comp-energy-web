@@ -9,7 +9,8 @@ import {
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
 const { Option } = Select;
 const { TabPane } = Tabs;
-const dataSource = new Array(80).fill(null).map((item, index) => ({
+import { useEffect, useState } from 'react';
+const dataSource = new Array(20).fill(null).map((item, index) => ({
   key: index,
   time: '00:00',
   nodeName: '1AAA1',
@@ -25,43 +26,43 @@ const RealPage = () => {
   );
 };
 
+const treeData = [
+  {
+    title: '1AA',
+    key: '0-0',
+    icon: <CarryOutOutlined />,
+    children: [
+      {
+        title: '北厂区0101',
+        key: '0-0-0',
+        icon: <CarryOutOutlined />,
+        children: [{ title: '站点1', key: '0-0-0-0' }],
+      },
+      {
+        title: '南长区1901',
+        key: '0-0-1',
+        icon: <CarryOutOutlined />,
+        children: [
+          { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
+        ],
+      },
+      {
+        title: '北厂区0101',
+        key: '0-0-2',
+        icon: <CarryOutOutlined />,
+        children: [
+          { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
+          {
+            title: '站点2',
+            key: '0-0-2-1',
+            icon: <CarryOutOutlined />,
+          },
+        ],
+      },
+    ],
+  },
+];
 const RealOption = () => {
-  const treeData = [
-    {
-      title: '1AA',
-      key: '0-0',
-      icon: <CarryOutOutlined />,
-      children: [
-        {
-          title: '北厂区0101',
-          key: '0-0-0',
-          icon: <CarryOutOutlined />,
-          children: [{ title: '站点1', key: '0-0-0-0' }],
-        },
-        {
-          title: '南长区1901',
-          key: '0-0-1',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
-          ],
-        },
-        {
-          title: '北厂区0101',
-          key: '0-0-2',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-            {
-              title: '站点2',
-              key: '0-0-2-1',
-              icon: <CarryOutOutlined />,
-            },
-          ],
-        },
-      ],
-    },
-  ];
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
   };

@@ -13,7 +13,7 @@ import MyChartBox from '@/components/MyChartsBox';
 import MyCard from '@/components/MyCard';
 // import { current } from 'immer';
 import { useEffect } from 'react';
-// import { energyConsumptionOverview } from '@/apis/energyMerge'
+import { energyConsumptionOverview } from '@/apis/energyMerge';
 export default () => {
   const [form, setForm] = useImmer({
     typeValue: '1',
@@ -27,14 +27,14 @@ export default () => {
     });
   };
   useEffect(() => {
-    // energyConsumptionOverview({
-    //   "energyType": 1,
-    //   "dateType": 1,
-    //   "queryStartDate": "2022-03-15",
-    //   "queryEndDate": "2022-03-15"
-    // }).then((res: any) => {
-    //   console.log(res);
-    // })
+    energyConsumptionOverview({
+      energyType: 1,
+      dateType: 1,
+      queryStartDate: '2022-03-15',
+      queryEndDate: '2022-03-15',
+    }).then((res: any) => {
+      console.log(res);
+    });
   }, []);
   return (
     <>
