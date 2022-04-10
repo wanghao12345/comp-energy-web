@@ -2,7 +2,10 @@ import { Select, DatePicker, Button, Table } from 'antd';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 import { Page } from './style';
-import { columns, data } from './data';
+import { columns } from './data';
+import { useEffect } from 'react';
+import { selectEnergyLossByRegion } from '@/apis/energyMerge';
+import { useImmer } from 'use-immer';
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
     console.log(
@@ -20,6 +23,20 @@ const rowSelection = {
 };
 
 export default () => {
+  const [tableData, setTableData] = useImmer([]);
+  useEffect(() => {
+    selectEnergyLossByRegion({
+      energyType: 1,
+      queryStartDate: '2022-03-15',
+      queryEndDate: '2022-03-15',
+    }).then((res) => {
+      console.log(res);
+      if (res.meta.code === 200) {
+        console.log(res.data);
+        setTableData(() => res.data);
+      }
+    });
+  }, []);
   return (
     <Page>
       <div className="search-box">
@@ -44,9 +61,10 @@ export default () => {
         </Button>
       </div>
       <Table
+        rowKey="id"
         pagination={false}
         columns={columns}
-        dataSource={data}
+        dataSource={tableData}
         // rowSelection={{ ...rowSelection }}
       />
     </Page>

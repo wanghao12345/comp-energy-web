@@ -1,20 +1,22 @@
 // 设备管理=>设备档案
-import { Button, Table, Space, Switch, DatePicker, Select, Input } from 'antd';
+import {
+  Button,
+  Table,
+  Space,
+  Switch,
+  DatePicker,
+  Select,
+  Input,
+  Form,
+} from 'antd';
 import { Page } from './style';
 import { Link } from 'umi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { queryList } from '@/apis/eqMerge';
 import { SearchOutlined } from '@ant-design/icons';
+import { useImmer } from 'use-immer';
 const { Option } = Select;
 export default () => {
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
-    });
-  }
   const columns = [
     {
       title: '节点名称',
@@ -26,7 +28,7 @@ export default () => {
     },
     {
       title: '仪表型号',
-      dataIndex: 'address',
+      dataIndex: 'model',
     },
     {
       title: '仪表名称',
@@ -34,19 +36,19 @@ export default () => {
     },
     {
       title: '仪表类型',
-      dataIndex: 'address',
+      dataIndex: 'type',
     },
     {
       title: '创建人',
-      dataIndex: 'address',
+      dataIndex: 'createUser',
     },
     {
       title: '创建时间',
-      dataIndex: 'address',
+      dataIndex: 'createDate',
     },
     {
       title: '安装时间',
-      dataIndex: 'address',
+      dataIndex: 'updateDate',
     },
     {
       title: '是否启用',
@@ -68,72 +70,113 @@ export default () => {
       },
     },
   ];
+  const [params, setParams] = useState({
+    current: 1,
+    size: 10,
+  });
+  const [tableData, setTableData] = useState([]);
+  const paginationChange = ({ current, pageSize }) => {
+    setParams({ ...params, current: current, size: pageSize });
+  };
+  useEffect(() => {
+    queryList({
+      ...params,
+      // "current": 1,
+      // "size": 10,
+      // "type": 1,//设备类型
+      // "name": "1",//设备名称
+      // "model": "仪表型号",
+      // "manufacturer": "",//生产厂家
+      // "equipmentCode": 1//设备的编号
+    }).then((res) => {
+      if (res.meta.code === 200) {
+        setTableData(res.data.list);
+      }
+    });
+  }, [params]);
+  const startSearch = (val) => {
+    setParams({ ...params, ...val });
+  };
   return (
     <Page>
       <div className="headerBox">
         <div className="filterBox">
-          <Input
-            placeholder="节点名称"
-            suffix={<SearchOutlined />}
-            style={{ width: '160px' }}
-          />
-          <Select
-            size="large"
-            placeholder="仪表型号"
-            onChange={() => {}}
-            style={{
-              width: '160px',
-            }}
+          <Form
+            layout="inline"
+            onFinish={(e) => startSearch(e)}
+            initialValues={{}}
           >
-            {[
-              { name: '今日', value: '1' },
-              { name: '本月', value: '2' },
-              { name: '本年', value: '3' },
-            ].map((item) => (
-              <Option key={item.value} value={item.value}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          <Select
-            size="large"
-            placeholder="仪表类型"
-            onChange={() => {}}
-            style={{
-              width: '160px',
-            }}
-          >
-            {[
-              { name: '今日', value: '1' },
-              { name: '本月', value: '2' },
-              { name: '本年', value: '3' },
-            ].map((item) => (
-              <Option key={item.value} value={item.value}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          <Select
-            size="large"
-            placeholder="状态"
-            onChange={() => {}}
-            style={{
-              width: '160px',
-            }}
-          >
-            {[
-              { name: '今日', value: '1' },
-              { name: '本月', value: '2' },
-              { name: '本年', value: '3' },
-            ].map((item) => (
-              <Option key={item.value} value={item.value}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          <Button size="large" type="primary">
-            查询
-          </Button>
+            <Form.Item name="name">
+              <Input
+                size="large"
+                placeholder="节点名称"
+                suffix={<SearchOutlined />}
+                style={{ width: '160px' }}
+              />
+            </Form.Item>
+            <Form.Item name="model">
+              <Select
+                size="large"
+                placeholder="仪表型号"
+                style={{
+                  width: '160px',
+                }}
+              >
+                {[
+                  { name: '今日', value: '1' },
+                  { name: '本月', value: '2' },
+                  { name: '本年', value: '3' },
+                ].map((item) => (
+                  <Option key={item.value} value={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item name="type">
+              <Select
+                size="large"
+                placeholder="仪表类型"
+                style={{
+                  width: '160px',
+                }}
+              >
+                {[
+                  { name: '今日', value: '1' },
+                  { name: '本月', value: '2' },
+                  { name: '本年', value: '3' },
+                ].map((item) => (
+                  <Option key={item.value} value={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item name="status">
+              <Select
+                size="large"
+                placeholder="状态"
+                style={{
+                  width: '160px',
+                }}
+              >
+                {[
+                  { name: '今日', value: '1' },
+                  { name: '本月', value: '2' },
+                  { name: '本年', value: '3' },
+                ].map((item) => (
+                  <Option key={item.value} value={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item>
+              <Button size="large" type="primary" htmlType="submit">
+                查询
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
         <Link to="/eqMerge/record/add">
           <Button size="large" type="primary">
@@ -143,8 +186,9 @@ export default () => {
       </div>
       <Table
         columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 50 }}
+        dataSource={tableData}
+        onChange={paginationChange}
+        pagination={{ pageSize: params.size }}
         scroll={{ y: 600 }}
       />
     </Page>

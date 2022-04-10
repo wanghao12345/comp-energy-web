@@ -7,9 +7,5 @@ export const Page = styled.div`
   }
   .filterBox {
     display: flex;
-    .ant-select,
-    .ant-btn {
-      margin-left: 16px;
-    }
   }
 `;

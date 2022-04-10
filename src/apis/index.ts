@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-
 // 新增设备
 export const addEquipment = async (data: any) => {
   return await request('/ea/tbEquipment/add', {

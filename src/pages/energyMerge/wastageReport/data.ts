@@ -1,20 +1,23 @@
 export const columns = [
   {
-    title: 'Name',
+    title: '节点名称',
     dataIndex: 'name',
-    key: 'name',
   },
   {
-    title: 'Age',
+    title: '当前支路能耗',
     dataIndex: 'age',
-    key: 'age',
-    width: '12%',
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    width: '30%',
-    key: 'address',
+    title: '下级支路能耗合计',
+    dataIndex: 'down',
+  },
+  {
+    title: '当前支路与下级支路能耗合计差值',
+    dataIndex: 'currentDown',
+  },
+  {
+    title: '相差百分比',
+    dataIndex: 'percent',
   },
 ];
 export const data = [

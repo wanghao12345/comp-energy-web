@@ -11,7 +11,9 @@ import { Select, Tag } from 'antd';
 const { Option } = Select;
 import MyChartBox from '@/components/MyChartsBox';
 import MyCard from '@/components/MyCard';
-import { current } from 'immer';
+// import { current } from 'immer';
+import { useEffect } from 'react';
+// import { energyConsumptionOverview } from '@/apis/energyMerge'
 export default () => {
   const [form, setForm] = useImmer({
     typeValue: '1',
@@ -24,9 +26,16 @@ export default () => {
       p.typeValue = val;
     });
   };
-  const initPage = () => {
-    console.log('34');
-  };
+  useEffect(() => {
+    // energyConsumptionOverview({
+    //   "energyType": 1,
+    //   "dateType": 1,
+    //   "queryStartDate": "2022-03-15",
+    //   "queryEndDate": "2022-03-15"
+    // }).then((res: any) => {
+    //   console.log(res);
+    // })
+  }, []);
   return (
     <>
       <PageBox>
