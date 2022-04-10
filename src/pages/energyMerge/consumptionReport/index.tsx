@@ -133,6 +133,7 @@ const RealBodyOption = () => {
         <Table
           scroll={{ y: 560 }}
           size="middle"
+          rowKey="key"
           pagination={{ pageSize: 20 }}
           dataSource={dataSource}
           columns={columns}

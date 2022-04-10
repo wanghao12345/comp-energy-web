@@ -6,7 +6,6 @@ export const RealContainer = styled.div`
   display: flex;
 `;
 export const RealOptionContainer = styled.div`
-  width: 352px;
   height: 100%;
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
