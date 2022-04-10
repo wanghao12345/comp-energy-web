@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Select, Input, Tree, Tabs, DatePicker, Button, Table } from 'antd';
 import * as echarts from 'echarts';
 import {
@@ -22,42 +22,7 @@ const RealPage = () => {
 };
 
 const RealOption = () => {
-  const treeData = [
-    {
-      title: '1AA',
-      key: '0-0',
-      icon: <CarryOutOutlined />,
-      children: [
-        {
-          title: '北厂区0101',
-          key: '0-0-0',
-          icon: <CarryOutOutlined />,
-          children: [{ title: '站点1', key: '0-0-0-0' }],
-        },
-        {
-          title: '南长区1901',
-          key: '0-0-1',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
-          ],
-        },
-        {
-          title: '北厂区0101',
-          key: '0-0-2',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-            {
-              title: '站点2',
-              key: '0-0-2-1',
-              icon: <CarryOutOutlined />,
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  const [tree, setTree] = useState<any>([]);
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
   };
@@ -65,6 +30,22 @@ const RealOption = () => {
   const getRegionTreeListRequest = () => {
     getRegionTreeList().then((res: any) => {
       console.log(res);
+      if (res.meta.code === 200) {
+        let data = res.data;
+        formatTreeData(data);
+        setTree([...data]);
+      }
+    });
+  };
+
+  const formatTreeData = (data: any) => {
+    data.map((item: any) => {
+      item.title = item.name;
+      item.key = item.id;
+      item.icon = item.children ? <CarryOutOutlined /> : <CarryOutOutlined />;
+      if (item.children && item.children.length) {
+        formatTreeData(item.children);
+      }
     });
   };
 
@@ -86,9 +67,8 @@ const RealOption = () => {
       <Tree
         showLine={true}
         showIcon={false}
-        defaultExpandedKeys={['0-0-0']}
         onSelect={onSelect}
-        treeData={treeData}
+        treeData={tree}
       />
     </RealOptionContainer>
   );

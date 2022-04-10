@@ -62,7 +62,7 @@ request.interceptors.request.use((url: string, options: any) => {
  * @param {object} response 返回体
  * @return: response
  */
-request.interceptors.response.use(async (response) => {
+request.interceptors.response.use(async (response: any) => {
   // close NProgress
   // NProgress.done();
   const data = await response.clone().json();
