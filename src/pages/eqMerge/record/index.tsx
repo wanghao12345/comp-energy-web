@@ -75,9 +75,6 @@ export default () => {
     size: 10,
   });
   const [tableData, setTableData] = useState([]);
-  const paginationChange = ({ current, pageSize }) => {
-    setParams({ ...params, current: current, size: pageSize });
-  };
   useEffect(() => {
     queryList({
       ...params,
@@ -96,6 +93,9 @@ export default () => {
   }, [params]);
   const startSearch = (val) => {
     setParams({ ...params, ...val });
+  };
+  const paginationChange = ({ current, pageSize }) => {
+    setParams({ ...params, current: current, size: pageSize });
   };
   return (
     <Page>
@@ -185,6 +185,7 @@ export default () => {
         </Link>
       </div>
       <Table
+        rowKey="id"
         columns={columns}
         dataSource={tableData}
         onChange={paginationChange}

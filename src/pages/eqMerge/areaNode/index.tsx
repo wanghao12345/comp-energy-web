@@ -1,18 +1,25 @@
 // 设备管理=>区域节点
-import { Button, Table, Space, Switch, Input } from 'antd';
+import { Button, Table, Space, Switch, Input, Form } from 'antd';
 import { Page } from './style';
 import { SearchOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { queryTree } from '@/apis/areaMerge';
+import { history, Link } from 'umi';
 export default () => {
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
+  const [params, setParams] = useState({});
+  const [tableData, setTableData] = useState<any>([]);
+  useEffect(() => {
+    queryTree({
+      ...params,
+    }).then((res) => {
+      if (res.meta.code === 200) {
+        setTableData(res.data);
+      }
     });
-  }
+  }, [params, history]);
+  const startSearch = (val) => {
+    setParams({ ...params, ...val });
+  };
   const columns = [
     {
       title: '节点名称',
@@ -28,9 +35,9 @@ export default () => {
     },
     {
       title: '是否启用',
-      dataIndex: 'address',
-      render: (text, record, index) => {
-        return <Switch checked={true} />;
+      dataIndex: 'isEnable',
+      render: (text, { isEnable }, index) => {
+        return <Switch checked={isEnable === 1} />;
       },
     },
     {
@@ -41,7 +48,9 @@ export default () => {
           <Space size="middle">
             <a>查看</a>
             <a>编辑</a>
-            <a>新增下一节点</a>
+            <Link to={`/eqMerge/areaNode/add?parentId=${record.id}`}>
+              新增下一节点
+            </Link>
           </Space>
         );
       },
@@ -50,16 +59,35 @@ export default () => {
   return (
     <Page>
       <div className="headerBox">
-        <Input placeholder="请输入节点名称" suffix={<SearchOutlined />} />
-        <Button size="large" type="primary">
-          查询
-        </Button>
+        <Form
+          layout="inline"
+          onFinish={(e) => startSearch(e)}
+          initialValues={{}}
+        >
+          <Form.Item name="name">
+            <Input
+              style={{ width: '320px' }}
+              size="large"
+              placeholder="节点名称"
+              suffix={<SearchOutlined />}
+            />
+          </Form.Item>
+          <Button size="large" type="primary" htmlType="submit">
+            查询
+          </Button>
+        </Form>
+        <Link to="/eqMerge/areaNode/add">
+          <Button size="large" type="primary">
+            添加
+          </Button>
+        </Link>
       </div>
       <Table
+        rowKey="id"
         columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 50 }}
+        dataSource={tableData}
         scroll={{ y: 600 }}
+        pagination={false}
       />
     </Page>
   );
