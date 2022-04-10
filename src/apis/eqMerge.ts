@@ -7,10 +7,10 @@ export const queryList = async (data: any) => {
     data,
   });
 };
-// // 损耗报表
-// export const selectEnergyLossByRegion = async (data: any) => {
-//   return await request('/ea/webEnergy/selectEnergyLossByRegion', {
-//     method: 'POST',
-//     data,
-//   });
-// };
+// 新增设备
+export const eqAdd = async (data: any) => {
+  return await request('/ea/tbEquipment/add', {
+    method: 'POST',
+    data,
+  });
+};
