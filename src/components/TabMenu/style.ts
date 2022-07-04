@@ -4,6 +4,7 @@ export const TabMenuContainer = styled.div``;
 
 export const TabsContainer = styled.div`
   background-color: #213464 !important;
+  height: 32px;
   .ant-tabs {
     .ant-tabs-nav {
       margin-bottom: 0;

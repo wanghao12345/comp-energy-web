@@ -41,6 +41,8 @@ const BasicLayout: FC = (props: any) => {
     location: {
       pathname,
     },
+    title: '能源监控平台',
+    logo: <div></div>,
     siderWidth: 216,
     navTheme: 'dark',
     contentStyle: {

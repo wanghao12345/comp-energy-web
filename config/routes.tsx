@@ -1,5 +1,13 @@
 import React from 'react';
-import { LaptopOutlined } from '@ant-design/icons';
+import {
+  ControlOutlined,
+  DashboardOutlined,
+  DeploymentUnitOutlined,
+  DesktopOutlined,
+  LineChartOutlined,
+  SettingOutlined,
+  WarningOutlined,
+} from '@ant-design/icons';
 export default [
   {
     path: '/',
@@ -8,13 +16,13 @@ export default [
       {
         path: '/dashboard',
         name: '企业看板',
-        icon: <LaptopOutlined />,
+        icon: <DesktopOutlined />,
         component: '@/pages/index',
       },
       {
         path: '/monitor',
         name: '数据监控',
-        icon: <LaptopOutlined />,
+        icon: <DashboardOutlined />,
         routes: [
           {
             path: '/monitor/real',
@@ -31,7 +39,7 @@ export default [
       {
         name: '能源管理',
         path: '/energyMerge',
-        icon: <LaptopOutlined />,
+        icon: <ControlOutlined />,
         routes: [
           {
             path: '/energyMerge/energyInclude',
@@ -73,7 +81,7 @@ export default [
       {
         path: '/comp',
         name: '企业报表',
-        icon: <LaptopOutlined />,
+        icon: <LineChartOutlined />,
         routes: [
           {
             path: '/comp/rate',
@@ -100,7 +108,7 @@ export default [
       {
         path: '/alarm',
         name: '报警管理',
-        icon: <LaptopOutlined />,
+        icon: <WarningOutlined />,
         routes: [
           {
             path: '/alarm/rules',
@@ -123,7 +131,7 @@ export default [
       {
         path: '/eqMerge',
         name: '设备管理',
-        icon: <LaptopOutlined />,
+        icon: <SettingOutlined />,
         routes: [
           {
             path: '/eqMerge/record',
@@ -152,7 +160,7 @@ export default [
       {
         path: '/devops',
         name: '运维管理',
-        icon: <LaptopOutlined />,
+        icon: <DeploymentUnitOutlined />,
         routes: [
           {
             path: '/devops/user',

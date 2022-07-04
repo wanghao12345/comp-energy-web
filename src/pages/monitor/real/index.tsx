@@ -1,5 +1,14 @@
-import { useRef, useEffect, useState } from 'react';
-import { Select, Input, Tree, Tabs, DatePicker, Button, Table } from 'antd';
+import { useRef, useEffect, useState, FC, memo } from 'react';
+import {
+  Select,
+  Input,
+  Tree,
+  Tabs,
+  DatePicker,
+  Button,
+  Table,
+  Form,
+} from 'antd';
 import * as echarts from 'echarts';
 import {
   SearchOutlined,
@@ -11,17 +20,36 @@ import { getRegionTreeList } from '@/apis';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
-const { RangePicker } = DatePicker;
 const RealPage = () => {
+  const optionsData: any = {
+    power: ['电流', '电压', '功率因数', '有功功率', '频率', '有功电能'],
+    water: ['水'],
+    steam: ['蒸汽'],
+    air: ['空气'],
+    nitrogen: ['氮气'],
+    gas: ['天然气'],
+  };
+  const [options, setOptions] = useState(optionsData.power);
+  const onChange = (key: string) => {
+    for (let k in optionsData) {
+      if (k === key) {
+        setOptions([...optionsData[key]]);
+      }
+    }
+  };
   return (
     <RealContainer>
-      <RealOption />
-      <RealBodyOption />
+      <RealOption onChange={onChange} />
+      <RealBodyOption options={options} />
     </RealContainer>
   );
 };
 
-const RealOption = () => {
+type RealOptionProps = {
+  onChange: (e: string) => void;
+};
+
+const RealOption: FC<RealOptionProps> = memo(({ onChange }) => {
   const [tree, setTree] = useState<any>([]);
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
@@ -30,7 +58,7 @@ const RealOption = () => {
   const getRegionTreeListRequest = () => {
     getRegionTreeList().then((res: any) => {
       console.log(res);
-      if (res.meta.code === 200) {
+      if (res?.meta?.code === 200) {
         let data = res.data;
         formatTreeData(data);
         setTree([...data]);
@@ -55,13 +83,13 @@ const RealOption = () => {
 
   return (
     <RealOptionContainer>
-      <Select size="large" defaultValue="电" onChange={() => {}}>
-        <Option value="电">电</Option>
-        <Option value="水">水</Option>
-        <Option value="蒸汽">蒸汽</Option>
-        <Option value="空气">空气</Option>
-        <Option value="氮气">氮气</Option>
-        <Option value="天然气">天然气</Option>
+      <Select size="large" defaultValue="电" onChange={onChange}>
+        <Option value="power">电</Option>
+        <Option value="water">水</Option>
+        <Option value="steam">蒸汽</Option>
+        <Option value="air">空气</Option>
+        <Option value="nitrogen">氮气</Option>
+        <Option value="gas">天然气</Option>
       </Select>
       <Input size="large" suffix={<SearchOutlined />} placeholder="节点名称" />
       <Tree
@@ -72,10 +100,32 @@ const RealOption = () => {
       />
     </RealOptionContainer>
   );
+});
+
+type RealBodyOptionProps = {
+  options: any[];
 };
 
-const RealBodyOption = () => {
+enum tabStatus {
+  RealTime = 'RealTime',
+  Warnning = 'Warnning',
+  Contact = 'Contact',
+}
+
+const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
   const chartDom: any = useRef(null);
+  const [tab, setTab] = useState(tabStatus.Contact);
+  const [form] = Form.useForm();
+  const { RangePicker } = DatePicker;
+  useEffect(() => {
+    if (form) {
+      if (options.length === 1) {
+        form.setFieldsValue({ option: '限时流量' });
+      } else {
+        form.setFieldsValue({ option: options[0] });
+      }
+    }
+  }, [options]);
   const dataSource = [
     {
       key: '1',
@@ -257,8 +307,12 @@ const RealBodyOption = () => {
       ],
     });
   };
-  const onChange = (key: string) => {
-    console.log(key);
+  const onTabChange = (key: string) => {
+    const tab = key as tabStatus;
+    setTab(tab);
+  };
+  const onFinish = (values: any) => {
+    console.log(values);
   };
   return (
     <RealBodyContainer>
@@ -266,36 +320,110 @@ const RealBodyOption = () => {
         <div className="tab-box">
           <Tabs
             hideAdd
-            defaultActiveKey={'0'}
+            defaultActiveKey={tabStatus.Contact}
             type="editable-card"
             tabPosition={'top'}
-            onChange={onChange}
+            onChange={onTabChange}
           >
-            <TabPane tab={'实时数据'} key={'0'}></TabPane>
-            <TabPane tab={'报警信息'} key={'1'}></TabPane>
-            <TabPane tab={'通讯状态'} key={'2'}></TabPane>
+            <TabPane tab={'实时数据'} key={tabStatus.RealTime}></TabPane>
+            <TabPane tab={'报警信息'} key={tabStatus.Warnning}></TabPane>
+            <TabPane tab={'通讯状态'} key={tabStatus.Contact}></TabPane>
           </Tabs>
         </div>
         <div className="search-box">
-          <Select
-            size="large"
-            defaultValue="电流"
-            onChange={() => {}}
-            style={{
-              width: '160px',
-            }}
+          <Form
+            form={form}
+            name="dynamic_form_nest_item"
+            onFinish={onFinish}
+            autoComplete="off"
           >
-            <Option value="电流">电流</Option>
-            <Option value="电压">电压</Option>
-            <Option value="功率因素">功率因素</Option>
-            <Option value="有功功率">有功功率</Option>
-            <Option value="频率">频率</Option>
-            <Option value="有功电能">有功电能</Option>
-          </Select>
-          <RangePicker size="large" />
-          <Button size="large" type="primary">
-            查询
-          </Button>
+            {tab === tabStatus.RealTime ? (
+              <>
+                <Form.Item name="option">
+                  <Select
+                    size="large"
+                    style={{
+                      width: '160px',
+                    }}
+                  >
+                    {options.length > 1
+                      ? options.map((item, index) => {
+                          return (
+                            <Option value={item} key={index}>
+                              {item}
+                            </Option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="date">
+                  <RangePicker size="large" name="date" />
+                </Form.Item>
+              </>
+            ) : tab === tabStatus.Warnning ? (
+              <>
+                <Form.Item name="date">
+                  <RangePicker size="large" name="date" />
+                </Form.Item>
+              </>
+            ) : (
+              <>
+                <Form.Item name="name">
+                  <Input
+                    size="large"
+                    style={{ width: '130px', marginRight: '16px' }}
+                    suffix={<SearchOutlined />}
+                    placeholder="节点名称"
+                  />
+                </Form.Item>
+                <Form.Item name="xinghao">
+                  <Select
+                    size="large"
+                    style={{
+                      width: '130px',
+                    }}
+                    placeholder="仪表型号"
+                  >
+                    <Option value="DTSF1352">DTSF1352/C</Option>
+                    <Option value="DTSD1300">DTSD1300</Option>
+                    <Option value="ADCE1542">ADCE1542</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="type">
+                  <Select
+                    size="large"
+                    style={{
+                      width: '130px',
+                    }}
+                    placeholder="仪表类型"
+                  >
+                    <Option value="电表">电表</Option>
+                    <Option value="水表">水表</Option>
+                    <Option value="气表">气表</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="status">
+                  <Select
+                    size="large"
+                    style={{
+                      width: '80px',
+                    }}
+                    placeholder="状态"
+                  >
+                    <Option value="在线">在线</Option>
+                    <Option value="离线">离线</Option>
+                    <Option value="异常">异常</Option>
+                  </Select>
+                </Form.Item>
+              </>
+            )}
+            <Form.Item>
+              <Button size="large" type="primary" htmlType="submit">
+                查询
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </div>
       <div className="echart-box" ref={chartDom}></div>
@@ -307,6 +435,6 @@ const RealBodyOption = () => {
       </div>
     </RealBodyContainer>
   );
-};
+});
 
 export default RealPage;

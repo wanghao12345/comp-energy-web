@@ -47,6 +47,13 @@ export const RealBodyContainer = styled.div`
     .search-box {
       display: flex;
       align-items: center;
+      form {
+        display: flex;
+        align-items: center;
+        .ant-form-item {
+          margin-bottom: 0;
+        }
+      }
       .ant-select {
         margin-right: 16px;
       }
