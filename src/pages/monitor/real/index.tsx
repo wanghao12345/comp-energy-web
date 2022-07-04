@@ -114,9 +114,11 @@ enum tabStatus {
 
 const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
   const chartDom: any = useRef(null);
-  const [tab, setTab] = useState(tabStatus.Contact);
+  const [tab, setTab] = useState(tabStatus.RealTime);
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
+  const [dataSource, setDataSource] = useState<any>([]);
+  const [columns, setColumns] = useState<any>([]);
   useEffect(() => {
     if (form) {
       if (options.length === 1) {
@@ -125,8 +127,23 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
         form.setFieldsValue({ option: options[0] });
       }
     }
-  }, [options]);
-  const dataSource = [
+
+    if (tab === tabStatus.RealTime) {
+      drawEcharts();
+      //获取请求数据
+      setDataSource(dataSource1);
+      setColumns(Realtimecolumns);
+    }
+    if (tab === tabStatus.Warnning) {
+      setDataSource(dataSource1);
+      setColumns(WarnColumns);
+    }
+    if (tab === tabStatus.Contact) {
+      setDataSource(dataSource1);
+      setColumns(ContactColumns);
+    }
+  }, [options, tab]);
+  const dataSource1 = [
     {
       key: '1',
       name: '胡彦斌',
@@ -141,7 +158,7 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
     },
   ];
 
-  const columns = [
+  const Realtimecolumns = [
     {
       title: '采集时间',
       dataIndex: 'name',
@@ -163,10 +180,70 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
       key: 'age',
     },
   ];
-
-  useEffect(() => {
-    drawEcharts();
-  }, []);
+  const WarnColumns = [
+    {
+      title: '仪表名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '报警时间',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '报警类型',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '描述',
+      dataIndex: 'name',
+      key: 'name',
+    },
+  ];
+  const ContactColumns = [
+    {
+      title: '节点名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '仪表地址',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '仪表型号',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '仪表名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '仪表类型',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '状态',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '备注',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '最后一次通讯时间',
+      dataIndex: 'name',
+      key: 'name',
+    },
+  ];
 
   const drawEcharts = () => {
     var myChart = echarts.init(chartDom.current);
@@ -320,7 +397,7 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
         <div className="tab-box">
           <Tabs
             hideAdd
-            defaultActiveKey={tabStatus.Contact}
+            defaultActiveKey={tab}
             type="editable-card"
             tabPosition={'top'}
             onChange={onTabChange}
@@ -426,11 +503,15 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
           </Form>
         </div>
       </div>
-      <div className="echart-box" ref={chartDom}></div>
+      {tab === tabStatus.RealTime ? (
+        <>
+          <div className="echart-box" ref={chartDom} />
+          <Button size="large" type="primary">
+            导出
+          </Button>
+        </>
+      ) : null}
       <div className="table-box">
-        <Button size="large" type="primary">
-          导出
-        </Button>
         <Table size="middle" dataSource={dataSource} columns={columns} />
       </div>
     </RealBodyContainer>
