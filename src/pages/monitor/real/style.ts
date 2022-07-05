@@ -13,6 +13,7 @@ export const RealOptionContainer = styled.div`
   margin-right: 24px;
   box-sizing: border-box;
   padding: 24px 16px;
+  min-width: 250px;
   .ant-select {
     width: 100%;
     margin-bottom: 12px;

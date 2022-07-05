@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { history } from 'umi';
-import { Tabs } from 'antd';
+import { Space, Tabs } from 'antd';
 import { TabMenuContainer, TabsContainer, BodyContainer } from './style';
 
 const { TabPane } = Tabs;

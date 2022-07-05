@@ -1,11 +1,8 @@
 import * as echarts from 'echarts';
-import styled from 'styled-components';
-import { useEffect } from 'react';
+import { memo, useEffect, FC, useRef } from 'react';
 import { merge as _merge, cloneDeep as _cloneDeep } from 'lodash';
-const MyChartBox = styled.div`
-  width: 100%;
-  height: 100%;
-`;
+import { MyChartBoxComp } from './style';
+
 interface Iprops {
   id: string;
   options: any;
@@ -44,15 +41,20 @@ const baseOptions = {
     },
   },
 };
-export default (props: Iprops) => {
+const MyChartBox: FC<Iprops> = memo((props) => {
   const { id = 'chart', options } = props;
-  if (typeof options !== 'object')
-    return new Error('options type mismatch, need an object');
+  const myEchart = useRef<any>(null);
+
   useEffect(() => {
-    const myChart = echarts.init(document.getElementById(id));
-    myChart.setOption(_merge(_cloneDeep(baseOptions), options));
+    if (typeof options !== 'object') {
+      return;
+    }
+    const dom = document.getElementById(id) as any;
+    myEchart.current?.dispose();
+    myEchart.current = echarts.init(dom);
+    myEchart.current?.setOption(_merge(_cloneDeep(baseOptions), options));
     const reSizeFn = () => {
-      myChart.resize();
+      myEchart.current?.resize();
     };
     window.addEventListener('resize', reSizeFn);
     return () => {
@@ -61,7 +63,11 @@ export default (props: Iprops) => {
   }, [options]);
   return (
     <>
-      <MyChartBox {...props} id={id} />
+      <MyChartBoxComp {...props} id={id} />
     </>
   );
-};
+});
+
+MyChartBox.displayName = 'MyChartBox';
+
+export default MyChartBox;

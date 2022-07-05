@@ -10,13 +10,10 @@ import {
   Form,
 } from 'antd';
 import * as echarts from 'echarts';
-import {
-  SearchOutlined,
-  CarryOutOutlined,
-  FormOutlined,
-} from '@ant-design/icons';
+import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
-import { getRegionTreeList } from '@/apis';
+import { getRegionList, getRegionTreeList } from '@/apis';
+import { debounce } from 'lodash';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -51,15 +48,15 @@ type RealOptionProps = {
 
 const RealOption: FC<RealOptionProps> = memo(({ onChange }) => {
   const [tree, setTree] = useState<any>([]);
+  const [searchName, setSearchName] = useState('');
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
   };
 
   const getRegionTreeListRequest = () => {
     getRegionTreeList().then((res: any) => {
-      console.log(res);
       if (res?.meta?.code === 200) {
-        let data = res.data;
+        const data = res.data;
         formatTreeData(data);
         setTree([...data]);
       }
@@ -77,6 +74,34 @@ const RealOption: FC<RealOptionProps> = memo(({ onChange }) => {
     });
   };
 
+  const onChangeName = (e: any) => {
+    const value = e?.target?.value;
+    setSearchName(value);
+    getSearchResult(value);
+  };
+
+  const onKeyDownName = (e: any) => {
+    if (e.keyCode === 13) {
+      if (searchName) {
+        getSearchResult(searchName);
+      }
+    }
+  };
+
+  const getSearchResult = (name: string) => {
+    if (!name) {
+      getRegionTreeListRequest();
+    } else {
+      getRegionList({ name, current: 1, size: 10 }).then((res: any) => {
+        if (res?.meta?.code === 200) {
+          const data = res.data?.list;
+          formatTreeData(data);
+          setTree([...data]);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     getRegionTreeListRequest();
   }, []);
@@ -91,7 +116,14 @@ const RealOption: FC<RealOptionProps> = memo(({ onChange }) => {
         <Option value="nitrogen">氮气</Option>
         <Option value="gas">天然气</Option>
       </Select>
-      <Input size="large" suffix={<SearchOutlined />} placeholder="节点名称" />
+      <Input
+        size="large"
+        suffix={<SearchOutlined />}
+        placeholder="节点名称"
+        value={searchName}
+        onChange={onChangeName}
+        onKeyDown={onKeyDownName}
+      />
       <Tree
         showLine={true}
         showIcon={false}
@@ -119,6 +151,8 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
   const { RangePicker } = DatePicker;
   const [dataSource, setDataSource] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
+  const myEchart = useRef<any>(null);
+
   useEffect(() => {
     if (form) {
       if (options.length === 1) {
@@ -129,7 +163,8 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
     }
 
     if (tab === tabStatus.RealTime) {
-      drawEcharts();
+      const data: any = [];
+      drawEcharts(options[0], data);
       //获取请求数据
       setDataSource(dataSource1);
       setColumns(Realtimecolumns);
@@ -244,11 +279,53 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
       key: 'name',
     },
   ];
+  const drawEcharts = (type: string, data: any) => {
+    if (
+      myEchart.current !== null &&
+      myEchart.current !== '' &&
+      myEchart.current !== undefined
+    ) {
+      myEchart.current?.dispose();
+    }
+    myEchart.current = echarts.init(chartDom.current);
 
-  const drawEcharts = () => {
-    var myChart = echarts.init(chartDom.current);
+    switch (type) {
+      case '电流':
+        console.log('电流');
+        break;
+      case '功率因素':
+        console.log('功率因素');
+        break;
+      case '有用功率':
+        console.log('有用功率');
+        break;
+      case '频率':
+        console.log('频率');
+        break;
+      case '有功电能':
+        console.log('有功电能');
+        break;
+      case '水':
+        console.log('水');
+        break;
+      case '蒸汽':
+        console.log('蒸汽');
+        break;
+      case '空气':
+        console.log('空气');
+        break;
+      case '氮气':
+        console.log('氮气');
+        break;
+      case '天然气':
+        console.log('天然气');
+        break;
+      default:
+        console.log('电流');
+        break;
+    }
     // 绘制图表
-    myChart.setOption({
+    myEchart.current.setOption({
       grid: {
         left: 40,
         right: 20,
@@ -389,8 +466,26 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
     setTab(tab);
   };
   const onFinish = (values: any) => {
-    console.log(values);
+    const { option, date, name, xinghao, type, status } = values;
+    let res: any;
+    if (tab === tabStatus.RealTime) {
+      //option date发送请求
+    }
+    if (tab === tabStatus.Warnning) {
+      //date发送请求
+    }
+    if (tab === tabStatus.Contact) {
+      //name xinghao type status发送请求
+    }
+    //统一处理返回数据
+    handleResponse(res, option);
   };
+
+  const handleResponse = (res: any, option?: string) => {
+    if (option) {
+    }
+  };
+
   return (
     <RealBodyContainer>
       <div className="options-box">

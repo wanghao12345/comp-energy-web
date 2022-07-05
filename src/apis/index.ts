@@ -16,7 +16,7 @@ export const addRegion = async (data: any) => {
 };
 
 // 区域详情接口
-export const getRegionById = async (id: any) => {
+export const getRegionById = async (id: number) => {
   return await request('/ea/tbRegion/selectById', {
     method: 'POST',
     data: {
@@ -25,8 +25,14 @@ export const getRegionById = async (id: any) => {
   });
 };
 
+export interface getRegionListData {
+  current: number;
+  size: number;
+  name: string;
+}
+
 // 区域分页查询列表
-export const getRegionList = async (data: any) => {
+export const getRegionList = async (data: getRegionListData) => {
   return await request('/ea/tbRegion/selectList', {
     method: 'POST',
     data,
