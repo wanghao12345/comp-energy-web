@@ -13,26 +13,32 @@ import * as echarts from 'echarts';
 import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
 import { getRegionList, getRegionTreeList } from '@/apis';
-import { debounce } from 'lodash';
+import { typeList } from '@/commonInterface';
+import {
+  chartOption,
+  ContactColumns,
+  dataSource1,
+  Realtimecolumns,
+  tabStatus,
+  WarnColumns,
+} from './data';
+import MyChartBox from '@/components/MyChartsBox';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
 const RealPage = () => {
-  const optionsData: any = {
-    power: ['电流', '电压', '功率因数', '有功功率', '频率', '有功电能'],
-    water: ['水'],
-    steam: ['蒸汽'],
-    air: ['空气'],
-    nitrogen: ['氮气'],
-    gas: ['天然气'],
-  };
-  const [options, setOptions] = useState(optionsData.power);
+  const optionsData = [
+    ['电流', '电压', '功率因数', '有功功率', '频率', '有功电能'],
+    ['水'],
+    ['蒸汽'],
+    ['空气'],
+    ['氮气'],
+    ['天然气'],
+  ];
+  const [options, setOptions] = useState(optionsData[0]);
   const onChange = (key: string) => {
-    for (let k in optionsData) {
-      if (k === key) {
-        setOptions([...optionsData[key]]);
-      }
-    }
+    const ck = parseInt(key);
+    setOptions(optionsData[ck - 1]);
   };
   return (
     <RealContainer>
@@ -108,13 +114,12 @@ const RealOption: FC<RealOptionProps> = memo(({ onChange }) => {
 
   return (
     <RealOptionContainer>
-      <Select size="large" defaultValue="电" onChange={onChange}>
-        <Option value="power">电</Option>
-        <Option value="water">水</Option>
-        <Option value="steam">蒸汽</Option>
-        <Option value="air">空气</Option>
-        <Option value="nitrogen">氮气</Option>
-        <Option value="gas">天然气</Option>
+      <Select size="large" defaultValue={1 as any} onChange={onChange}>
+        {typeList.map((item) => (
+          <Option key={item.value} value={item.value}>
+            {item.name}
+          </Option>
+        ))}
       </Select>
       <Input
         size="large"
@@ -138,12 +143,6 @@ type RealBodyOptionProps = {
   options: any[];
 };
 
-enum tabStatus {
-  RealTime = 'RealTime',
-  Warnning = 'Warnning',
-  Contact = 'Contact',
-}
-
 const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
   const chartDom: any = useRef(null);
   const [tab, setTab] = useState(tabStatus.RealTime);
@@ -151,14 +150,13 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
   const { RangePicker } = DatePicker;
   const [dataSource, setDataSource] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
-  const myEchart = useRef<any>(null);
 
   useEffect(() => {
     if (form) {
       if (options.length === 1) {
         form.setFieldsValue({ option: '限时流量' });
       } else {
-        form.setFieldsValue({ option: options[0] });
+        form.setFieldsValue({ option: options });
       }
     }
 
@@ -178,117 +176,8 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
       setColumns(ContactColumns);
     }
   }, [options, tab]);
-  const dataSource1 = [
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    },
-  ];
 
-  const Realtimecolumns = [
-    {
-      title: '采集时间',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Ia（A） ',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Ib（A）',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Ic（A）',
-      dataIndex: 'age',
-      key: 'age',
-    },
-  ];
-  const WarnColumns = [
-    {
-      title: '仪表名称',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '报警时间',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '报警类型',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '描述',
-      dataIndex: 'name',
-      key: 'name',
-    },
-  ];
-  const ContactColumns = [
-    {
-      title: '节点名称',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '仪表地址',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '仪表型号',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '仪表名称',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '仪表类型',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '状态',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '备注',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '最后一次通讯时间',
-      dataIndex: 'name',
-      key: 'name',
-    },
-  ];
   const drawEcharts = (type: string, data: any) => {
-    if (
-      myEchart.current !== null &&
-      myEchart.current !== '' &&
-      myEchart.current !== undefined
-    ) {
-      myEchart.current?.dispose();
-    }
-    myEchart.current = echarts.init(chartDom.current);
-
     switch (type) {
       case '电流':
         console.log('电流');
@@ -324,142 +213,7 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
         console.log('电流');
         break;
     }
-    // 绘制图表
-    myEchart.current.setOption({
-      grid: {
-        left: 40,
-        right: 20,
-        top: 80,
-      },
-      tooltip: {
-        trigger: 'axis',
-      },
-      legend: {
-        top: 30,
-        textStyle: {
-          color: '#FFFFFF',
-        },
-      },
-      xAxis: {
-        type: 'category',
-        axisLine: {
-          lineStyle: {
-            color: '#6C6E79',
-          },
-        },
-        axisLabel: {
-          color: '#FFFFFF',
-        },
-        data: [
-          '00',
-          '01',
-          '02',
-          '03',
-          '04',
-          '05',
-          '06',
-          '07',
-          '08',
-          '09',
-          '10',
-          '11',
-          '12',
-          '13',
-          '14',
-          '15',
-          '16',
-          '17',
-          '18',
-          '19',
-          '20',
-          '21',
-          '22',
-          '23',
-        ],
-      },
-      yAxis: {
-        type: 'value',
-        name: 'A',
-        splitLine: {
-          lineStyle: {
-            color: ['#6C6E79'],
-            type: 'dashed',
-          },
-        },
-        axisLabel: {
-          formatter: '{value}',
-          color: '#FFFFFF',
-        },
-        nameTextStyle: {
-          color: '#FFFFFF',
-        },
-      },
-      series: [
-        {
-          name: 'la',
-          type: 'line',
-          smooth: true,
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max' },
-              { type: 'min', name: 'Min' },
-            ],
-            label: {
-              color: '#FFFFFF',
-            },
-          },
-          lineStyle: {
-            color: '#FFEF6C',
-          },
-          data: [
-            100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350,
-            300, 100, 200, 300, 500, 400, 350, 300, 350, 150, 450,
-          ],
-        },
-        {
-          name: 'lb',
-          type: 'line',
-          smooth: true,
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max' },
-              { type: 'min', name: 'Min' },
-            ],
-            label: {
-              color: '#FFFFFF',
-            },
-          },
-          lineStyle: {
-            color: '#FD264E',
-          },
-          data: [
-            200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300,
-            100, 200, 300, 500, 400, 350, 300, 350, 150, 450, 200,
-          ],
-        },
-        {
-          name: 'lc',
-          type: 'line',
-          smooth: true,
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max' },
-              { type: 'min', name: 'Min' },
-            ],
-            label: {
-              color: '#FFFFFF',
-            },
-          },
-          lineStyle: {
-            color: '#2DFCC0',
-          },
-          data: [
-            300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300, 100,
-            200, 300, 500, 400, 350, 300, 350, 150, 450, 200, 100,
-          ],
-        },
-      ],
-    });
+    // 更新数据
   };
   const onTabChange = (key: string) => {
     const tab = key as tabStatus;
@@ -600,7 +354,9 @@ const RealBodyOption: FC<RealBodyOptionProps> = memo(({ options }) => {
       </div>
       {tab === tabStatus.RealTime ? (
         <>
-          <div className="echart-box" ref={chartDom} />
+          <div className="echart-box">
+            <MyChartBox id="realTime" options={chartOption} />
+          </div>
           <Button size="large" type="primary">
             导出
           </Button>
