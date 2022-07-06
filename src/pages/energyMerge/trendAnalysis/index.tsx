@@ -7,7 +7,7 @@ import {
   FormOutlined,
 } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
-import MyChartBox from '@/components/MyChartsBox';
+import MyChartBox from '@/components/myChartsBox';
 const { Option } = Select;
 const { TabPane } = Tabs;
 const RealPage = () => {

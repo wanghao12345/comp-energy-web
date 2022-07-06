@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import MyCard from '@/components/MyCard';
+import MyCard from '@/components/myCard';
 export const Page = styled(MyCard)`
   height: 100%;
   .search-box {

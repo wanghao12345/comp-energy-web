@@ -1,20 +1,13 @@
-export const typeList = [
-  { name: '电', value: 1, unit: 'kw.h' },
-  { name: '水', value: 2, unit: 't' },
-  { name: '蒸汽', value: 3, unit: 't' },
-  { name: '天然气', value: 4, unit: 'Nm3' },
-  { name: '氮气', value: 5, unit: 'Nm3' },
-  { name: '空气', value: 6, unit: 'Nm3' },
-];
-export const dayTypeList = [
-  { name: '今日', value: 1 },
-  { name: '本月', value: 3 },
-  { name: '本年', value: 6 },
-];
 export const lineCartDataOptions = {
   xAxis: {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+    },
   },
   yAxis: {
     type: 'value',
@@ -24,7 +17,13 @@ export const lineCartDataOptions = {
     {
       name: 'Highest',
       type: 'line',
+      smooth: true,
       data: [10, 11, 13, 11, 12, 12, 9],
+      emphasis: {
+        lineStyle: {
+          width: 3,
+        },
+      },
       markPoint: {
         // label: {
         //   color: '#fff'

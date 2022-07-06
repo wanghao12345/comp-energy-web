@@ -12,3 +12,9 @@ export interface ITypeList {
   value: number;
   unit: string;
 }
+
+export const dayTypeList = [
+  { name: '今日', value: 1 },
+  { name: '本月', value: 3 },
+  { name: '本年', value: 6 },
+];

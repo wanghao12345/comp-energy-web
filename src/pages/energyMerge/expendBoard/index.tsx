@@ -2,9 +2,21 @@
 import { Select, Input, Tree, Tabs, DatePicker, Button, Checkbox } from 'antd';
 import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
-import MyChartBox from '@/components/MyChartsBox';
+import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
+import { dayTypeList, typeList } from '@/commonInterface';
+import { useImmer } from 'use-immer';
+import { useEffect, useState } from 'react';
+import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
+import { formatDate, formatNumer } from '@/utils/common';
+import moment, { Moment } from 'moment';
 const { Option } = Select;
+
+interface chartProps {
+  regionName: string;
+  x: string;
+  y: number;
+}
 const RealPage = () => {
   return (
     <RealContainer>
@@ -15,6 +27,7 @@ const RealPage = () => {
 };
 
 const RealOption = () => {
+  const [type, setType] = useState(1);
   const treeData = [
     {
       title: '1AA',
@@ -54,15 +67,17 @@ const RealOption = () => {
   const onSelect = (selectedKeys: React.Key[], info: any) => {
     console.log('selected', selectedKeys, info);
   };
+  const handleChange = (e: number) => {
+    setType(e);
+  };
   return (
     <RealOptionContainer>
-      <Select size="large" defaultValue="电" onChange={() => {}}>
-        <Option value="电">电</Option>
-        <Option value="水">水</Option>
-        <Option value="蒸汽">蒸汽</Option>
-        <Option value="空气">空气</Option>
-        <Option value="氮气">氮气</Option>
-        <Option value="天然气">天然气</Option>
+      <Select size="large" value={type} onChange={handleChange}>
+        {typeList.map((item) => (
+          <Option key={item.value} value={item.value}>
+            {item.name}
+          </Option>
+        ))}
       </Select>
       <Input
         style={{ marginBottom: '20px' }}
@@ -84,34 +99,95 @@ const RealOption = () => {
 };
 
 const RealBodyOption = () => {
+  const [form, setForm] = useImmer({
+    energyType: 1,
+    dateType: 1,
+    queryStartDate: formatDate(),
+  });
+  const [barChartData, setBarChartData] = useState(barCartDataOptions);
+  const handleDateTypeChange = (val: any) => {
+    setForm((p) => {
+      p.dateType = val;
+    });
+  };
+  const handleQueryStartDateChange = (val: any) => {
+    if (!val) {
+      setForm((p) => {
+        p.queryStartDate = formatDate();
+      });
+      return;
+    }
+    const m = val as Moment;
+    const cdate = `${m.year()}-${m.month() + 1}-${m.date()}`;
+    setForm((p) => {
+      p.queryStartDate = cdate;
+    });
+  };
+  const onClickSearch = () => {
+    getBoardData();
+  };
+
+  const getBoardData = () => {
+    energyConsumptionBulletinBoard({
+      energyType: form.energyType,
+      dateType: form.dateType,
+      queryStartDate: '2022-04-01',
+      queryEndDate: '2022-04-30',
+    }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        const { xAxisData, seriesData } = formChartData(res?.data);
+        barCartDataOptions.xAxis.data = xAxisData;
+        barCartDataOptions.series[0].data = seriesData;
+        setBarChartData(Object.assign({}, barCartDataOptions));
+      }
+    });
+  };
+
+  const formChartData = (data: chartProps[]) => {
+    const xAxisData: string[] = [];
+    const seriesData: number[] = [];
+    data.map((item) => {
+      xAxisData.push(item.regionName);
+      seriesData.push(formatNumer(item.y));
+    });
+    return {
+      xAxisData,
+      seriesData,
+    };
+  };
+
+  useEffect(() => {
+    getBoardData();
+  }, []);
   return (
     <RealBodyContainer>
       <div className="search-box">
         <Select
           size="large"
-          value="1"
-          onChange={() => {}}
-          style={{
-            width: '160px',
-          }}
+          value={form.dateType}
+          style={{ width: 120 }}
+          onChange={handleDateTypeChange}
         >
-          {[
-            { name: '今日', value: '1' },
-            { name: '本月', value: '2' },
-            { name: '本年', value: '3' },
-          ].map((item) => (
+          {dayTypeList.map((item) => (
             <Option key={item.value} value={item.value}>
               {item.name}
             </Option>
           ))}
         </Select>
-        <DatePicker size="large" />
-        <Button size="large" type="primary">
+        <DatePicker
+          size="large"
+          onChange={handleQueryStartDateChange}
+          allowClear
+          disabledDate={(current) => {
+            return current && current >= moment().endOf('day');
+          }}
+        />
+        <Button size="large" type="primary" onClick={onClickSearch}>
           查询
         </Button>
       </div>
       <div className="echart-box">
-        <MyChartBox id="barChart" options={barCartDataOptions}></MyChartBox>
+        <MyChartBox id="barChart" options={barChartData}></MyChartBox>
       </div>
     </RealBodyContainer>
   );

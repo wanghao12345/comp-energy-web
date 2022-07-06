@@ -4,6 +4,15 @@ export enum tabStatus {
   Contact = 'Contact',
 }
 
+export const optionsData = [
+  ['电流', '电压', '功率因数', '有功功率', '频率', '有功电能'],
+  ['水'],
+  ['蒸汽'],
+  ['空气'],
+  ['氮气'],
+  ['天然气'],
+];
+
 export const dataSource1 = [
   {
     key: '1',

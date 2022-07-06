@@ -1,7 +1,7 @@
 // 能源管理=>能源流向图
 import { FlowCartPage } from './style';
 import { flowOptions } from './data';
-import MyChartsBox from '@/components/MyChartsBox';
+import MyChartsBox from '@/components/myChartsBox';
 import { Select } from 'antd';
 const { Option } = Select;
 export default () => {

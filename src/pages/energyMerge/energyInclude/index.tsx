@@ -1,16 +1,16 @@
 // 能源管理=>用能概括
 import { PageBox, HeaderFilterBox, LineCartBox, BarCartBox } from './style';
 import { useImmer } from 'use-immer';
-import { dayTypeList, lineCartDataOptions, barCartDataOptions } from './data';
+import { lineCartDataOptions, barCartDataOptions } from './data';
 import { Select, Tag } from 'antd';
 const { Option } = Select;
-import MyChartBox from '@/components/MyChartsBox';
-import MyCard from '@/components/MyCard';
+import MyChartBox from '@/components/myChartsBox';
+import MyCard from '@/components/myCard';
 // import { current } from 'immer';
 import { useEffect, useState } from 'react';
 import { energyConsumptionOverview } from '@/apis/energyMerge';
 import { formatDate, formatNumer } from '@/utils/common';
-import { typeList } from '@/commonInterface';
+import { dayTypeList, typeList } from '@/commonInterface';
 
 interface chartProps {
   x: string;
@@ -41,7 +41,7 @@ export default () => {
     if (updateType === 'both') {
       energyConsumptionOverview({
         energyType,
-        dateType,
+        dateType: 1,
         queryStartDate: '2022-04-01',
         queryEndDate: '2022-04-30',
       }).then((res: any) => {
@@ -96,13 +96,14 @@ export default () => {
     };
   };
 
+  const onClickTag = (item: any) => {
+    setTabCurrentDay(item.value);
+    getChartData(form.typeValue, tabCurrentDay, 'barChart');
+  };
+
   useEffect(() => {
     getChartData(form.typeValue, form.areaValue, 'both');
   }, [form.typeValue, form.areaValue]);
-
-  useEffect(() => {
-    getChartData(form.typeValue, tabCurrentDay, 'barChart');
-  }, [tabCurrentDay]);
 
   return (
     <>
@@ -195,7 +196,7 @@ export default () => {
               {dayTypeList.map((item) => (
                 <Tag
                   className={item.value === tabCurrentDay ? 'active' : ''}
-                  onClick={() => setTabCurrentDay(item.value)}
+                  onClick={onClickTag}
                   color="#203564"
                   key={item.value}
                 >

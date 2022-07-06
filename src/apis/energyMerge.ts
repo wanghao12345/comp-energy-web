@@ -22,12 +22,25 @@ export interface energyConsumptionOverviewData {
   queryEndDate: string;
 }
 // 能源概况
-export const energyConsumptionOverview = async (data: any) => {
+export const energyConsumptionOverview = async (
+  data: energyConsumptionOverviewData,
+) => {
   return await request('/ea/webEnergy/energyConsumptionOverview', {
     method: 'POST',
     data,
   });
 };
+
+// 能源看板
+export const energyConsumptionBulletinBoard = async (
+  data: energyConsumptionOverviewData,
+) => {
+  return await request('/ea/webEnergy/energyConsumptionBulletinBoard', {
+    method: 'POST',
+    data,
+  });
+};
+
 // 损耗报表
 export const selectEnergyLossByRegion = async (data: any) => {
   return await request('/ea/webEnergy/selectEnergyLossByRegion', {

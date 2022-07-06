@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import MyCard from '@/components/MyCard';
+import MyCard from '@/components/myCard';
 export const PageBox = styled.div`
   color: #fff;
   .content-box {
