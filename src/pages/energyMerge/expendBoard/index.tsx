@@ -1,10 +1,10 @@
 // 能源管理=>能耗看板
-import { Select, Input, Tree, Tabs, DatePicker, Button, Checkbox } from 'antd';
+import { Select, Input, Tree, DatePicker, Button, Checkbox } from 'antd';
 import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
 import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
-import { dayTypeList, typeList } from '@/commonInterface';
+import { boardDayList, typeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
 import { useEffect, useState } from 'react';
 import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
@@ -106,6 +106,7 @@ const RealBodyOption = () => {
   });
   const [barChartData, setBarChartData] = useState(barCartDataOptions);
   const handleDateTypeChange = (val: any) => {
+    console.log(val);
     setForm((p) => {
       p.dateType = val;
     });
@@ -168,7 +169,7 @@ const RealBodyOption = () => {
           style={{ width: 120 }}
           onChange={handleDateTypeChange}
         >
-          {dayTypeList.map((item) => (
+          {boardDayList.map((item) => (
             <Option key={item.value} value={item.value}>
               {item.name}
             </Option>
@@ -178,6 +179,7 @@ const RealBodyOption = () => {
           size="large"
           onChange={handleQueryStartDateChange}
           allowClear
+          picker={(boardDayList[form.dateType - 1]?.type as any) || 'year'}
           disabledDate={(current) => {
             return current && current >= moment().endOf('day');
           }}

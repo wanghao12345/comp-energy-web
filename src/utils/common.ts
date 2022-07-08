@@ -12,7 +12,7 @@ export const debounce = (fn: (params: any) => void, ms: number) => {
 };
 
 export const formatNumer = (value: number, bit?: number) => {
-  if (typeof value !== 'number') return value;
+  if (typeof value !== 'number') return 1;
   const cbit = bit || 2;
   let tzero = '1';
   Array.from({ length: cbit }).map(() => {

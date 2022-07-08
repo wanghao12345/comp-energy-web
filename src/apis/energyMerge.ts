@@ -48,3 +48,17 @@ export const selectEnergyLossByRegion = async (data: any) => {
     data,
   });
 };
+
+export interface energyConsumptionOverviewQOQProps {
+  energyType: number;
+  queryStartDate: string;
+}
+// 用能概况环比
+export const energyConsumptionOverviewQOQ = async (
+  data: energyConsumptionOverviewQOQProps,
+) => {
+  return await request('/ea/webEnergy/energyConsumptionOverviewQOQ', {
+    method: 'POST',
+    data,
+  });
+};

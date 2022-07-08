@@ -18,3 +18,11 @@ export const dayTypeList = [
   { name: '本月', value: 3 },
   { name: '本年', value: 6 },
 ];
+
+export const boardDayList = [
+  { name: '日', value: 1, type: 'date' },
+  { name: '周', value: 2, type: 'week' },
+  { name: '月', value: 3, type: 'month' },
+  { name: '季度', value: 4, type: 'quarter' },
+  { name: '年', value: 6, type: 'year' },
+];

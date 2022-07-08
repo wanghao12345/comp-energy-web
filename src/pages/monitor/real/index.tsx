@@ -35,7 +35,6 @@ const RealPage = () => {
 };
 
 const RealBodyOption = () => {
-  // 使用上下文,接收缩放比
   const templateProps = useContext(TemplateContext);
   const options = optionsData[templateProps.energyType];
   const [tab, setTab] = useState(tabStatus.RealTime);

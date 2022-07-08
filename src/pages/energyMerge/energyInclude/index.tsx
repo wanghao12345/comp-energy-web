@@ -6,9 +6,11 @@ import { Select, Tag } from 'antd';
 const { Option } = Select;
 import MyChartBox from '@/components/myChartsBox';
 import MyCard from '@/components/myCard';
-// import { current } from 'immer';
 import { useEffect, useState } from 'react';
-import { energyConsumptionOverview } from '@/apis/energyMerge';
+import {
+  energyConsumptionOverview,
+  energyConsumptionOverviewQOQ,
+} from '@/apis/energyMerge';
 import { formatDate, formatNumer } from '@/utils/common';
 import { dayTypeList, typeList } from '@/commonInterface';
 
@@ -17,11 +19,27 @@ interface chartProps {
   y: number;
 }
 
+interface huanbiProps {
+  dayQOQDiff: string;
+  dayQOQRate: string;
+  lastMouthNumber: number;
+  lastYearNumber: number;
+  mouthQOQDiff: string;
+  mouthQOQRate: string;
+  thisMouthNumber: number;
+  thisYearNumber: number;
+  todayNumber: number;
+  yearQOQDiff: string;
+  yearQOQRate: string;
+  yesterdayNumber: number;
+}
+
 export default () => {
   const [form, setForm] = useImmer({
     typeValue: 1,
     areaValue: 1,
   });
+  const [huanBiData, setHuanbiData] = useState<huanbiProps | null>();
   const [tabCurrentDay, setTabCurrentDay] = useImmer(1);
   //中间折线图
   const [lineChart, setLineChartData] = useState<any>();
@@ -103,8 +121,33 @@ export default () => {
 
   useEffect(() => {
     getChartData(form.typeValue, form.areaValue, 'both');
+    getEnergyConsumptionOverviewQOQ(form.typeValue);
   }, [form.typeValue, form.areaValue]);
 
+  const getEnergyConsumptionOverviewQOQ = (energyType: number) => {
+    const queryStartDate = '2022-04-15' || formatDate();
+    energyConsumptionOverviewQOQ({ energyType, queryStartDate }).then(
+      (res: any) => {
+        if (res?.meta?.code === 200) {
+          let hbd: any = {};
+          for (let name in res?.data) {
+            hbd[name] = formatNumer(res?.data[name]);
+            if (
+              (name.includes('Rate') || name.includes('Diff')) &&
+              hbd[name] > 0
+            ) {
+              hbd[name] = '+' + hbd[name];
+            }
+            if (name.includes('Rate')) {
+              hbd[name] = hbd[name] + '%';
+            }
+          }
+          console.log(hbd);
+          setHuanbiData(hbd);
+        }
+      },
+    );
+  };
   return (
     <>
       <PageBox>
@@ -135,58 +178,85 @@ export default () => {
           <MyCard className="chain-list" title="环比">
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.todayNumber || 2001.42}
+                </div>
                 <div className="desc">{`今日用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.yesterdayNumber || 2001.42}
+                </div>
                 <div className="desc">{`昨日用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
-                <div className="title line">+33.26%</div>
-                <div className="title">+46036.84kw.h</div>
+                <div className="title line">
+                  {huanBiData?.dayQOQRate || '100%'}
+                </div>
+                <div className="title">
+                  {huanBiData?.dayQOQDiff || 2001.42}
+                  {typeList[form.typeValue - 1].unit}
+                </div>
                 <div className="desc">趋势</div>
               </div>
             </div>
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.thisMouthNumber || 2001.42}
+                </div>
                 <div className="desc">{`当月用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.lastMouthNumber || 2001.42}
+                </div>
                 <div className="desc">{`上月用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
-                <div className="title line">+33.26%</div>
-                <div className="title">+46036.84kw.h</div>
+                <div className="title line">
+                  {huanBiData?.mouthQOQRate || '100%'}
+                </div>
+                <div className="title">
+                  {huanBiData?.mouthQOQDiff || 2001.42}
+                  {typeList[form.typeValue - 1].unit}
+                </div>
                 <div className="desc">趋势</div>
               </div>
             </div>
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.thisYearNumber || 2001.42}
+                </div>
                 <div className="desc">{`当年用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">2001.42</div>
+                <div className="title">
+                  {huanBiData?.lastYearNumber || 2001.42}
+                </div>
                 <div className="desc">{`上年用能(${
                   typeList[form.typeValue - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
-                <div className="title line">+33.26%</div>
-                <div className="title">+46036.84kw.h</div>
+                <div className="title line">
+                  {huanBiData?.yearQOQRate || '100%'}
+                </div>
+                <div className="title">
+                  {huanBiData?.yearQOQDiff || 2001.42}
+                  {typeList[form.typeValue - 1].unit}
+                </div>
                 <div className="desc">趋势</div>
               </div>
             </div>
