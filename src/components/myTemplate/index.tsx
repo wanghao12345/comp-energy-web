@@ -9,12 +9,14 @@ const { Option } = Select;
 
 export interface templageProps {
   energyType: number;
-  area: string;
+  area: number;
+  areaName: string;
 }
 
 const defaultData = {
-  energyType: 0,
-  area: 'shanghai',
+  energyType: 1,
+  area: 1,
+  areaName: '义乌',
 };
 
 type IProps = {
@@ -29,7 +31,7 @@ const MyTemplate: FC<IProps> = memo(({ children, showJL }) => {
   const onChange = (key: string) => {
     const ck = parseInt(key);
     setContextProps((p) => {
-      p.energyType = ck - 1;
+      p.energyType = ck;
     });
   };
 

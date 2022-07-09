@@ -23,6 +23,8 @@ import {
 import MyChartBox from '@/components/myChartsBox';
 import moment from 'moment';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
+import { formatDate, formatTime } from '@/utils/common';
+import { dayRealTime } from '@/apis/monitor';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -36,77 +38,29 @@ const RealPage = () => {
 
 const RealBodyOption = () => {
   const templateProps = useContext(TemplateContext);
-  const options = optionsData[templateProps.energyType];
+  const options = optionsData[templateProps.energyType - 1];
   const [tab, setTab] = useState(tabStatus.RealTime);
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
+  //图表数据
+  const [chartData, setChartData] = useState<any>(chartOption);
+  //表数据
   const [dataSource, setDataSource] = useState<any>([]);
+  //表头
   const [columns, setColumns] = useState<any>([]);
 
   useEffect(() => {
-    if (form) {
-      if (options.length === 1) {
-        form.setFieldsValue({ option: '限时流量' });
-      } else {
-        form.setFieldsValue({ option: options });
-      }
+    if (options.length === 1) {
+      form.setFieldsValue({ option: '限时流量' });
+    } else {
+      form.setFieldsValue({ option: options[0] });
     }
-
-    if (tab === tabStatus.RealTime) {
-      const data: any = [];
-      drawEcharts(options[0], data);
-      //获取请求数据
-      setDataSource(dataSource1);
-      setColumns(Realtimecolumns);
+    if (!form.getFieldValue('date')) {
+      form.setFieldsValue({ date: moment() });
     }
-    if (tab === tabStatus.Warnning) {
-      setDataSource(dataSource1);
-      setColumns(WarnColumns);
-    }
-    if (tab === tabStatus.Contact) {
-      setDataSource(dataSource1);
-      setColumns(ContactColumns);
-    }
+    getRealTimeRes();
   }, [options, tab]);
 
-  const drawEcharts = (type: string, data: any) => {
-    switch (type) {
-      case '电流':
-        console.log('电流');
-        break;
-      case '功率因素':
-        console.log('功率因素');
-        break;
-      case '有用功率':
-        console.log('有用功率');
-        break;
-      case '频率':
-        console.log('频率');
-        break;
-      case '有功电能':
-        console.log('有功电能');
-        break;
-      case '水':
-        console.log('水');
-        break;
-      case '蒸汽':
-        console.log('蒸汽');
-        break;
-      case '空气':
-        console.log('空气');
-        break;
-      case '氮气':
-        console.log('氮气');
-        break;
-      case '天然气':
-        console.log('天然气');
-        break;
-      default:
-        console.log('电流');
-        break;
-    }
-    // 更新数据
-  };
   const onTabChange = (key: string) => {
     const tab = key as tabStatus;
     setTab(tab);
@@ -125,11 +79,700 @@ const RealBodyOption = () => {
     }
     //统一处理返回数据
     handleResponse(res, option);
+    console.log(values);
   };
 
   const handleResponse = (res: any, option?: string) => {
     if (option) {
+      getRealTimeRes();
     }
+  };
+
+  const getRealTimeRes = () => {
+    // const cday = moment();
+    // console.log(cday.toDate().getMonth());
+    // console.log(formatTime(form.getFieldValue('date').toDate()));
+    if (tab === tabStatus.RealTime) {
+      dayRealTime({
+        energyType: templateProps.energyType,
+        regionId: templateProps.area,
+        queryStartDate: '2022-03-01 00:00:00',
+        queryEndDate: '2022-03-01 23:59:59',
+      }).then((res: any) => {
+        if (res?.meta?.code === 200) {
+          console.log(res.data);
+          formatColumnAndChartData(
+            templateProps.energyType,
+            form.getFieldValue('option'),
+            res.data,
+          );
+        }
+      });
+    }
+    if (tab === tabStatus.Warnning) {
+      setDataSource(dataSource1);
+      setColumns(WarnColumns);
+    }
+    if (tab === tabStatus.Contact) {
+      setDataSource(dataSource1);
+      setColumns(ContactColumns);
+    }
+  };
+
+  const formatColumnAndChartData = (
+    type: number,
+    detailType: string,
+    data: any,
+  ) => {
+    const columnDataSource: any[] = [];
+    let columns = [
+      {
+        title: '采集时间',
+        dataIndex: 'time',
+        key: 'time',
+      },
+      {
+        title: 'Ia（A） ',
+        dataIndex: 'A',
+        key: 'A',
+      },
+      {
+        title: 'Ib（A）',
+        dataIndex: 'B',
+        key: 'B',
+      },
+      {
+        title: 'Ic（A）',
+        dataIndex: 'C',
+        key: 'C',
+      },
+    ];
+
+    const series: any[][] = [[], [], [], [], [], []];
+
+    const judegeIsZD = (time: string) => {
+      const colck = time.split(' ')[1];
+      if (colck) {
+        return colck.endsWith(':00:00');
+      }
+      return false;
+    };
+    if (type === 1) {
+      if (detailType === '电流') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'Ia（A） ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+          {
+            title: 'Ib（A）',
+            dataIndex: 'B',
+            key: 'B',
+          },
+          {
+            title: 'Ic（A）',
+            dataIndex: 'C',
+            key: 'C',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.currentA,
+            B: item.currentB,
+            C: item.currentC,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.currentA);
+            series[1].push(item.currentB);
+            series[2].push(item.currentC);
+          }
+          columnDataSource.push(column);
+        });
+        const originSeries = [
+          {
+            name: 'Ia',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FFEF6C',
+            },
+            data: series[0],
+          },
+          {
+            name: 'Ib',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FD264E',
+            },
+            data: series[1],
+          },
+          {
+            name: 'Ic',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#2DFCC0',
+            },
+            data: series[2],
+          },
+        ];
+        chartOption.yAxis.name = 'A';
+        chartOption.series = originSeries;
+      }
+      if (detailType === '电压') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'Ua（V） ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+          {
+            title: 'Ub（V）',
+            dataIndex: 'B',
+            key: 'B',
+          },
+          {
+            title: 'Uc（V）',
+            dataIndex: 'C',
+            key: 'C',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.voltageA,
+            B: item.voltageB,
+            C: item.voltageC,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.voltageA);
+            series[1].push(item.voltageB);
+            series[2].push(item.voltageC);
+          }
+          columnDataSource.push(column);
+        });
+        chartOption.yAxis.name = 'V';
+        const originSeries = [
+          {
+            name: 'Ua',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FFEF6C',
+            },
+            data: series[0],
+          },
+          {
+            name: 'Ub',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FD264E',
+            },
+            data: series[1],
+          },
+          {
+            name: 'Uc',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#2DFCC0',
+            },
+            data: series[2],
+          },
+        ];
+        chartOption.series = originSeries;
+      }
+      if (detailType === '功率因数') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'Pfa ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+          {
+            title: 'Pfb',
+            dataIndex: 'B',
+            key: 'B',
+          },
+          {
+            title: 'Pfc',
+            dataIndex: 'C',
+            key: 'C',
+          },
+          {
+            title: 'Pf',
+            dataIndex: 'D',
+            key: 'D',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.cosA,
+            B: item.cosB,
+            C: item.cosC,
+            D: item.cosZ,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.cosA);
+            series[1].push(item.cosB);
+            series[2].push(item.cosC);
+            series[3].push(item.cosZ);
+          }
+          columnDataSource.push(column);
+        });
+        chartOption.yAxis.name = '';
+        const originSeries = [
+          {
+            name: 'Pfa',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FFEF6C',
+            },
+            data: series[0],
+          },
+          {
+            name: 'Pfb',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FD264E',
+            },
+            data: series[1],
+          },
+          {
+            name: 'Pfc',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#2DFCC0',
+            },
+            data: series[2],
+          },
+          {
+            name: 'Pf',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#432bac',
+              },
+            },
+            lineStyle: {
+              color: '#381ae0',
+            },
+            data: series[3],
+          },
+        ];
+        chartOption.series = originSeries;
+      }
+      if (detailType === '有功功率') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'Pa（KW） ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+          {
+            title: 'Pb（KW）',
+            dataIndex: 'B',
+            key: 'B',
+          },
+          {
+            title: 'Pc（KW）',
+            dataIndex: 'C',
+            key: 'C',
+          },
+          {
+            title: 'P（KW）',
+            dataIndex: 'D',
+            key: 'D',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.activePowerA,
+            B: item.activePowerB,
+            C: item.activePowerC,
+            D: item.activePower,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.activePowerA);
+            series[1].push(item.activePowerB);
+            series[2].push(item.activePowerC);
+            series[3].push(item.activePower);
+          }
+          columnDataSource.push(column);
+        });
+
+        chartOption.yAxis.name = 'KW';
+        const originSeries = [
+          {
+            name: 'Pa',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FFEF6C',
+            },
+            data: series[0],
+          },
+          {
+            name: 'Pb',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#FD264E',
+            },
+            data: series[1],
+          },
+          {
+            name: 'Pc',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#FFFFFF',
+              },
+            },
+            lineStyle: {
+              color: '#2DFCC0',
+            },
+            data: series[2],
+          },
+          {
+            name: 'P',
+            type: 'line',
+            smooth: true,
+            markPoint: {
+              data: [
+                { type: 'max', name: 'Max' },
+                { type: 'min', name: 'Min' },
+              ],
+              label: {
+                color: '#432bac',
+              },
+            },
+            lineStyle: {
+              color: '#381ae0',
+            },
+            data: series[3],
+          },
+        ];
+        chartOption.series = originSeries;
+      }
+      if (detailType === '频率') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'F r ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.frequency,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.frequency);
+          }
+          columnDataSource.push(column);
+        });
+        chartOption.series[0].data = series[0];
+        chartOption.series[0].name = 'Fr';
+        chartOption.series = [chartOption.series[0]];
+        chartOption.yAxis.name = 'HZ';
+      }
+      if (detailType === '有功电能') {
+        columns = [
+          {
+            title: '采集时间',
+            dataIndex: 'time',
+            key: 'time',
+          },
+          {
+            title: 'EPI（KW.h） ',
+            dataIndex: 'A',
+            key: 'A',
+          },
+        ];
+        data.list.map((item: any, index: number) => {
+          const column = {
+            key: index,
+            time: item.createDate.split(' ')[1],
+            A: item.activeElectricalEnergy,
+          };
+          if (judegeIsZD(item.createDate)) {
+            series[0].push(item.activeElectricalEnergy);
+          }
+          columnDataSource.push(column);
+        });
+        chartOption.series[0].data = series[0];
+        chartOption.series[0].name = 'EPI';
+        chartOption.series = [chartOption.series[0]];
+        chartOption.yAxis.name = 'KW.h';
+      }
+    }
+    if (type === 2) {
+      columns = [
+        {
+          title: '采集时间',
+          dataIndex: 'time',
+          key: 'time',
+        },
+        {
+          title: 'qm（t） ',
+          dataIndex: 'A',
+          key: 'A',
+        },
+      ];
+      data.list.map((item: any, index: number) => {
+        const column = {
+          key: index,
+          time: item.createDate.split(' ')[1],
+          A: item.flowCurrent,
+        };
+        if (judegeIsZD(item.createDate)) {
+          series[0].push(item.flowCurrent);
+        }
+        columnDataSource.push(column);
+      });
+      chartOption.series[0].data = series[0];
+      chartOption.series[0].name = 'qm';
+      chartOption.series = [chartOption.series[0]];
+      chartOption.yAxis.name = 't';
+    }
+
+    if (type === 3) {
+      columns = [
+        {
+          title: '采集时间',
+          dataIndex: 'time',
+          key: 'time',
+        },
+        {
+          title: 'qm（t） ',
+          dataIndex: 'A',
+          key: 'A',
+        },
+        {
+          title: 'T（℃） ',
+          dataIndex: 'B',
+          key: 'B',
+        },
+        {
+          title: 'p（MPa） ',
+          dataIndex: 'C',
+          key: 'C',
+        },
+      ];
+      data.list.map((item: any, index: number) => {
+        const column = {
+          key: index,
+          time: item.createDate.split(' ')[1],
+          A: item.flowCurrent,
+          B: item.flowRate,
+          C: item.flow,
+        };
+        if (judegeIsZD(item.createDate)) {
+          series[0].push(item.flowCurrent);
+        }
+        columnDataSource.push(column);
+      });
+      chartOption.series[0].data = series[0];
+      chartOption.series[0].name = 'qm';
+      chartOption.series = [chartOption.series[0]];
+      chartOption.yAxis.name = 't';
+    }
+
+    if (type === 4 || type === 5 || type === 6) {
+      columns = [
+        {
+          title: '采集时间',
+          dataIndex: 'time',
+          key: 'time',
+        },
+        {
+          title: 'qm（t） ',
+          dataIndex: 'A',
+          key: 'A',
+        },
+        {
+          title: 'T（℃） ',
+          dataIndex: 'B',
+          key: 'B',
+        },
+        {
+          title: 'p（MPa） ',
+          dataIndex: 'C',
+          key: 'C',
+        },
+      ];
+      data.list.map((item: any, index: number) => {
+        const column = {
+          key: index,
+          time: item.createDate.split(' ')[1],
+          A: item.flowCurrent,
+          B: item.flowRate,
+          C: item.flow,
+        };
+        if (judegeIsZD(item.createDate)) {
+          series[0].push(item.flowCurrent);
+        }
+        columnDataSource.push(column);
+      });
+      chartOption.series[0].data = series[0];
+      chartOption.series[0].name = 'qv';
+      chartOption.series = [chartOption.series[0]];
+      chartOption.yAxis.name = 'NM3';
+    }
+
+    setChartData(Object.assign({}, chartOption));
+    setColumns([...columns]);
+    setDataSource([...columnDataSource]);
   };
 
   return (
@@ -176,12 +819,11 @@ const RealBodyOption = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item name="date">
-                  <RangePicker
+                  <DatePicker
                     size="large"
                     name="date"
-                    allowClear
                     disabledDate={(current) => {
-                      return current && current >= moment().endOf('day');
+                      return current && current > moment().endOf('day');
                     }}
                   />
                 </Form.Item>
@@ -261,7 +903,7 @@ const RealBodyOption = () => {
       {tab === tabStatus.RealTime ? (
         <>
           <div className="echart-box">
-            <MyChartBox id="realTime" options={chartOption} />
+            <MyChartBox id="realTime" options={chartData} />
           </div>
           <Button size="large" type="primary">
             导出
@@ -269,7 +911,19 @@ const RealBodyOption = () => {
         </>
       ) : null}
       <div className="table-box">
-        <Table size="middle" dataSource={dataSource} columns={columns} />
+        <Table
+          size="small"
+          rowKey={'time'}
+          key={'time'}
+          dataSource={dataSource}
+          columns={columns}
+          scroll={{
+            y:
+              tab === tabStatus.RealTime
+                ? window.screen.height - 860
+                : undefined,
+          }}
+        />
       </div>
     </RealBodyContainer>
   );

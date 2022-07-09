@@ -28,28 +28,31 @@ export const dataSource1 = [
   },
 ];
 
-export const Realtimecolumns = [
-  {
-    title: '采集时间',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Ia（A） ',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Ib（A）',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Ic（A）',
-    dataIndex: 'age',
-    key: 'age',
-  },
-];
+export const Realtimecolumns = (unit?: string) => {
+  return [
+    {
+      title: '采集时间',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: unit || 'Ia（A） ',
+      dataIndex: 'A',
+      key: 'A',
+    },
+    {
+      title: unit || 'Ib（A）',
+      dataIndex: 'B',
+      key: 'B',
+    },
+    {
+      title: unit || 'Ic（A）',
+      dataIndex: 'C',
+      key: 'C',
+    },
+  ];
+};
+
 export const WarnColumns = [
   {
     title: '仪表名称',
