@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { selectEnergyLossByRegion } from '@/apis/energyMerge';
 import { useImmer } from 'use-immer';
 import moment, { Moment } from 'moment';
+import { formatDate } from '@/utils/common';
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
     console.log(
@@ -25,15 +26,15 @@ const rowSelection = {
 
 export default () => {
   const [tableData, setTableData] = useImmer<any[]>([]);
-  const [onOpationValue, setOptionValue] = useState('电流');
+  const [optionValue, setOptionValue] = useState('1');
   const onChangeOption = (option: string) => {
     setOptionValue(option);
   };
-  const [rangePickerValue, setrangePickerValue] = useState([
+  const [rangePickerValue, setrangePickerValue] = useState<any>([
     moment(),
     moment(),
   ]);
-  const onChangeRangePick = (range: Moment[]) => {
+  const onChangeRangePick = (range: any) => {
     setrangePickerValue(range);
   };
   const formatTableData = (data: any) => {
@@ -57,36 +58,51 @@ export default () => {
     });
     return columns;
   };
-  useEffect(() => {
+  const onSearchClick = () => {
+    getResponseData(optionValue, rangePickerValue, [1, 2, 3]);
+  };
+
+  const getResponseData = (
+    optionValue: string,
+    dataRange: any,
+    regionIdList: number[],
+  ) => {
+    const qs = formatDate(dataRange[0].toDate());
+    const qe = formatDate(dataRange[1].toDate());
+    console.log(qs, qe);
     selectEnergyLossByRegion({
-      energyType: 1,
-      queryStartDate: '2022-03-15',
-      queryEndDate: '2022-03-15',
-      regionIdList: [1, 2, 3],
+      energyType: parseInt(optionValue),
+      queryStartDate: qs,
+      queryEndDate: qe,
+      regionIdList: regionIdList,
     }).then((res) => {
       if (res.meta?.code === 200) {
         console.log(res.data);
         setTableData(formatTableData(res.data));
       }
     });
+  };
+
+  useEffect(() => {
+    getResponseData(optionValue, rangePickerValue, [1, 2, 3]);
   }, []);
   return (
     <Page>
       <div className="search-box">
         <Select
           size="large"
-          defaultValue={onOpationValue}
+          defaultValue={optionValue}
           onChange={onChangeOption}
           style={{
             width: '320px',
           }}
         >
-          <Option value="电流">电流</Option>
-          <Option value="电压">电压</Option>
-          <Option value="功率因素">功率因素</Option>
-          <Option value="有功功率">有功功率</Option>
-          <Option value="频率">频率</Option>
-          <Option value="有功电能">有功电能</Option>
+          <Option value="1">电流</Option>
+          <Option value="2">电压</Option>
+          <Option value="3">功率因素</Option>
+          <Option value="4">有功功率</Option>
+          <Option value="5">频率</Option>
+          <Option value="6">有功电能</Option>
         </Select>
         <RangePicker
           size="large"
@@ -96,7 +112,7 @@ export default () => {
             return current && current >= moment().endOf('day');
           }}
         />
-        <Button size="large" type="primary">
+        <Button size="large" type="primary" onClick={onSearchClick}>
           查询
         </Button>
       </div>

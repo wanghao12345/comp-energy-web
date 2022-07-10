@@ -22,8 +22,8 @@ export const formatNumer = (value: number, bit?: number) => {
   return tvalue;
 };
 
-export const formatDate = () => {
-  const date = new Date();
+export const formatDate = (d?: Date) => {
+  const date = d || new Date();
   const yaer = date.getFullYear();
   let mon: any = date.getMonth() + 1;
   let day: any = date.getDate();
