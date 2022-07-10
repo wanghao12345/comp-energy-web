@@ -41,8 +41,17 @@ export const energyConsumptionBulletinBoard = async (
   });
 };
 
+export interface selectEnergyLossByRegionProps {
+  energyType: number;
+  queryStartDate: string;
+  queryEndDate: string;
+  regionIdList: number[];
+}
+
 // 损耗报表
-export const selectEnergyLossByRegion = async (data: any) => {
+export const selectEnergyLossByRegion = async (
+  data: selectEnergyLossByRegionProps,
+) => {
   return await request('/ea/webEnergy/selectEnergyLossByRegion', {
     method: 'POST',
     data,
@@ -58,6 +67,33 @@ export const energyConsumptionOverviewQOQ = async (
   data: energyConsumptionOverviewQOQProps,
 ) => {
   return await request('/ea/webEnergy/energyConsumptionOverviewQOQ', {
+    method: 'POST',
+    data,
+  });
+};
+
+export interface selectTrendAnalysisQOQByRegionIdsProps {
+  energyType: number;
+  dateType: number;
+  queryStartDate: string;
+  regionIdList: number[];
+}
+
+// 趋势分析-同比分析
+export const selectTrendAnalysisYOYByRegionIds = async (
+  data: selectTrendAnalysisQOQByRegionIdsProps,
+) => {
+  return await request('/ea/webEnergy/selectTrendAnalysisYOYByRegionIds', {
+    method: 'POST',
+    data,
+  });
+};
+
+// 趋势分析-环比分析
+export const selectTrendAnalysisQOQByRegionIds = async (
+  data: selectTrendAnalysisQOQByRegionIdsProps,
+) => {
+  return await request('/ea/webEnergy/selectTrendAnalysisQOQByRegionIds', {
     method: 'POST',
     data,
   });

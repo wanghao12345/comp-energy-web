@@ -41,6 +41,10 @@ export const RealBodyContainer = styled.div`
           display: none;
         }
       }
+      .ant-tabs-tab.ant-tabs-tab-disabled {
+        color: white !important;
+        cursor: context-menu;
+      }
     }
     .search-box {
       padding: 16px 24px;

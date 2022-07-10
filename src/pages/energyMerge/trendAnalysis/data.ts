@@ -50,28 +50,47 @@ export const dataSource = [
   },
 ];
 
-export const columns = [
-  {
-    title: '采集时间',
-    dataIndex: 'time',
-    key: 'time',
-  },
-  {
-    title: '节点名称',
-    dataIndex: 'nodeName',
-    key: 'nodeName',
-  },
-  {
-    title: '能源类型',
-    dataIndex: 'type',
-    key: 'type',
-  },
-  {
-    title: '能耗(kW.h)',
-    dataIndex: 'energy',
-    key: 'energy',
-  },
-];
+export const getColumns = (type: string, unit: string) => {
+  const column = [
+    {
+      title: '本期时间',
+      dataIndex: 'A',
+      key: 'A',
+    },
+    {
+      title: '节点名称',
+      dataIndex: 'B',
+      key: 'B',
+    },
+    {
+      title: `本期能耗（${unit}）`,
+      dataIndex: 'C',
+      key: 'C',
+    },
+    {
+      title: type === 'yearOnyear' ? '同比时间' : '环比时间',
+      dataIndex: 'D',
+      key: 'D',
+    },
+    {
+      title:
+        type === 'yearOnyear' ? `同比能耗（${unit}）` : `环比能耗（${unit}）`,
+      dataIndex: 'E',
+      key: 'E',
+    },
+    {
+      title: '增减量',
+      dataIndex: 'F',
+      key: 'F',
+    },
+    {
+      title: '趋势',
+      dataIndex: 'G',
+      key: 'G',
+    },
+  ];
+  return column;
+};
 export const barCartDataOptions = {
   legend: {
     textStyle: {

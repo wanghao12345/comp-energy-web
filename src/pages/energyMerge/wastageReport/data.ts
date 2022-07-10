@@ -5,43 +5,45 @@ export const columns = [
   },
   {
     title: '当前支路能耗',
-    dataIndex: 'age',
+    dataIndex: 'current',
   },
   {
     title: '下级支路能耗合计',
-    dataIndex: 'down',
+    dataIndex: 'C',
   },
   {
     title: '当前支路与下级支路能耗合计差值',
-    dataIndex: 'currentDown',
+    dataIndex: 'D',
   },
   {
     title: '相差百分比',
-    dataIndex: 'percent',
+    dataIndex: 'E',
   },
 ];
 export const data = [
   {
     key: 1,
-    name: 'John Brown sr.',
-    age: 60,
-    address: 'New York No. 1 Lake Park',
+    A: 'John Brown sr.',
+    B: 60,
+    C: 'New York No. 1 Lake Park',
+    D: 'New York No. 1 Lake Park',
+    E: 'New York No. 1 Lake Park',
     children: [
       {
         key: 11,
-        name: 'John Brown',
+        A: 'John Brown',
         age: 42,
         address: 'New York No. 2 Lake Park',
       },
       {
         key: 12,
-        name: 'John Brown jr.',
+        A: 'John Brown jr.',
         age: 30,
         address: 'New York No. 3 Lake Park',
         children: [
           {
             key: 121,
-            name: 'Jimmy Brown',
+            A: 'Jimmy Brown',
             age: 16,
             address: 'New York No. 3 Lake Park',
           },
@@ -49,25 +51,25 @@ export const data = [
       },
       {
         key: 13,
-        name: 'Jim Green sr.',
+        A: 'Jim Green sr.',
         age: 72,
         address: 'London No. 1 Lake Park',
         children: [
           {
             key: 131,
-            name: 'Jim Green',
+            A: 'Jim Green',
             age: 42,
             address: 'London No. 2 Lake Park',
             children: [
               {
                 key: 1311,
-                name: 'Jim Green jr.',
+                A: 'Jim Green jr.',
                 age: 25,
                 address: 'London No. 3 Lake Park',
               },
               {
                 key: 1312,
-                name: 'Jimmy Green sr.',
+                A: 'Jimmy Green sr.',
                 age: 18,
                 address: 'London No. 4 Lake Park',
               },
@@ -79,7 +81,7 @@ export const data = [
   },
   {
     key: 2,
-    name: 'Joe Black',
+    A: 'Joe Black',
     age: 32,
     address: 'Sidney No. 1 Lake Park',
   },

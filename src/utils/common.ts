@@ -25,7 +25,7 @@ export const formatNumer = (value: number, bit?: number) => {
 export const formatDate = () => {
   const date = new Date();
   const yaer = date.getFullYear();
-  let mon: any = date.getMonth();
+  let mon: any = date.getMonth() + 1;
   let day: any = date.getDate();
   if (mon < 10) {
     mon = '0' + mon;

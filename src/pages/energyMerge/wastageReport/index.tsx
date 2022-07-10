@@ -2,10 +2,11 @@ import { Select, DatePicker, Button, Table } from 'antd';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 import { Page } from './style';
-import { columns } from './data';
-import { useEffect } from 'react';
+import { columns, data } from './data';
+import { useEffect, useState } from 'react';
 import { selectEnergyLossByRegion } from '@/apis/energyMerge';
 import { useImmer } from 'use-immer';
+import moment, { Moment } from 'moment';
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
     console.log(
@@ -23,17 +24,49 @@ const rowSelection = {
 };
 
 export default () => {
-  const [tableData, setTableData] = useImmer([]);
+  const [tableData, setTableData] = useImmer<any[]>([]);
+  const [onOpationValue, setOptionValue] = useState('电流');
+  const onChangeOption = (option: string) => {
+    setOptionValue(option);
+  };
+  const [rangePickerValue, setrangePickerValue] = useState([
+    moment(),
+    moment(),
+  ]);
+  const onChangeRangePick = (range: Moment[]) => {
+    setrangePickerValue(range);
+  };
+  const formatTableData = (data: any) => {
+    const columns: any[] = [];
+    data.map((item: any) => {
+      let column = {
+        name: item.name,
+        current: item.statEnergyLoss?.value,
+        C: item.statEnergyLoss?.valueChildren,
+        D: item.statEnergyLoss?.valueDifference,
+        E:
+          (item.statEnergyLoss?.valueDifference / item.statEnergyLoss?.value) *
+            100 +
+          '%',
+      };
+      if (item.children?.length) {
+        console.log(item.children);
+        column = Object.assign({ children: item.children }, column);
+      }
+      columns.push(column);
+    });
+    return columns;
+  };
   useEffect(() => {
     selectEnergyLossByRegion({
       energyType: 1,
       queryStartDate: '2022-03-15',
       queryEndDate: '2022-03-15',
+      regionIdList: [1, 2, 3],
     }).then((res) => {
-      console.log(res);
-      if (res.meta.code === 200) {
+      if (res.meta?.code === 200) {
         console.log(res.data);
-        setTableData(() => res.data);
+        setTableData(formatTableData(res.data));
       }
     });
   }, []);
@@ -42,8 +75,8 @@ export default () => {
       <div className="search-box">
         <Select
           size="large"
-          defaultValue="电流"
-          onChange={() => {}}
+          defaultValue={onOpationValue}
+          onChange={onChangeOption}
           style={{
             width: '320px',
           }}
@@ -55,7 +88,14 @@ export default () => {
           <Option value="频率">频率</Option>
           <Option value="有功电能">有功电能</Option>
         </Select>
-        <RangePicker size="large" />
+        <RangePicker
+          size="large"
+          value={rangePickerValue}
+          onChange={onChangeRangePick}
+          disabledDate={(current) => {
+            return current && current >= moment().endOf('day');
+          }}
+        />
         <Button size="large" type="primary">
           查询
         </Button>
