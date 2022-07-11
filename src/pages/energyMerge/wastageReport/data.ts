@@ -1,4 +1,8 @@
 export const columns = [
+  // {
+  //   title: 'key',
+  //   dataIndex: 'index',
+  // },
   {
     title: '节点名称',
     dataIndex: 'name',
@@ -9,15 +13,15 @@ export const columns = [
   },
   {
     title: '下级支路能耗合计',
-    dataIndex: 'C',
+    dataIndex: 'lowTotal',
   },
   {
     title: '当前支路与下级支路能耗合计差值',
-    dataIndex: 'D',
+    dataIndex: 'CZ',
   },
   {
     title: '相差百分比',
-    dataIndex: 'E',
+    dataIndex: 'Rate',
   },
 ];
 export const data = [

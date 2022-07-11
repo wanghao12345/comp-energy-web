@@ -7,28 +7,29 @@ import { useEffect, useState } from 'react';
 import { selectEnergyLossByRegion } from '@/apis/energyMerge';
 import { useImmer } from 'use-immer';
 import moment, { Moment } from 'moment';
-import { formatDate } from '@/utils/common';
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      'selectedRows: ',
-      selectedRows,
-    );
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+import { formatDate, formatNumer } from '@/utils/common';
+import { typeList } from '@/commonInterface';
+// const rowSelection = {
+//   onChange: (selectedRowKeys, selectedRows) => {
+//     console.log(
+//       `selectedRowKeys: ${selectedRowKeys}`,
+//       'selectedRows: ',
+//       selectedRows,
+//     );
+//   },
+//   onSelect: (record, selected, selectedRows) => {
+//     console.log(record, selected, selectedRows);
+//   },
+//   onSelectAll: (selected, selectedRows, changeRows) => {
+//     console.log(selected, selectedRows, changeRows);
+//   },
+// };
 
 export default () => {
   const [tableData, setTableData] = useImmer<any[]>([]);
-  const [optionValue, setOptionValue] = useState('1');
+  const [optionValue, setOptionValue] = useState(1);
   const onChangeOption = (option: string) => {
-    setOptionValue(option);
+    setOptionValue(parseInt(option));
   };
   const [rangePickerValue, setrangePickerValue] = useState<any>([
     moment(),
@@ -38,32 +39,41 @@ export default () => {
     setrangePickerValue(range);
   };
   const formatTableData = (data: any) => {
-    const columns: any[] = [];
     data.map((item: any) => {
-      let column = {
-        name: item.name,
-        current: item.statEnergyLoss?.value,
-        C: item.statEnergyLoss?.valueChildren,
-        D: item.statEnergyLoss?.valueDifference,
-        E:
-          (item.statEnergyLoss?.valueDifference / item.statEnergyLoss?.value) *
-            100 +
-          '%',
-      };
-      if (item.children?.length) {
-        console.log(item.children);
-        column = Object.assign({ children: item.children }, column);
+      item.lowTotal = 0;
+      if (item.children && item.children?.length) {
+        item.children.map((tt: any) => {
+          item.current += tt.current;
+          item.lowTotal += tt.current;
+          formatTableData(item.children);
+        });
+      } else {
+        delete item.children;
       }
-      columns.push(column);
     });
-    return columns;
   };
+
+  const formatTableDataSecond = (data: any) => {
+    data.map((item: any) => {
+      item.CZ = item.current - item.lowTotal;
+      if (item.children && item.children?.length) {
+        item.Rate = formatNumer((item.CZ / item.current) * 100) + '%';
+        item.children.map((tt: any) => {
+          formatTableDataSecond(item.children);
+        });
+      } else {
+        delete item.children;
+        item.Rate = '-';
+      }
+    });
+  };
+
   const onSearchClick = () => {
     getResponseData(optionValue, rangePickerValue, [1, 2, 3]);
   };
 
   const getResponseData = (
-    optionValue: string,
+    optionValue: number,
     dataRange: any,
     regionIdList: number[],
   ) => {
@@ -71,14 +81,17 @@ export default () => {
     const qe = formatDate(dataRange[1].toDate());
     console.log(qs, qe);
     selectEnergyLossByRegion({
-      energyType: parseInt(optionValue),
+      energyType: optionValue,
       queryStartDate: qs,
       queryEndDate: qe,
       regionIdList: regionIdList,
     }).then((res) => {
       if (res.meta?.code === 200) {
-        console.log(res.data);
-        setTableData(formatTableData(res.data));
+        const data = res.data;
+        formatTableData(data);
+        formatTableDataSecond(data);
+        setTableData(data);
+        console.log(data);
       }
     });
   };
@@ -91,18 +104,17 @@ export default () => {
       <div className="search-box">
         <Select
           size="large"
-          defaultValue={optionValue}
+          defaultValue={optionValue as any}
           onChange={onChangeOption}
           style={{
             width: '320px',
           }}
         >
-          <Option value="1">电流</Option>
-          <Option value="2">电压</Option>
-          <Option value="3">功率因素</Option>
-          <Option value="4">有功功率</Option>
-          <Option value="5">频率</Option>
-          <Option value="6">有功电能</Option>
+          {typeList.map((item) => (
+            <Option key={item.value} value={item.value}>
+              {item.name}
+            </Option>
+          ))}
         </Select>
         <RangePicker
           size="large"

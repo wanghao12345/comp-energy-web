@@ -23,9 +23,10 @@ export const RealOptionContainer = styled.div`
   }
   .ant-tree {
     color: #fff;
+    margin-top: 12px;
   }
   .radioGroup {
-    margin: 24px 0;
+    margin: 24px 0 12px 0;
   }
   .site-tree-search-value {
     color: #fff;

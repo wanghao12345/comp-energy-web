@@ -11,23 +11,23 @@ const { Option } = Select;
 export interface templageProps {
   energyType: number;
   area: number[];
-  areaName: string;
+  areaID: string[];
 }
 
 const defaultData = {
   energyType: 1,
   area: [2],
-  areaName: 'AA1',
+  areaID: ['2'],
 };
 
 type IProps = {
-  isIncludeChildren?: boolean;
+  isShowCheckBox?: boolean;
 };
 
 // 创造一个上下文
 export const TemplateContext = createContext<templageProps>(defaultData);
 
-const MyTemplate: FC<IProps> = memo(({ children, isIncludeChildren }) => {
+const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
   const [contextProps, setContextProps] = useImmer(defaultData);
   const onChange = (key: string) => {
     const ck = parseInt(key);
@@ -37,10 +37,12 @@ const MyTemplate: FC<IProps> = memo(({ children, isIncludeChildren }) => {
   };
 
   const onSelectAreaChange = (selectedKeys: React.Key[], info: any) => {
-    console.log('selected', selectedKeys, info);
     setContextProps((p) => {
-      p.area = [parseInt(info?.id) || 1];
-      p.areaName = [info?.node?.name || ''];
+      p.areaID = selectedKeys as any;
+      p.area = selectedKeys.map((value) => {
+        return parseInt(value as any);
+      });
+      console.log(p.area);
     });
   };
 
@@ -51,6 +53,7 @@ const MyTemplate: FC<IProps> = memo(({ children, isIncludeChildren }) => {
           onChange={onChange}
           onSelectAreaChange={onSelectAreaChange}
           templageData={contextProps}
+          isShowCheckBox={isShowCheckBox}
         />
         {children}
       </RealContainer>
@@ -62,14 +65,16 @@ type RealOptionProps = {
   onChange: (e: string) => void;
   onSelectAreaChange: (selectedKeys: React.Key[], info: any) => void;
   templageData: templageProps;
+  isShowCheckBox?: boolean;
 };
 
 export const RealOption: FC<RealOptionProps> = memo(
-  ({ onChange, onSelectAreaChange, templageData }) => {
+  ({ onChange, onSelectAreaChange, templageData, isShowCheckBox }) => {
     const [tree, setTree] = useState<any>([]);
-    const [nodeName, setNodeName] = useState(templageData.areaName);
+    const [nodeName, setNodeName] = useState();
     const [expandedKeys, setExpandedKeys] = useState<any>();
     const [checkedKeys, setCheckedKeys] = useState<any>();
+    const [selectedKeys, setSelectedKeys] = useState<any>();
     const [selectAll, setSelectAll] = useState(false);
     const [autoExpandParent, setAutoExpandParent] = useState(true);
     const [allKeys, _setAllKeys] = useState<any>({
@@ -90,26 +95,24 @@ export const RealOption: FC<RealOptionProps> = memo(
 
     const onSelectNodeChange = (selectedKeys: React.Key[], info: any) => {
       onSelectAreaChange(selectedKeys, info);
-      onCheckNodeBox(selectedKeys, info);
+      setSelectedKeys(selectedKeys);
+      const expend = info?.selectedNodes[0]?.parentId;
+      setExpandedKeys(selectedKeys.concat(expend));
+      console.log(selectedKeys, info, 'selectedKeys');
     };
 
     const onChangeName = (e: any) => {
       const value = e?.target?.value;
       setNodeName(value);
-    };
-
-    const getNodeList = (nodeName: string) => {
-      getRegionTreeList().then((res: any) => {
-        if (res?.meta?.code === 200) {
-          const data = res.data;
-          formatTreeData(data);
-          setTree([...data]);
-          allKeys.obj.map((item: any) => {
-            if (item?.title === nodeName) {
-              setCheckedKeys([item?.key]);
-              setExpandedKeys([item?.key]);
-            }
-          });
+      if (isShowCheckBox) {
+        setExpandedKeys(checkedKeys);
+      } else {
+        setExpandedKeys(selectedKeys);
+      }
+      if (!value) return;
+      allKeys.obj.map((item: any) => {
+        if (item.title.includes(value)) {
+          setExpandedKeys([item.key].concat(expandedKeys));
         }
       });
     };
@@ -122,10 +125,10 @@ export const RealOption: FC<RealOptionProps> = memo(
           },
       info: any,
     ) => {
+      onSelectAreaChange(checked as any, info);
       setCheckedKeys(checked);
       setExpandedKeys(checked);
       console.log(checked, 'check');
-      console.log(info, 'check');
     };
 
     const onCheckboxShift = (all: boolean) => {
@@ -141,6 +144,7 @@ export const RealOption: FC<RealOptionProps> = memo(
     const onExpand = (newExpandedKeys: any[]) => {
       setExpandedKeys(newExpandedKeys);
       setAutoExpandParent(false);
+      console.log(newExpandedKeys, 'onExpand');
     };
 
     // const treeData = useMemo(() => {
@@ -173,25 +177,24 @@ export const RealOption: FC<RealOptionProps> = memo(
     //   return loop(tree);
     // }, [tree, nodeName]);
 
+    const getNodeList = () => {
+      getRegionTreeList().then((res: any) => {
+        if (res?.meta?.code === 200) {
+          const data = res.data;
+          formatTreeData(data);
+          setTree([...data]);
+          setExpandedKeys(templageData.areaID);
+          if (isShowCheckBox) {
+            setCheckedKeys(templageData.areaID);
+          } else {
+            setSelectedKeys(templageData.areaID);
+          }
+        }
+      });
+    };
     useEffect(() => {
-      getNodeList(nodeName);
+      getNodeList();
     }, []);
-
-    useEffect(() => {
-      let expandKeys: any[] = [];
-      if (nodeName) {
-        allKeys.obj.map((item: any) => {
-          nodeName.split('，').map((name: string) => {
-            if (item?.title === name) {
-              expandKeys.push(item?.key);
-            }
-          });
-        });
-      } else {
-        expandKeys = allKeys.arr;
-      }
-      setExpandedKeys(expandKeys);
-    }, [nodeName]);
 
     return (
       <RealOptionContainer>
@@ -213,29 +216,33 @@ export const RealOption: FC<RealOptionProps> = memo(
           value={nodeName}
           onChange={onChangeName}
         />
-        <div className="radioGroup">
-          <Checkbox
-            onChange={() => {
-              onCheckboxShift(false);
-            }}
-            checked={!selectAll}
-          >
-            是否级联
-          </Checkbox>
-          <Checkbox
-            onChange={() => {
-              onCheckboxShift(true);
-            }}
-            checked={selectAll}
-          >
-            全选
-          </Checkbox>
-        </div>
+        {isShowCheckBox ? (
+          <div className="radioGroup">
+            <Checkbox
+              onChange={() => {
+                onCheckboxShift(false);
+              }}
+              checked={!selectAll}
+            >
+              是否级联
+            </Checkbox>
+            <Checkbox
+              onChange={() => {
+                onCheckboxShift(true);
+              }}
+              checked={selectAll}
+            >
+              全选
+            </Checkbox>
+          </div>
+        ) : null}
         <Tree
           onSelect={onSelectNodeChange}
           onCheck={onCheckNodeBox}
           treeData={tree}
-          checkable
+          selectedKeys={selectedKeys}
+          checkable={isShowCheckBox}
+          selectable={!isShowCheckBox}
           autoExpandParent={autoExpandParent}
           defaultExpandAll
           defaultExpandParent

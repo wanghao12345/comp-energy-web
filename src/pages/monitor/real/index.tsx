@@ -33,23 +33,11 @@ const RealBodyOption = () => {
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   //图表数据
-  const [chartData, setChartData] = useState<any>(chartOption);
+  const [chartData, setChartData] = useState<any>([]);
   //表数据
   const [dataSource, setDataSource] = useState<any>([]);
   //表头
   const [columns, setColumns] = useState<any>([]);
-
-  useEffect(() => {
-    if (options.length === 1) {
-      form.setFieldsValue({ option: '限时流量' });
-    } else {
-      form.setFieldsValue({ option: options[0] });
-    }
-    if (!form.getFieldValue('date')) {
-      form.setFieldsValue({ date: moment() });
-    }
-    getRealTimeRes();
-  }, [options, tab]);
 
   const onTabChange = (key: string) => {
     const tab = key as tabStatus;
@@ -85,7 +73,7 @@ const RealBodyOption = () => {
     if (tab === tabStatus.RealTime) {
       dayRealTime({
         energyType: templateProps.energyType,
-        regionId: templateProps.area,
+        regionId: templateProps.area[0],
         queryStartDate: '2022-03-01 00:00:00',
         queryEndDate: '2022-03-01 23:59:59',
       }).then((res: any) => {
@@ -100,11 +88,11 @@ const RealBodyOption = () => {
       });
     }
     if (tab === tabStatus.Warnning) {
-      setDataSource(dataSource1);
+      setDataSource([]);
       setColumns(WarnColumns);
     }
     if (tab === tabStatus.Contact) {
-      setDataSource(dataSource1);
+      setDataSource([]);
       setColumns(ContactColumns);
     }
   };
@@ -764,6 +752,18 @@ const RealBodyOption = () => {
     setColumns([...columns]);
     setDataSource([...columnDataSource]);
   };
+
+  useEffect(() => {
+    if (options.length === 1) {
+      form.setFieldsValue({ option: '限时流量' });
+    } else {
+      form.setFieldsValue({ option: options[0] });
+    }
+    if (!form.getFieldValue('date')) {
+      form.setFieldsValue({ date: moment() });
+    }
+    getRealTimeRes();
+  }, [options, tab, templateProps.area]);
 
   return (
     <RealBodyContainer>
