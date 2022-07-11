@@ -1,14 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import {
-  Select,
-  Input,
-  Tree,
-  Tabs,
-  DatePicker,
-  Button,
-  Table,
-  Form,
-} from 'antd';
+import { Select, Input, Tabs, DatePicker, Button, Table, Form } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { RealBodyContainer } from './style';
 import {
@@ -16,7 +7,6 @@ import {
   ContactColumns,
   dataSource1,
   optionsData,
-  Realtimecolumns,
   tabStatus,
   WarnColumns,
 } from './data';

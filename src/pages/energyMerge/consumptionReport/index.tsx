@@ -1,22 +1,16 @@
 // 能源管理=>用能报表
 import { Select, Input, Tree, Tabs, DatePicker, Button, Table } from 'antd';
-import { columns } from './data';
-import {
-  SearchOutlined,
-  CarryOutOutlined,
-  FormOutlined,
-} from '@ant-design/icons';
+import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
 const { Option } = Select;
-const { TabPane } = Tabs;
 import { useEffect, useState } from 'react';
-const dataSource = new Array(20).fill(null).map((item, index) => ({
-  key: index,
-  time: '00:00',
-  nodeName: '1AAA1',
-  type: '电',
-  energy: '190.00',
-}));
+import { boardDayList, typeList } from '@/commonInterface';
+import { formatDate } from '@/utils/common';
+import moment, { Moment } from 'moment';
+import { useImmer } from 'use-immer';
+import { energyElectricselectList } from '@/apis/energyMerge';
+import { dayColumns } from './data';
+
 const RealPage = () => {
   return (
     <RealContainer>
@@ -89,55 +83,91 @@ const RealOption = () => {
 };
 
 const RealBodyOption = () => {
-  const onChange = (key: string) => {
-    console.log(key);
+  const [form, setForm] = useImmer({
+    energyType: 1,
+    dateType: 1,
+    queryStartDate: formatDate(),
+    dataSource: [],
+  });
+  const handleDateTypeChange = (val: any) => {
+    console.log(val);
+    setForm((p) => {
+      p.dateType = val;
+    });
   };
+  const handleQueryStartDateChange = (val: any) => {
+    if (!val) {
+      setForm((p) => {
+        p.queryStartDate = formatDate();
+      });
+      return;
+    }
+    const m = val as Moment;
+    const cdate = `${m.year()}-${m.month() + 1}-${m.date()}`;
+    setForm((p) => {
+      p.queryStartDate = cdate;
+    });
+  };
+  const onClickSearch = () => {};
+
+  const getDatasource = () => {
+    energyElectricselectList({
+      queryStartDate: '2022-03-15 00:00:00',
+      queryEndDate: '2022-03-15 12:23:23',
+      regionIdList: [1, 2],
+      current: 1,
+      size: 30,
+    }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        setForm((p) => {
+          console.log(res.data.list);
+          p.dataSource = res?.data?.list;
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    getDatasource();
+  }, []);
   return (
     <RealBodyContainer>
       <div className="options-box">
-        <div className="tab-box">
-          <Tabs
-            hideAdd
-            defaultActiveKey={'0'}
-            type="editable-card"
-            tabPosition={'top'}
-            onChange={onChange}
-          >
-            <TabPane tab={'趋势分析'} key={'0'}></TabPane>
-            <TabPane tab={'同比分析'} key={'1'}></TabPane>
-            <TabPane tab={'环比分析'} key={'2'}></TabPane>
-          </Tabs>
-        </div>
         <div className="search-box">
           <Select
             size="large"
-            defaultValue="电流"
-            onChange={() => {}}
-            style={{
-              width: '160px',
-            }}
+            value={form.dateType}
+            style={{ width: 120 }}
+            onChange={handleDateTypeChange}
           >
-            <Option value="电流">电流</Option>
-            <Option value="电压">电压</Option>
-            <Option value="功率因素">功率因素</Option>
-            <Option value="有功功率">有功功率</Option>
-            <Option value="频率">频率</Option>
-            <Option value="有功电能">有功电能</Option>
+            {boardDayList.map((item) => (
+              <Option key={item.value} value={item.value}>
+                {item.name}
+              </Option>
+            ))}
           </Select>
-          <DatePicker size="large" />
-          <Button size="large" type="primary">
+          <DatePicker
+            size="large"
+            onChange={handleQueryStartDateChange}
+            allowClear
+            picker={(boardDayList[form.dateType - 1]?.type as any) || 'year'}
+            disabledDate={(current) => {
+              return current && current >= moment().endOf('day');
+            }}
+          />
+          <Button size="large" type="primary" onClick={onClickSearch}>
             查询
           </Button>
         </div>
       </div>
       <div className="table-box">
         <Table
-          scroll={{ y: 560 }}
-          size="middle"
-          rowKey="key"
+          size="small"
+          rowKey="A"
+          key="A"
           pagination={{ pageSize: 20 }}
-          dataSource={dataSource}
-          columns={columns}
+          dataSource={form.dataSource}
+          columns={dayColumns(typeList[form.energyType - 1].unit)}
         />
       </div>
     </RealBodyContainer>

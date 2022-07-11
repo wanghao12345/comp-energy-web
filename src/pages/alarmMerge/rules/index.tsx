@@ -92,7 +92,7 @@ export default () => {
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 50 }}
-        scroll={{ y: 600 }}
+        scroll={{ y: window.screen.availHeight - 385 }}
       />
     </RulesPage>
   );

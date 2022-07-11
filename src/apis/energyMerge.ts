@@ -98,3 +98,20 @@ export const selectTrendAnalysisQOQByRegionIds = async (
     data,
   });
 };
+
+export interface energyElectricselectListProps {
+  queryStartDate: string;
+  queryEndDate: string;
+  regionIdList: number[];
+  current: number;
+  size: number;
+}
+// 用电能源报表
+export const energyElectricselectList = async (
+  data: energyElectricselectListProps,
+) => {
+  return await request('/ea/energyElectric/selectList', {
+    method: 'POST',
+    data,
+  });
+};
