@@ -2,23 +2,20 @@ export const dayColumns = (unit: string) => {
   return [
     {
       title: '节点名称',
-      dataIndex: 'nodeName',
-      key: 'nodeName',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: `00时（${unit}）`,
-      dataIndex: 'time',
-      key: 'A',
+      dataIndex: 'time0',
     },
     {
       title: `01时（${unit}）`,
-      dataIndex: 'time',
-      key: 'B',
+      dataIndex: 'time1',
     },
     {
       title: `02时（${unit}）`,
-      dataIndex: 'time',
-      key: 'C',
+      dataIndex: 'time2',
     },
     {
       title: `03时（${unit}）`,

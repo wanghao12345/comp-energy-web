@@ -103,14 +103,15 @@ export interface energyElectricselectListProps {
   queryStartDate: string;
   queryEndDate: string;
   regionIdList: number[];
-  current: number;
-  size: number;
+  dateType: number;
+  energyType: number;
 }
-// 用电能源报表
+
+//接口：能源管理-用能报表
 export const energyElectricselectList = async (
   data: energyElectricselectListProps,
 ) => {
-  return await request('/ea/energyElectric/selectList', {
+  return await request('/ea/webEnergy/energyConsumptionReportForm', {
     method: 'POST',
     data,
   });

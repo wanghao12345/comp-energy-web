@@ -125,9 +125,13 @@ export const RealOption: FC<RealOptionProps> = memo(
           },
       info: any,
     ) => {
+      if (!(checked as any).length) {
+        return;
+      }
       onSelectAreaChange(checked as any, info);
       setCheckedKeys(checked);
-      setExpandedKeys(checked);
+      const expend = info?.node?.parentId || '';
+      setExpandedKeys((checked as any).concat([expend]));
       console.log(checked, 'check');
     };
 
@@ -137,7 +141,7 @@ export const RealOption: FC<RealOptionProps> = memo(
         setCheckedKeys(allKeys.arr);
         setExpandedKeys(allKeys.arr);
       } else {
-        setCheckedKeys([]);
+        // setCheckedKeys([]);
       }
     };
 

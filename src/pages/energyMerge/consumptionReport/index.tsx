@@ -1,101 +1,39 @@
 // 能源管理=>用能报表
-import { Select, Input, Tree, Tabs, DatePicker, Button, Table } from 'antd';
-import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
-import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
+import { Select, DatePicker, Button, Table } from 'antd';
+import { RealBodyContainer } from './style';
 const { Option } = Select;
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { boardDayList, typeList } from '@/commonInterface';
-import { formatDate } from '@/utils/common';
+import { formatDate, getWeek } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { energyElectricselectList } from '@/apis/energyMerge';
-import { dayColumns } from './data';
+import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 
 const RealPage = () => {
   return (
-    <RealContainer>
-      <RealOption />
-      <RealBodyOption />
-    </RealContainer>
-  );
-};
-
-const treeData = [
-  {
-    title: '1AA',
-    key: '0-0',
-    icon: <CarryOutOutlined />,
-    children: [
-      {
-        title: '北厂区0101',
-        key: '0-0-0',
-        icon: <CarryOutOutlined />,
-        children: [{ title: '站点1', key: '0-0-0-0' }],
-      },
-      {
-        title: '南长区1901',
-        key: '0-0-1',
-        icon: <CarryOutOutlined />,
-        children: [
-          { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
-        ],
-      },
-      {
-        title: '北厂区0101',
-        key: '0-0-2',
-        icon: <CarryOutOutlined />,
-        children: [
-          { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-          {
-            title: '站点2',
-            key: '0-0-2-1',
-            icon: <CarryOutOutlined />,
-          },
-        ],
-      },
-    ],
-  },
-];
-const RealOption = () => {
-  const onSelect = (selectedKeys: React.Key[], info: any) => {
-    console.log('selected', selectedKeys, info);
-  };
-  return (
-    <RealOptionContainer>
-      <Select size="large" defaultValue="电" onChange={() => {}}>
-        <Option value="电">电</Option>
-        <Option value="水">水</Option>
-        <Option value="蒸汽">蒸汽</Option>
-        <Option value="空气">空气</Option>
-        <Option value="氮气">氮气</Option>
-        <Option value="天然气">天然气</Option>
-      </Select>
-      <Input size="large" suffix={<SearchOutlined />} placeholder="节点名称" />
-      <Tree
-        showLine={true}
-        showIcon={false}
-        defaultExpandedKeys={['0-0-0']}
-        onSelect={onSelect}
-        treeData={treeData}
-      />
-    </RealOptionContainer>
+    <MyTemplate isShowCheckBox={true}>
+      <RealBodyOption></RealBodyOption>
+    </MyTemplate>
   );
 };
 
 const RealBodyOption = () => {
+  const templateProps = useContext(TemplateContext);
   const [form, setForm] = useImmer({
     energyType: 1,
     dateType: 1,
     queryStartDate: formatDate(),
     dataSource: [],
+    columns: [],
   });
   const handleDateTypeChange = (val: any) => {
-    console.log(val);
     setForm((p) => {
       p.dateType = val;
     });
   };
-  const handleQueryStartDateChange = (val: any) => {
+  const handleQueryStartDateChange = (val: Moment) => {
+    console.log(getWeek(val.toDate()));
     if (!val) {
       setForm((p) => {
         p.queryStartDate = formatDate();
@@ -114,22 +52,63 @@ const RealBodyOption = () => {
     energyElectricselectList({
       queryStartDate: '2022-03-15 00:00:00',
       queryEndDate: '2022-03-15 12:23:23',
-      regionIdList: [1, 2],
-      current: 1,
-      size: 30,
+      regionIdList: templateProps.area,
+      energyType: templateProps.energyType,
+      dateType: form.dateType,
     }).then((res: any) => {
       if (res?.meta?.code === 200) {
+        const dataSource = res.data;
+        formatTableData(dataSource);
+        const columns = formatTableColumns(res?.data[0]?.queryDataList);
         setForm((p) => {
-          console.log(res.data.list);
-          p.dataSource = res?.data?.list;
+          p.dataSource = dataSource;
+          p.columns = columns as any;
         });
+      }
+    });
+  };
+
+  const formatTableColumns = (data: any | undefined) => {
+    if (!data) {
+      return [];
+    }
+    const unit = typeList[templateProps.energyType - 1].unit;
+    const columns = [
+      {
+        title: '节点名称',
+        dataIndex: 'name',
+      },
+    ];
+
+    data.map((item: any, index: number) => {
+      let qz = index.toString();
+      const column = { title: '', dataIndex: '' };
+      if (index < 10) {
+        qz = '0' + index;
+      }
+      column.title = `${qz}时（${unit}）`;
+      column.dataIndex = `time${index}`;
+      columns.push(column);
+    });
+    return columns;
+  };
+
+  const formatTableData = (data: any) => {
+    data.map((item: any) => {
+      item?.queryDataList.map((list: any, index: number) => {
+        item[`time${index}`] = list?.flow;
+      });
+      if (item?.children && item?.children.length) {
+        formatTableData(item.children);
+      } else {
+        delete item.children;
       }
     });
   };
 
   useEffect(() => {
     getDatasource();
-  }, []);
+  }, [templateProps.energyType, templateProps.area]);
   return (
     <RealBodyContainer>
       <div className="options-box">
@@ -149,7 +128,8 @@ const RealBodyOption = () => {
           <DatePicker
             size="large"
             onChange={handleQueryStartDateChange}
-            allowClear
+            defaultValue={moment()}
+            allowClear={false}
             picker={(boardDayList[form.dateType - 1]?.type as any) || 'year'}
             disabledDate={(current) => {
               return current && current >= moment().endOf('day');
@@ -160,15 +140,17 @@ const RealBodyOption = () => {
           </Button>
         </div>
       </div>
-      <div className="table-box">
-        <Table
-          size="small"
-          rowKey="A"
-          key="A"
-          pagination={{ pageSize: 20 }}
-          dataSource={form.dataSource}
-          columns={dayColumns(typeList[form.energyType - 1].unit)}
-        />
+      <div className="tabWrapper">
+        <div className="table-box">
+          <Table
+            size="small"
+            rowKey="A"
+            key="A"
+            pagination={{ pageSize: 20 }}
+            dataSource={form.dataSource}
+            columns={form.columns}
+          />
+        </div>
       </div>
     </RealBodyContainer>
   );

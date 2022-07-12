@@ -44,38 +44,23 @@ const RealBodyOption = () => {
     setTab(tab);
   };
   const onFinish = (values: any) => {
-    const { option, date, name, xinghao, type, status } = values;
-    let res: any;
-    if (tab === tabStatus.RealTime) {
-      //option date发送请求
-    }
-    if (tab === tabStatus.Warnning) {
-      //date发送请求
-    }
-    if (tab === tabStatus.Contact) {
-      //name xinghao type status发送请求
-    }
-    //统一处理返回数据
-    handleResponse(res, option);
+    handleResponse(values);
     console.log(values);
   };
 
-  const handleResponse = (res: any, option?: string) => {
-    if (option) {
-      getRealTimeRes();
-    }
+  const handleResponse = (values: any) => {
+    getRealTimeRes(values);
   };
 
-  const getRealTimeRes = () => {
-    // const cday = moment();
-    // console.log(cday.toDate().getMonth());
-    // console.log(formatTime(form.getFieldValue('date').toDate()));
+  const getRealTimeRes = (values?: any) => {
     if (tab === tabStatus.RealTime) {
+      const searchDate = values?.date || form.getFieldValue('date');
+      const { queryStartDate, queryEndDate } = formatTime(searchDate.toDate());
       dayRealTime({
         energyType: templateProps.energyType,
         regionId: templateProps.area[0],
-        queryStartDate: '2022-03-01 00:00:00',
-        queryEndDate: '2022-03-01 23:59:59',
+        queryStartDate: queryStartDate,
+        queryEndDate: queryEndDate,
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
           console.log(res.data);
@@ -103,7 +88,12 @@ const RealBodyOption = () => {
     data: any,
   ) => {
     const columnDataSource: any[] = [];
-    let columns = [
+    let columns: any[] = [
+      {
+        title: 'ID',
+        dataIndex: 'index',
+        tip: '唯一的 key',
+      },
       {
         title: '采集时间',
         dataIndex: 'time',
@@ -138,6 +128,12 @@ const RealBodyOption = () => {
     if (type === 1) {
       if (detailType === '电流') {
         columns = [
+          // {
+          //   title: 'ID',
+          //   dataIndex: 'key',
+          //   tip: '唯一的 key',
+          //   className:'tableHiddle',
+          // },
           {
             title: '采集时间',
             dataIndex: 'time',
@@ -812,6 +808,7 @@ const RealBodyOption = () => {
                   <DatePicker
                     size="large"
                     name="date"
+                    allowClear={false}
                     disabledDate={(current) => {
                       return current && current > moment().endOf('day');
                     }}

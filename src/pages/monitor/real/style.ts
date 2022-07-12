@@ -72,4 +72,7 @@ export const RealBodyContainer = styled.div`
       margin-top: 16px;
     }
   }
+  .tableHiddle {
+    display: none;
+  }
 `;

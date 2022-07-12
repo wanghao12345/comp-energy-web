@@ -36,14 +36,27 @@ export const formatDate = (d?: Date) => {
   return `${yaer}-${mon}-${day}`;
 };
 
-export const formatTime = (realDay: Date) => {
+export const formatTime = (realDay: Date, type?: number) => {
+  let queryStartDate = '',
+    queryEndDate = '';
+
   const date = realDay;
+  const currentDate = new Date();
   const yaer = date.getFullYear();
-  let mon: any = date.getMonth();
+  let mon: any = date.getMonth() + 1;
   let day: any = date.getDate();
   let hour: any = date.getHours();
   let minute: any = date.getMinutes();
   let second: any = date.getSeconds();
+  if (
+    yaer !== currentDate.getFullYear() ||
+    mon !== currentDate.getMonth() + 1 ||
+    day !== currentDate.getDate()
+  ) {
+    hour = 23;
+    minute = 59;
+    second = 59;
+  }
   if (mon < 10) {
     mon = '0' + mon;
   }
@@ -59,8 +72,82 @@ export const formatTime = (realDay: Date) => {
   if (second < 10) {
     second = '0' + second;
   }
+  queryStartDate = `${yaer}-${mon}-${day} 00:00:00`;
+  queryEndDate = `${yaer}-${mon}-${day} ${hour}:${minute}:${second}`;
+
+  if (type === 2) {
+    const { weekStart, weekEnd } = getWeek(date);
+    queryStartDate = weekStart;
+    queryEndDate = weekEnd;
+  }
+
+  if (type === 3) {
+    const { monthStart, monthEnd } = getMonth(date);
+    queryStartDate = monthStart;
+    queryEndDate = monthEnd;
+  }
+
+  if (type === 4) {
+  }
+
+  return { queryStartDate, queryEndDate };
+};
+
+export const getWeek = (date: Date) => {
+  var one_day = 86400000;
+  var day = date.getDay();
+  // 设置时间为当天的0点
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+  var week_start_time = date.getTime() - (day - 1) * one_day;
+  var week_end_time = date.getTime() + (7 - day) * one_day;
+  var last = week_start_time - 2 * 24 * 60 * 60 * 1000;
+  var next = week_end_time + 24 * 60 * 60 * 1000;
+  const year = date.getFullYear();
+  var month1: any = new Date(week_start_time).getMonth() + 1;
+  var month2: any = new Date(week_end_time).getMonth() + 1;
+  var day1: any = new Date(week_start_time).getDate();
+  var day2: any = new Date(week_end_time).getDate();
+  if (month1 < 10) {
+    month1 = '0' + month1;
+  }
+  if (month2 < 10) {
+    month2 = '0' + month2;
+  }
+  if (day1 < 10) {
+    day1 = '0' + day1;
+  }
+  if (day2 < 10) {
+    day2 = '0' + day2;
+  }
+  var time1 = month1 + '.' + day1;
+  var time2 = month2 + '.' + day2;
+  var map: any = new Map();
+  map['stime'] = week_start_time; // 当前周周一零点的毫秒数
+  map['etime'] = week_end_time; // 当前周周日零点的毫秒数
+  map['stext'] = time1; // 当前周 周一的日期 mm.dd 如 03.14
+  map['etext'] = time2; // 当前周 周日的日期 mm.dd 如 03.20
+  map['last'] = last; // 上一周 周六零点的毫秒数
+  map['next'] = next; // 下一周  周一零点的毫秒数
+  map['text'] = time1 + '-' + time2;
+  var start = `${year}-${month1}-${day1} 00:00:00`;
+  var end = `${year}-${month2}-${day2} 23:59:59`;
+
   return {
-    queryStartDate: `${yaer}-${mon}-${day} 00:00:00`,
-    queryEndDate: `${yaer}-${mon}-${day} ${hour}:${minute}:${second}`,
+    weekStart: start,
+    weekEnd: end,
+  };
+};
+
+export const getMonth = (date: Date) => {
+  var y = date.getFullYear(); //获取年份
+  var m: any = date.getMonth() + 1; //获取月份
+  var d: any = new Date(y, m, 0).getDate(); //获取当月最后一日
+  m = m < 10 ? '0' + m : m; //月份补 0
+  return {
+    monthStart: `${y}-${m}-01 00:00:00`,
+    monthEnd: `${y}-${m}-${d} 23:59:59`,
   };
 };

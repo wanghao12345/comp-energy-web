@@ -54,7 +54,13 @@ export const RealBodyContainer = styled.div`
       }
     }
   }
-  .table-box {
+  .tabWrapper {
     padding: 0 24px;
+  }
+  .table-box {
+    box-sizing: border-box;
+    width: calc(100vw - 664px);
+    height: calc(100vh - 220px);
+    overflow: auto;
   }
 `;
