@@ -178,7 +178,7 @@ const RealBodyOption = () => {
         <DatePicker
           size="large"
           onChange={handleQueryStartDateChange}
-          allowClear
+          allowClear={false}
           picker={(boardDayList[form.dateType - 1]?.type as any) || 'year'}
           disabledDate={(current) => {
             return current && current >= moment().endOf('day');

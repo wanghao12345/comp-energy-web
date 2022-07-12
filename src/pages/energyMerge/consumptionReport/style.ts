@@ -63,4 +63,11 @@ export const RealBodyContainer = styled.div`
     height: calc(100vh - 220px);
     overflow: auto;
   }
+  .tableColWidth {
+    width: 120px;
+    min-width: 80px;
+  }
+  .columnWidth {
+    min-width: 120px;
+  }
 `;

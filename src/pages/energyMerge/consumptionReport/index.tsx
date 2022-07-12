@@ -4,7 +4,7 @@ import { RealBodyContainer } from './style';
 const { Option } = Select;
 import { useContext, useEffect } from 'react';
 import { boardDayList, typeList } from '@/commonInterface';
-import { formatDate, getWeek } from '@/utils/common';
+import { formatDate, formatTime, getWeek } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { energyElectricselectList } from '@/apis/energyMerge';
@@ -23,7 +23,7 @@ const RealBodyOption = () => {
   const [form, setForm] = useImmer({
     energyType: 1,
     dateType: 1,
-    queryStartDate: formatDate(),
+    queryStartDate: new Date(),
     dataSource: [],
     columns: [],
   });
@@ -32,26 +32,24 @@ const RealBodyOption = () => {
       p.dateType = val;
     });
   };
-  const handleQueryStartDateChange = (val: Moment) => {
-    console.log(getWeek(val.toDate()));
-    if (!val) {
-      setForm((p) => {
-        p.queryStartDate = formatDate();
-      });
-      return;
-    }
+  const handleQueryStartDateChange = (val: any) => {
     const m = val as Moment;
-    const cdate = `${m.year()}-${m.month() + 1}-${m.date()}`;
     setForm((p) => {
-      p.queryStartDate = cdate;
+      p.queryStartDate = m.toDate();
     });
   };
-  const onClickSearch = () => {};
+  const onClickSearch = () => {
+    getDatasource();
+  };
 
   const getDatasource = () => {
+    const { queryStartDate, queryEndDate } = formatTime(
+      form.queryStartDate,
+      form.dateType,
+    );
     energyElectricselectList({
-      queryStartDate: '2022-03-15 00:00:00',
-      queryEndDate: '2022-03-15 12:23:23',
+      queryStartDate: queryStartDate,
+      queryEndDate: queryEndDate,
       regionIdList: templateProps.area,
       energyType: templateProps.energyType,
       dateType: form.dateType,
@@ -77,20 +75,41 @@ const RealBodyOption = () => {
       {
         title: '节点名称',
         dataIndex: 'name',
+        className: 'tableColWidth',
       },
     ];
 
     data.map((item: any, index: number) => {
-      let qz = index.toString();
-      const column = { title: '', dataIndex: '' };
-      if (index < 10) {
-        qz = '0' + index;
-      }
-      column.title = `${qz}时（${unit}）`;
+      const qz = formatColumnTitle(item?.createDate || '2022-03-13 23:59:59');
+      const column = { title: '', dataIndex: '', className: '' };
+      column.title = `${qz}（${unit}）`;
       column.dataIndex = `time${index}`;
+      column.className = 'columnWidth';
       columns.push(column);
     });
     return columns;
+  };
+
+  const formatColumnTitle = (item: string) => {
+    let qz = item;
+    if (form.dateType === 1) {
+      qz = qz.split(' ')[1].split(':')[0] + '时';
+    }
+    if (form.dateType === 2) {
+      qz =
+        qz.split(' ')[0].split('-')[1] + '-' + qz.split(' ')[0].split('-')[2];
+    }
+    if (form.dateType === 3) {
+      qz = qz.split(' ')[0].split('-')[2];
+    }
+    if (form.dateType === 4) {
+      qz = qz.split(' ')[0].split('-')[1] + '月';
+    }
+
+    if (form.dateType === 6) {
+      qz = qz.split(' ')[0].split('-')[0] + '月';
+    }
+    return qz;
   };
 
   const formatTableData = (data: any) => {
@@ -146,7 +165,7 @@ const RealBodyOption = () => {
             size="small"
             rowKey="A"
             key="A"
-            pagination={{ pageSize: 20 }}
+            pagination={false}
             dataSource={form.dataSource}
             columns={form.columns}
           />

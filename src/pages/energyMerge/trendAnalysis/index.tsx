@@ -42,7 +42,7 @@ const RealBodyOption = () => {
   };
   const [form, setForm] = useImmer({
     dateType: 1,
-    queryStartDate: moment(),
+    queryStartDate: new Date(),
   });
 
   const [barChartData, setBarChartData] = useState<any>(barCartDataOptions);
@@ -54,8 +54,9 @@ const RealBodyOption = () => {
     });
   };
   const handleQueryStartDateChange = (val: any) => {
+    const m = val as Moment;
     setForm((p) => {
-      p.queryStartDate = val;
+      p.queryStartDate = m.toDate();
     });
   };
   const onClickSearch = () => {
@@ -69,8 +70,8 @@ const RealBodyOption = () => {
     if (currentTab === ITabStatus.yaerOnyear) {
       selectTrendAnalysisYOYByRegionIds({
         energyType: energyType,
-        dateType: 2,
-        regionIdList: [1],
+        dateType: 6,
+        regionIdList: templateProps.area,
         queryStartDate: '2022-03-15',
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
@@ -84,7 +85,7 @@ const RealBodyOption = () => {
       selectTrendAnalysisQOQByRegionIds({
         energyType: templateProps.energyType,
         dateType: 2,
-        regionIdList: [1],
+        regionIdList: templateProps.area,
         queryStartDate: '2022-03-15',
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
@@ -235,7 +236,7 @@ const RealBodyOption = () => {
 
   useEffect(() => {
     getTrendAnalysisData(templateProps.energyType, currentTab);
-  }, [templateProps.energyType, currentTab]);
+  }, [templateProps.energyType, currentTab, templateProps.area]);
 
   return (
     <RealBodyContainer>
@@ -276,12 +277,13 @@ const RealBodyOption = () => {
           <DatePicker
             size="large"
             onChange={handleQueryStartDateChange}
+            allowClear={false}
+            defaultValue={moment()}
             picker={
               currentTab === ITabStatus.yaerOnyear
                 ? 'year'
                 : (boardDayList[form.dateType - 1]?.type as any) || 'year'
             }
-            value={form.queryStartDate}
             disabledDate={(current) => {
               return current && current >= moment().endOf('day');
             }}

@@ -137,7 +137,7 @@ const RealBodyOption = () => {
     <RealBodyContainer>
       <div className="options-box">
         <div className="search-box">
-          <DatePicker size="large" onChange={() => {}} />
+          <DatePicker size="large" onChange={() => {}} allowClear={false} />
           <TimePicker
             size="large"
             defaultValue={moment('12:08', 'HH:mm')}

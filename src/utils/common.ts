@@ -39,7 +39,6 @@ export const formatDate = (d?: Date) => {
 export const formatTime = (realDay: Date, type?: number) => {
   let queryStartDate = '',
     queryEndDate = '';
-
   const date = realDay;
   const currentDate = new Date();
   const yaer = date.getFullYear();
@@ -48,15 +47,6 @@ export const formatTime = (realDay: Date, type?: number) => {
   let hour: any = date.getHours();
   let minute: any = date.getMinutes();
   let second: any = date.getSeconds();
-  if (
-    yaer !== currentDate.getFullYear() ||
-    mon !== currentDate.getMonth() + 1 ||
-    day !== currentDate.getDate()
-  ) {
-    hour = 23;
-    minute = 59;
-    second = 59;
-  }
   if (mon < 10) {
     mon = '0' + mon;
   }
@@ -73,7 +63,8 @@ export const formatTime = (realDay: Date, type?: number) => {
     second = '0' + second;
   }
   queryStartDate = `${yaer}-${mon}-${day} 00:00:00`;
-  queryEndDate = `${yaer}-${mon}-${day} ${hour}:${minute}:${second}`;
+  const currentEnd = `${yaer}-${mon}-${day} 23:59:59`;
+  queryEndDate = currentEnd;
 
   if (type === 2) {
     const { weekStart, weekEnd } = getWeek(date);
@@ -88,6 +79,45 @@ export const formatTime = (realDay: Date, type?: number) => {
   }
 
   if (type === 4) {
+    const { quarStart, quarEnd } = getQuar(date);
+    queryStartDate = quarStart;
+    queryEndDate = quarEnd;
+  }
+  //半年
+  if (type === 5) {
+  }
+
+  //年
+
+  if (type === 6) {
+    const { yaerStart, yearEnd } = getYear(date);
+    queryStartDate = yaerStart;
+    queryEndDate = yearEnd;
+  }
+
+  if (new Date(queryEndDate).getTime() > currentDate.getTime()) {
+    const yaer = currentDate.getFullYear();
+    let mon: any = currentDate.getMonth() + 1;
+    let day: any = currentDate.getDate();
+    let hour: any = currentDate.getHours();
+    let minute: any = currentDate.getMinutes();
+    let second: any = currentDate.getSeconds();
+    if (mon < 10) {
+      mon = '0' + mon;
+    }
+    if (day < 10) {
+      day = '0' + day;
+    }
+    if (minute < 10) {
+      minute = '0' + minute;
+    }
+    if (hour < 10) {
+      hour = '0' + hour;
+    }
+    if (second < 10) {
+      second = '0' + second;
+    }
+    queryEndDate = `${yaer}-${mon}-${day} ${hour}:${minute}:${second}`;
   }
 
   return { queryStartDate, queryEndDate };
@@ -149,5 +179,43 @@ export const getMonth = (date: Date) => {
   return {
     monthStart: `${y}-${m}-01 00:00:00`,
     monthEnd: `${y}-${m}-${d} 23:59:59`,
+  };
+};
+
+export const getQuar = (date: Date) => {
+  var y = date.getFullYear(); //获取年份
+  var m: any = date.getMonth() + 1; //获取月份
+  var d: any = new Date(y, m, 0).getDate(); //获取当月最后一日
+  let quarStart = '',
+    quarEnd = '';
+  if (m <= 3) {
+    quarStart = `${y}-01-01 00:00:00`;
+    d = new Date(y, 3, 0).getDate();
+    quarEnd = `${y}-03-${d} 23:59:59`;
+  }
+  if (m > 3 && m <= 6) {
+    quarStart = `${y}-04-01 00:00:00`;
+    d = new Date(y, 6, 0).getDate();
+    quarEnd = `${y}-06-${d} 23:59:59`;
+  }
+  if (m > 6 && m <= 9) {
+    quarStart = `${y}-06-01 00:00:00`;
+    d = new Date(y, 9, 0).getDate();
+    quarEnd = `${y}-09-${d} 23:59:59`;
+  }
+  if (m > 9) {
+    quarStart = `${y}-09-01 00:00:00`;
+    d = new Date(y, 12, 0).getDate();
+    quarEnd = `${y}-12-${d} 23:59:59`;
+  }
+  return { quarStart, quarEnd };
+};
+
+export const getYear = (date: Date) => {
+  const yaer = date.getFullYear();
+  const lastDay = new Date(yaer, 12, 0).getDate();
+  return {
+    yaerStart: `${yaer}-01-01 00:00:00`,
+    yearEnd: `${yaer}-12-${lastDay} 23:59:59`,
   };
 };
