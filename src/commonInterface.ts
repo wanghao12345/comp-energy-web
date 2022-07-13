@@ -26,3 +26,10 @@ export const boardDayList = [
   { name: '季度', value: 4, type: 'quarter' },
   { name: '年', value: 6, type: 'year' },
 ];
+
+export const boardDayListnoDay = [
+  { name: '周', value: 2, type: 'week' },
+  { name: '月', value: 3, type: 'month' },
+  { name: '季度', value: 4, type: 'quarter' },
+  { name: '年', value: 6, type: 'year' },
+];

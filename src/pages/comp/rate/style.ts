@@ -16,6 +16,9 @@ export const RateOptionsContainer = styled.div`
     .ant-select {
       margin-right: 24px;
     }
+    .submitBtn {
+      margin-left: 24px;
+    }
   }
 `;
 
@@ -71,11 +74,14 @@ export const RateBodyRightTopContainer = styled.div`
 `;
 export const RateBodyRightBottomContainer = styled.div`
   width: 100%;
-  height: 45%;
   .ant-table {
     .ant-table-thead > tr:not(:last-child) > th[colspan] {
       border-bottom: 1px solid #f0f0f0;
       border-right: 1px solid #f0f0f0;
     }
+  }
+  .table {
+    height: calc(100vh - 650px);
+    overflow: auto;
   }
 `;

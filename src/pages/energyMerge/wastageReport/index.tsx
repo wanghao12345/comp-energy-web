@@ -2,28 +2,13 @@ import { Select, DatePicker, Button, Table } from 'antd';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 import { Page } from './style';
-import { columns, data } from './data';
+import { columns } from './data';
 import { useEffect, useState } from 'react';
 import { selectEnergyLossByRegion } from '@/apis/energyMerge';
 import { useImmer } from 'use-immer';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { formatDate, formatNumer } from '@/utils/common';
 import { typeList } from '@/commonInterface';
-// const rowSelection = {
-//   onChange: (selectedRowKeys, selectedRows) => {
-//     console.log(
-//       `selectedRowKeys: ${selectedRowKeys}`,
-//       'selectedRows: ',
-//       selectedRows,
-//     );
-//   },
-//   onSelect: (record, selected, selectedRows) => {
-//     console.log(record, selected, selectedRows);
-//   },
-//   onSelectAll: (selected, selectedRows, changeRows) => {
-//     console.log(selected, selectedRows, changeRows);
-//   },
-// };
 
 export default () => {
   const [tableData, setTableData] = useImmer<any[]>([]);
