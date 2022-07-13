@@ -21,6 +21,11 @@ export interface energyConsumptionOverviewData {
   queryStartDate: string;
   queryEndDate: string;
 }
+
+export interface energyConsumptionBulletinBoardDate
+  extends energyConsumptionOverviewData {
+  regionIdList: number[];
+}
 // 能源概况
 export const energyConsumptionOverview = async (
   data: energyConsumptionOverviewData,
@@ -33,7 +38,7 @@ export const energyConsumptionOverview = async (
 
 // 能源看板
 export const energyConsumptionBulletinBoard = async (
-  data: energyConsumptionOverviewData,
+  data: energyConsumptionBulletinBoardDate,
 ) => {
   return await request('/ea/webEnergy/energyConsumptionBulletinBoard', {
     method: 'POST',

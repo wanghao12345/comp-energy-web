@@ -6,10 +6,11 @@ import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
 import { boardDayList, typeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
-import { formatDate, formatNumer } from '@/utils/common';
+import { formatDate, formatNumer, formatTime } from '@/utils/common';
 import moment, { Moment } from 'moment';
+import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 const { Option } = Select;
 
 interface chartProps {
@@ -19,90 +20,17 @@ interface chartProps {
 }
 const RealPage = () => {
   return (
-    <RealContainer>
-      <RealOption />
+    <MyTemplate isShowCheckBox={true}>
       <RealBodyOption />
-    </RealContainer>
-  );
-};
-
-const RealOption = () => {
-  const [type, setType] = useState(1);
-  const treeData = [
-    {
-      title: '1AA',
-      key: '0-0',
-      icon: <CarryOutOutlined />,
-      children: [
-        {
-          title: '北厂区0101',
-          key: '0-0-0',
-          icon: <CarryOutOutlined />,
-          children: [{ title: '站点1', key: '0-0-0-0' }],
-        },
-        {
-          title: '南长区1901',
-          key: '0-0-1',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
-          ],
-        },
-        {
-          title: '北厂区0101',
-          key: '0-0-2',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-            {
-              title: '站点2',
-              key: '0-0-2-1',
-              icon: <CarryOutOutlined />,
-            },
-          ],
-        },
-      ],
-    },
-  ];
-  const onSelect = (selectedKeys: React.Key[], info: any) => {
-    console.log('selected', selectedKeys, info);
-  };
-  const handleChange = (e: number) => {
-    setType(e);
-  };
-  return (
-    <RealOptionContainer>
-      <Select size="large" value={type} onChange={handleChange}>
-        {typeList.map((item) => (
-          <Option key={item.value} value={item.value}>
-            {item.name}
-          </Option>
-        ))}
-      </Select>
-      <Input
-        style={{ marginBottom: '20px' }}
-        size="large"
-        suffix={<SearchOutlined />}
-        placeholder="线路名称"
-      />
-      <Checkbox>是否级联</Checkbox>
-      <Checkbox>全选</Checkbox>
-      <Tree
-        showLine={true}
-        showIcon={false}
-        defaultExpandedKeys={['0-0-0']}
-        onSelect={onSelect}
-        treeData={treeData}
-      />
-    </RealOptionContainer>
+    </MyTemplate>
   );
 };
 
 const RealBodyOption = () => {
+  const templateProps = useContext(TemplateContext);
   const [form, setForm] = useImmer({
-    energyType: 1,
     dateType: 1,
-    queryStartDate: formatDate(),
+    queryStartDate: new Date(),
   });
   const [barChartData, setBarChartData] = useState(barCartDataOptions);
   const handleDateTypeChange = (val: any) => {
@@ -112,28 +40,27 @@ const RealBodyOption = () => {
     });
   };
   const handleQueryStartDateChange = (val: any) => {
-    if (!val) {
-      setForm((p) => {
-        p.queryStartDate = formatDate();
-      });
-      return;
-    }
     const m = val as Moment;
-    const cdate = `${m.year()}-${m.month() + 1}-${m.date()}`;
     setForm((p) => {
-      p.queryStartDate = cdate;
+      p.queryStartDate = m.toDate();
     });
   };
+
   const onClickSearch = () => {
     getBoardData();
   };
 
   const getBoardData = () => {
+    const { queryStartDate, queryEndDate } = formatTime(
+      form.queryStartDate,
+      form.dateType,
+    );
     energyConsumptionBulletinBoard({
-      energyType: form.energyType,
+      energyType: templateProps.energyType,
       dateType: form.dateType,
-      queryStartDate: '2022-04-01',
-      queryEndDate: '2022-04-30',
+      queryStartDate: queryStartDate,
+      queryEndDate: queryEndDate,
+      regionIdList: templateProps.area,
     }).then((res: any) => {
       if (res?.meta?.code === 200) {
         const { xAxisData, seriesData } = formChartData(res?.data);
@@ -159,7 +86,7 @@ const RealBodyOption = () => {
 
   useEffect(() => {
     getBoardData();
-  }, []);
+  }, [templateProps.area, templateProps.energyType]);
   return (
     <RealBodyContainer>
       <div className="search-box">
@@ -178,6 +105,7 @@ const RealBodyOption = () => {
         <DatePicker
           size="large"
           onChange={handleQueryStartDateChange}
+          defaultValue={moment()}
           allowClear={false}
           picker={(boardDayList[form.dateType - 1]?.type as any) || 'year'}
           disabledDate={(current) => {
