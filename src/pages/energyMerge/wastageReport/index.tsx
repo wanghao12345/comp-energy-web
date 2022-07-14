@@ -105,6 +105,7 @@ export default () => {
           size="large"
           value={rangePickerValue}
           onChange={onChangeRangePick}
+          allowClear={false}
           disabledDate={(current) => {
             return current && current >= moment().endOf('day');
           }}

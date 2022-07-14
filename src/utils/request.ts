@@ -1,6 +1,6 @@
 // import { request } from "umi";
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 
 const codeMessage: Record<number, string> = {
   200: '服务器成功返回请求的数据。',
@@ -66,8 +66,9 @@ request.interceptors.response.use(async (response: any) => {
   // close NProgress
   // NProgress.done();
   const data = await response.clone().json();
-  if (data.meta.code !== 200) {
+  if (data?.meta?.code !== 200) {
     // 界面报错处理
+    message.error('网络异常，请刷新后重试！');
   }
 
   return response;

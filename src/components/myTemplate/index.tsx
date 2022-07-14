@@ -1,23 +1,39 @@
-import { useEffect, useState, FC, memo, createContext, useMemo } from 'react';
+import {
+  useEffect,
+  useState,
+  FC,
+  memo,
+  createContext,
+  useMemo,
+  useRef,
+} from 'react';
 import { Select, Input, Tree, Checkbox } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer } from './style';
 import { getRegionTreeList } from '@/apis';
 import { typeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
-import { DataNode } from 'antd/lib/tree';
 const { Option } = Select;
+
+interface region {
+  name: string;
+  id: number;
+}
 
 export interface templageProps {
   energyType: number;
   area: number[];
   areaID: string[];
+  regionList: region[];
+  regionTree: any[];
 }
 
-const defaultData = {
+const defaultData: templageProps = {
   energyType: 1,
-  area: [2],
-  areaID: ['2'],
+  area: [],
+  areaID: [],
+  regionList: [],
+  regionTree: [],
 };
 
 type IProps = {
@@ -29,6 +45,7 @@ export const TemplateContext = createContext<templageProps>(defaultData);
 
 const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
   const [contextProps, setContextProps] = useImmer(defaultData);
+  const regionList = useRef<any>();
   const onChange = (key: string) => {
     const ck = parseInt(key);
     setContextProps((p) => {
@@ -42,9 +59,47 @@ const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
       p.area = selectedKeys.map((value) => {
         return parseInt(value as any);
       });
-      console.log(p.area);
+      console.log(info);
     });
   };
+
+  const initTemplateProps = (regionList: region[], regionTree: any) => {
+    setContextProps(
+      Object.assign(
+        {},
+        {
+          energyType: defaultData.energyType,
+          area: [regionList[0].id],
+          areaID: [regionList[0].id.toString()],
+          regionList: regionList,
+          regionTree: regionTree,
+        },
+      ),
+    );
+  };
+
+  const formatRegionList = (data: any) => {
+    data.map((item: any) => {
+      if (item?.children && item?.children.length) {
+        formatRegionList(item?.children);
+      } else {
+        regionList.current.push({
+          name: item?.name,
+          id: parseInt(item?.id || '1'),
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    getRegionTreeList().then((res: any) => {
+      if (res?.meta?.code === 200) {
+        regionList.current = [];
+        formatRegionList(res.data || []);
+        initTemplateProps(regionList.current, res.data);
+      }
+    });
+  }, []);
 
   return (
     <TemplateContext.Provider value={contextProps}>
@@ -181,24 +236,21 @@ export const RealOption: FC<RealOptionProps> = memo(
     //   return loop(tree);
     // }, [tree, nodeName]);
 
-    const getNodeList = () => {
-      getRegionTreeList().then((res: any) => {
-        if (res?.meta?.code === 200) {
-          const data = res.data;
-          formatTreeData(data);
-          setTree([...data]);
-          setExpandedKeys(templageData.areaID);
-          if (isShowCheckBox) {
-            setCheckedKeys(templageData.areaID);
-          } else {
-            setSelectedKeys(templageData.areaID);
-          }
+    const getNodeList = (data: any) => {
+      if (data.length) {
+        formatTreeData(data);
+        setTree([...data]);
+        setExpandedKeys(templageData.areaID);
+        if (isShowCheckBox) {
+          setCheckedKeys(templageData.areaID);
+        } else {
+          setSelectedKeys(templageData.areaID);
         }
-      });
+      }
     };
     useEffect(() => {
-      getNodeList();
-    }, []);
+      getNodeList(templageData.regionTree);
+    }, [templageData.regionTree]);
 
     return (
       <RealOptionContainer>

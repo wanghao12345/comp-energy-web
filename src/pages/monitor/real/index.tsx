@@ -5,7 +5,6 @@ import { RealBodyContainer } from './style';
 import {
   chartOption,
   ContactColumns,
-  dataSource1,
   optionsData,
   tabStatus,
   WarnColumns,
@@ -13,7 +12,7 @@ import {
 import MyChartBox from '@/components/myChartsBox';
 import moment from 'moment';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
-import { formatDate, formatTime } from '@/utils/common';
+import { formatTime } from '@/utils/common';
 import { dayRealTime } from '@/apis/monitor';
 
 const { Option } = Select;
@@ -471,7 +470,7 @@ const RealBodyOption = () => {
             key: 'C',
           },
           {
-            title: 'P（KW）',
+            title: 'Ps（KW）',
             dataIndex: 'D',
             key: 'D',
           },

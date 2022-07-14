@@ -1,84 +1,142 @@
 // 报警管理=>报警规则
-import { Button, Table, Space } from 'antd';
+import {
+  Button,
+  Table,
+  Space,
+  TablePaginationConfig,
+  Popconfirm,
+  message,
+} from 'antd';
 import { RulesPage } from './style';
 import { Link } from 'umi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  tbEarlyWarningdeleteByIds,
+  tbEarlyWarningSelectList,
+} from '@/apis/event';
 export default () => {
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
-    });
-  }
   const columns = [
     {
       title: '节点名称',
-      dataIndex: 'name',
+      dataIndex: 'regionId',
     },
     {
       title: '能源类型',
-      dataIndex: 'age',
+      dataIndex: 'energyParameter',
     },
     {
       title: '仪表名称',
-      dataIndex: 'address',
+      dataIndex: 'name',
     },
     {
       title: '事件类型',
-      dataIndex: 'address',
+      dataIndex: 'eventType',
     },
     {
       title: '参数',
-      dataIndex: 'address',
-    },
-    {
-      title: '网格',
-      dataIndex: 'address',
-    },
-    {
-      title: '条件',
-      dataIndex: 'address',
+      dataIndex: 'energyParameter',
     },
     {
       title: '阀值',
-      dataIndex: 'address',
+      dataIndex: 'threshold1',
+    },
+    {
+      title: '条件',
+      dataIndex: 'condition1',
+    },
+    {
+      title: '阀值',
+      dataIndex: 'threshold1',
     },
     {
       title: '条件2',
-      dataIndex: 'address',
+      dataIndex: 'condition2',
     },
     {
-      title: '网格2',
-      dataIndex: 'address',
+      title: '阀值2',
+      dataIndex: 'threshold2',
     },
     {
-      title: '告警优先',
+      title: '报警优先',
       dataIndex: 'address',
     },
     {
       title: '是否启用',
-      dataIndex: 'address',
+      dataIndex: 'isEnable',
     },
     {
       title: '创建时间',
-      dataIndex: 'address',
+      dataIndex: 'createDate',
     },
     {
       title: '操作',
-      // dataIndex: 'address',
-      render: (text, record, index) => {
+      width: 200,
+      render: (text: any, record: any) => {
         return (
           <Space size="middle">
-            <a>编辑</a>
-            <a>删除</a>
+            <Link to={`/alarm/rules/add?id=${record?.id}`}>
+              <Button size="large" type="primary">
+                编辑
+              </Button>
+            </Link>
+            <Popconfirm
+              title="确认删除？"
+              color={'#293949'}
+              onConfirm={onConfirm}
+              onCancel={() => {
+                message.info('取消删除!');
+              }}
+            >
+              <Button size="large" type="ghost">
+                删除
+              </Button>
+            </Popconfirm>
           </Space>
         );
       },
     },
   ];
+  const [pagination, setPagination] = useState({
+    current: 1,
+    size: 20,
+    total: 0,
+  });
+  const onConfirm = (record: any) => {
+    const hide = message.loading('正在删除...', 50);
+    tbEarlyWarningdeleteByIds({ ids: [parseInt(record?.id || '1')] }).then(
+      (res: any) => {
+        hide();
+        if (res?.meta?.code === 200) {
+          message.success('正在刷新数据!');
+          getTableSource();
+        }
+      },
+    );
+  };
+  const [dataSource, setDataSource] = useState([]);
+  const onTableChange = (pconfig: TablePaginationConfig) => {
+    setPagination({
+      ...pagination,
+      current: pconfig.current || 1,
+    });
+  };
+  const getTableSource = () => {
+    tbEarlyWarningSelectList({
+      current: pagination.current,
+      size: pagination.size,
+    }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        setDataSource(res?.data?.list);
+        setPagination({
+          ...pagination,
+          total: res?.data?.count,
+        });
+      }
+    });
+  };
+  useEffect(() => {
+    getTableSource();
+  }, [pagination.current]);
   return (
     <RulesPage>
       <div className="headerBox">
@@ -90,9 +148,16 @@ export default () => {
       </div>
       <Table
         columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 50 }}
+        dataSource={dataSource}
+        pagination={{
+          pageSize: pagination.size,
+          total: pagination.total,
+          current: pagination.current,
+        }}
         scroll={{ y: window.screen.availHeight - 385 }}
+        onChange={onTableChange}
+        rowKey="createDate"
+        key="createDate"
       />
     </RulesPage>
   );

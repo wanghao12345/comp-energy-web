@@ -218,3 +218,7 @@ body {
 .ant-switch-checked {
   background-color: #00e166 !important;
 }
+
+.ant-message {
+  color: #000 !important;
+}

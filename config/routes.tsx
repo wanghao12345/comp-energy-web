@@ -90,18 +90,13 @@ export default [
           },
           {
             path: '/comp/electric',
-            name: '电参量采集报表',
+            name: '参量采集报表',
             component: '@/pages/comp/electric',
           },
           {
             path: '/comp/reading',
             name: '能耗集抄报表',
             component: '@/pages/comp/reading',
-          },
-          {
-            path: '/comp/param',
-            name: '电参量采集报表',
-            component: '@/pages/monitor/board',
           },
         ],
       },

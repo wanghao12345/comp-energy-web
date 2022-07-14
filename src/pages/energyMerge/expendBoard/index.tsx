@@ -1,14 +1,13 @@
 // 能源管理=>能耗看板
-import { Select, Input, Tree, DatePicker, Button, Checkbox } from 'antd';
-import { SearchOutlined, CarryOutOutlined } from '@ant-design/icons';
-import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
+import { Select, DatePicker, Button } from 'antd';
+import { RealBodyContainer } from './style';
 import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
-import { boardDayList, typeList } from '@/commonInterface';
+import { boardDayList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
 import { useContext, useEffect, useState } from 'react';
 import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
-import { formatDate, formatNumer, formatTime } from '@/utils/common';
+import { formatNumer, formatTime } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 const { Option } = Select;

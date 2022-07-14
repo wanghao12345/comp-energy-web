@@ -1,155 +1,141 @@
-import { useRef, useEffect } from 'react';
 import {
-  Select,
-  Input,
-  Tree,
-  Tabs,
   DatePicker,
   Button,
   Table,
   TimePicker,
+  TablePaginationConfig,
 } from 'antd';
-import moment from 'moment';
-import * as echarts from 'echarts';
-import {
-  SearchOutlined,
-  CarryOutOutlined,
-  FormOutlined,
-} from '@ant-design/icons';
-import { RealContainer, RealOptionContainer, RealBodyContainer } from './style';
-
-const { Option } = Select;
-const { TabPane } = Tabs;
+import moment, { Moment } from 'moment';
+import { RealBodyContainer } from './style';
+import MyTemplate, { TemplateContext } from '@/components/myTemplate';
+import { useContext, useEffect, useState } from 'react';
+import { getEnergyElectricData } from '@/apis/baseinfo';
+import { columnsOther } from './data';
 const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
-    <RealContainer>
-      <RealOption />
+    <MyTemplate isShowCheckBox={true}>
       <RealBodyOption />
-    </RealContainer>
-  );
-};
-
-const RealOption = () => {
-  const treeData = [
-    {
-      title: '1AA',
-      key: '0-0',
-      icon: <CarryOutOutlined />,
-      children: [
-        {
-          title: '北厂区0101',
-          key: '0-0-0',
-          icon: <CarryOutOutlined />,
-          children: [{ title: '站点1', key: '0-0-0-0' }],
-        },
-        {
-          title: '南长区1901',
-          key: '0-0-1',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-1-0', icon: <CarryOutOutlined /> },
-          ],
-        },
-        {
-          title: '北厂区0101',
-          key: '0-0-2',
-          icon: <CarryOutOutlined />,
-          children: [
-            { title: '站点1', key: '0-0-2-0', icon: <CarryOutOutlined /> },
-            {
-              title: '站点2',
-              key: '0-0-2-1',
-              icon: <CarryOutOutlined />,
-            },
-          ],
-        },
-      ],
-    },
-  ];
-  const onSelect = (selectedKeys: React.Key[], info: any) => {
-    console.log('selected', selectedKeys, info);
-  };
-  return (
-    <RealOptionContainer>
-      <Select size="large" defaultValue="电" onChange={() => {}}>
-        <Option value="电">电</Option>
-        <Option value="水">水</Option>
-        <Option value="蒸汽">蒸汽</Option>
-        <Option value="空气">空气</Option>
-        <Option value="氮气">氮气</Option>
-        <Option value="天然气">天然气</Option>
-      </Select>
-      <Input size="large" suffix={<SearchOutlined />} placeholder="节点名称" />
-      <Tree
-        showLine={true}
-        showIcon={false}
-        defaultExpandedKeys={['0-0-0']}
-        onSelect={onSelect}
-        treeData={treeData}
-      />
-    </RealOptionContainer>
+    </MyTemplate>
   );
 };
 
 const RealBodyOption = () => {
-  const dataSource = [
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    },
-  ];
+  const templateProps = useContext(TemplateContext);
+  const [rangePickerValue, setrangePickerValue] = useState<any>([
+    moment(),
+    moment(),
+  ]);
+  const [timePicker, setTimePicker] = useState(moment());
+  const [dataSource, setDataSource] = useState<any>([]);
+  const [pagination, setPagintion] = useState({
+    total: 0,
+    current: 1,
+    size: 10,
+  });
 
-  const columns = [
-    {
-      title: '采集时间',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Ia（A） ',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Ib（A）',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Ic（A）',
-      dataIndex: 'age',
-      key: 'age',
-    },
-  ];
-  const onChange = (key: string) => {
-    console.log(key);
+  const onChangeRangePick = (range: any) => {
+    setrangePickerValue(range);
   };
+
+  const onChangeTime = (val: moment.Moment | null) => {
+    setTimePicker(val || moment());
+  };
+
+  const onClickSearch = () => {
+    getTableSourceData();
+  };
+  const getTableSourceData = () => {
+    const queryStartDate =
+      (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
+    const queryEndDate =
+      (rangePickerValue[1] as Moment).format('YYYY-MM-DD') +
+      ' ' +
+      timePicker.format('HH:mm') +
+      ':00';
+    getEnergyElectricData({
+      type: templateProps.energyType,
+      regionIdList: templateProps.area,
+      current: pagination.current,
+      size: pagination.size,
+      queryStartDate: queryStartDate,
+      queryEndDate: queryEndDate,
+    }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        res?.data?.list.map((item: any) => {
+          item.regionId = getRegionName(parseInt(item.regionId || '1'));
+        });
+        setDataSource(res?.data?.list);
+        setPagintion({
+          ...pagination,
+          total: res?.data?.count,
+        });
+      }
+    });
+  };
+
+  const getRegionName = (id: number) => {
+    let name = templateProps.regionList[0].name;
+    templateProps.regionList.some((item) => {
+      if (item.id === id) {
+        name = item.name;
+      }
+    });
+    return name;
+  };
+
+  const onTableChange = (pageConfig: TablePaginationConfig) => {
+    setPagintion({
+      ...pagination,
+      current: pageConfig.current || 1,
+    });
+  };
+
+  useEffect(() => {
+    getTableSourceData();
+  }, [templateProps.area, templateProps.energyType, pagination.current]);
   return (
     <RealBodyContainer>
       <div className="options-box">
         <div className="search-box">
-          <DatePicker size="large" onChange={() => {}} allowClear={false} />
+          <RangePicker
+            size="large"
+            value={rangePickerValue}
+            onChange={onChangeRangePick}
+            allowClear={false}
+            disabledDate={(current) => {
+              return current && current >= moment().endOf('day');
+            }}
+          />
           <TimePicker
             size="large"
-            defaultValue={moment('12:08', 'HH:mm')}
             format={'HH:mm'}
+            allowClear={false}
+            value={timePicker}
+            onChange={onChangeTime}
           />
-          <Button size="large" type="primary">
+          <Button size="large" type="primary" onClick={onClickSearch}>
             查询
           </Button>
         </div>
+        <Button size="large" type="primary">
+          导出
+        </Button>
       </div>
       <div className="table-box">
-        <Table size="middle" dataSource={dataSource} columns={columns} />
+        <Table
+          size="middle"
+          dataSource={dataSource}
+          columns={columnsOther}
+          rowKey="activePower"
+          key="activePower"
+          onChange={onTableChange}
+          pagination={{
+            defaultCurrent: 1,
+            defaultPageSize: 10,
+            total: pagination.total,
+          }}
+        />
       </div>
     </RealBodyContainer>
   );
