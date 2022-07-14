@@ -6,6 +6,8 @@ import type { BasicLayoutProps } from '@ant-design/pro-layout';
 import ProLayout, { PageContainer } from '@ant-design/pro-layout';
 import { TabMenu } from '@/components';
 import routes from '../../config/routes';
+import { MyHeader } from '@/components/header/style';
+import MyHeaderMenu from '@/components/header';
 
 const BasicLayout: FC = (props: any) => {
   const { children, activeMenu, tabMenu, onChangeActiveMenu, onChangemenuTab } =
@@ -70,17 +72,15 @@ const BasicLayout: FC = (props: any) => {
       onCollapse={setCollapsed}
       headerContentRender={() => {
         return (
-          <div
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              cursor: 'pointer',
-              fontSize: '16px',
-            }}
-          >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </div>
+          <MyHeader>
+            <span className="menu" onClick={() => setCollapsed(!collapsed)}>
+              {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            </span>
+            <MyHeaderMenu />
+          </MyHeader>
         );
       }}
+      disableMobile
     >
       <TabMenu
         activeMenu={activeMenu}

@@ -13,6 +13,7 @@ import {
 } from '@/apis/energyMerge';
 import { formatDate, formatNumer } from '@/utils/common';
 import { dayTypeList, typeList } from '@/commonInterface';
+import { getRegionTreeList } from '@/apis';
 
 interface chartProps {
   x: string;
@@ -45,6 +46,10 @@ export default () => {
   const [lineChart, setLineChartData] = useState<any>();
   //右下角柱状图
   const [barChart, setBarChartData] = useState<any>();
+  const [selectData, setSelectData] = useState<any>({
+    value: { label: '站点', value: 1 },
+    options: [],
+  });
   const handleChange = (val: any) => {
     setForm((p) => {
       p.typeValue = val;
@@ -116,8 +121,42 @@ export default () => {
 
   const onClickTag = (item: any) => {
     setTabCurrentDay(item.value);
-    getChartData(form.typeValue, tabCurrentDay, 'barChart');
+    getChartData(form.typeValue, item.value, 'barChart');
   };
+
+  const formatSelectOption = (data: []) => {
+    data.map((item: any) => {
+      if (item?.children && item?.children.length) {
+        formatSelectOption(item?.children);
+      } else {
+        selectData.options.push({
+          label: item?.name,
+          value: parseInt(item?.id || '1'),
+        });
+      }
+    });
+  };
+
+  const getRegionList = () => {
+    getRegionTreeList().then((res: any) => {
+      if (res?.meta?.code === 200) {
+        formatSelectOption(res?.data);
+        setSelectData(
+          Object.assign(
+            {},
+            {
+              value: selectData.options[0],
+              options: selectData.options,
+            },
+          ),
+        );
+      }
+    });
+  };
+
+  useEffect(() => {
+    getRegionList();
+  }, []);
 
   useEffect(() => {
     getChartData(form.typeValue, form.areaValue, 'both');
@@ -266,7 +305,7 @@ export default () => {
               {dayTypeList.map((item) => (
                 <Tag
                   className={item.value === tabCurrentDay ? 'active' : ''}
-                  onClick={onClickTag}
+                  onClick={() => onClickTag(item)}
                   color="#203564"
                   key={item.value}
                 >
