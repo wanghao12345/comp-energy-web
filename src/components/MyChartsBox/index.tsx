@@ -6,6 +6,7 @@ import { MyChartBoxComp } from './style';
 interface Iprops {
   id: string;
   options: any;
+  loading?: boolean;
 }
 const baseOptions = {
   grid: {
@@ -41,18 +42,115 @@ const baseOptions = {
     },
   },
 };
+
+const loadingOption = {
+  graphic: {
+    elements: [
+      {
+        type: 'group',
+        left: 'center',
+        top: 'center',
+        children: new Array(7).fill(0).map((val, i) => ({
+          type: 'rect',
+          x: i * 20,
+          shape: {
+            x: 0,
+            y: -40,
+            width: 10,
+            height: 80,
+          },
+          style: {
+            fill: '#5470c6',
+          },
+          keyframeAnimation: {
+            duration: 1000,
+            delay: i * 200,
+            loop: true,
+            keyframes: [
+              {
+                percent: 0.5,
+                scaleY: 0.3,
+                easing: 'cubicIn',
+              },
+              {
+                percent: 1,
+                scaleY: 1,
+                easing: 'cubicOut',
+              },
+            ],
+          },
+        })),
+      },
+    ],
+  },
+};
+
+const noDate = {
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: 'center',
+        style: {
+          text: '无数据',
+          fontSize: 50,
+          fontWeight: 'bold',
+          lineDash: [0, 200],
+          lineDashOffset: 0,
+          fill: 'transparent',
+          stroke: '#f3efef',
+          lineWidth: 1,
+        },
+        keyframeAnimation: {
+          duration: 3000,
+          loop: false,
+          keyframes: [
+            {
+              percent: 0.7,
+              style: {
+                fill: 'transparent',
+                lineDashOffset: 200,
+                lineDash: [200, 0],
+              },
+            },
+            {
+              // Stop for a while.
+              percent: 0.8,
+              style: {
+                fill: 'transparent',
+              },
+            },
+            {
+              percent: 1,
+              style: {
+                fill: 'transparent',
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+};
+
 const MyChartBox: FC<Iprops> = memo((props) => {
-  const { id = 'chart', options } = props;
+  const { id = 'chart', options, loading } = props;
   const myEchart = useRef<any>(null);
 
   useEffect(() => {
-    if (typeof options !== 'object') {
-      return;
-    }
     const dom = document.getElementById(id) as any;
     myEchart.current?.dispose();
     myEchart.current = echarts.init(dom);
-    myEchart.current?.setOption(_merge(_cloneDeep(baseOptions), options));
+    if (loading) {
+      myEchart.current?.setOption(loadingOption);
+    } else {
+      if (typeof options !== 'object' || !options) {
+        myEchart.current?.setOption(noDate);
+      } else {
+        myEchart.current?.setOption(_merge(_cloneDeep(baseOptions), options));
+      }
+    }
     const reSizeFn = () => {
       myEchart.current?.resize();
     };
@@ -60,7 +158,7 @@ const MyChartBox: FC<Iprops> = memo((props) => {
     return () => {
       window.removeEventListener('resize', reSizeFn);
     };
-  }, [options]);
+  }, [options, loading]);
   return (
     <>
       <MyChartBoxComp {...props} id={id} />

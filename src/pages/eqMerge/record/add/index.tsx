@@ -1,30 +1,56 @@
-import React from 'react';
-import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Select, Switch, DatePicker, message } from 'antd';
 import { history } from 'umi';
 const { Option } = Select;
 import { FromButtonItem } from './style';
-import { eqAdd } from '@/apis/eqMerge';
+import { getTbEquipmentDetail, tbEquipmentAdd } from '@/apis/eqMerge';
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
 };
 export default () => {
+  const [id, setId] = useState<number>();
+  const [form] = Form.useForm();
+
   const onFinish = async (values: any) => {
     console.log(values);
-    const res = await eqAdd({
+    const hide = message.loading('正在新增设备...', 50);
+    const res = await tbEquipmentAdd({
       ...values,
       isEnable: values.isEnable ? 1 : 0,
       verificationDate: values.verificationDate.format('YYYY-MM-DD HH:mm:ss'),
       manufactureDate: values.manufactureDate.format('YYYY-MM-DD HH:mm:ss'),
     });
-    console.log(res);
+    if (res?.meta?.code === 200) {
+      hide();
+      message.success('新增设备成功！');
+      history.go(-1);
+    }
   };
   const onCancel = () => {
     history.go(-1);
   };
+
+  useEffect(() => {
+    if (window.location.search) {
+      const id = parseInt(window.location.search.split('=')[1] || '1');
+      setId(id);
+      getTbEquipmentDetail({ id: id }).then((res: any) => {
+        if (res?.meta?.code === 200) {
+          const data = res?.data;
+          const keys = Object.keys(data);
+          keys.map((item) => {
+            const field: any = {};
+            field[item] = data[item];
+            form.setFieldsValue(field);
+          });
+        }
+      });
+    }
+  }, []);
   return (
-    <Form {...layout} name="control-ref" onFinish={onFinish}>
-      <Form.Item name="meterAddress" label="仪表地址">
+    <Form {...layout} name="control-ref" onFinish={onFinish} form={form}>
+      <Form.Item name="equipmentCode" label="仪器编号">
         {/* rules={[{ required: true, message: '请输入仪表地址' }]} */}
         <Input placeholder="请输入" />
       </Form.Item>
@@ -57,7 +83,7 @@ export default () => {
       >
         <Input placeholder="请输入" />
       </Form.Item>
-      <Form.Item name="nodeName" label="节点名称">
+      <Form.Item name="regionId" label="节点名称">
         {/* rules={[{ required: true, message: '请输入节点名称' }]} */}
         <Input placeholder="请输入" />
       </Form.Item>

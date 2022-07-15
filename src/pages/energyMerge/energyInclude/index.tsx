@@ -11,9 +11,10 @@ import {
   energyConsumptionOverview,
   energyConsumptionOverviewQOQ,
 } from '@/apis/energyMerge';
-import { formatDate, formatNumer } from '@/utils/common';
+import { formatDate, formatNumer, formatTime } from '@/utils/common';
 import { dayTypeList, typeList } from '@/commonInterface';
 import { getRegionTreeList } from '@/apis';
+import moment from 'moment';
 
 interface chartProps {
   x: string;
@@ -37,8 +38,9 @@ interface huanbiProps {
 
 export default () => {
   const [form, setForm] = useImmer({
-    typeValue: 1,
-    areaValue: 1,
+    energyType: 1,
+    lineChartLoading: true,
+    barChartLoading: true,
   });
   const [huanBiData, setHuanbiData] = useState<huanbiProps | null>();
   const [tabCurrentDay, setTabCurrentDay] = useImmer(1);
@@ -47,12 +49,12 @@ export default () => {
   //右下角柱状图
   const [barChart, setBarChartData] = useState<any>();
   const [selectData, setSelectData] = useState<any>({
-    value: { label: '站点', value: 1 },
+    value: 1,
     options: [],
   });
   const handleChange = (val: any) => {
     setForm((p) => {
-      p.typeValue = val;
+      p.energyType = val;
     });
   };
 
@@ -61,24 +63,39 @@ export default () => {
     dateType: number,
     updateType: string,
   ) => {
+    const { queryStartDate, queryEndDate } = formatTime(
+      moment().toDate(),
+      dateType,
+    );
+    const qsd = queryStartDate.split(' ')[0];
+    const qed = queryEndDate.split(' ')[0];
     if (updateType === 'both') {
       energyConsumptionOverview({
         energyType,
         dateType: 1,
-        queryStartDate: '2022-04-01',
-        queryEndDate: '2022-04-30',
+        queryStartDate: qsd,
+        queryEndDate: qed,
+        regionIdList: [selectData.value],
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
+          if (!res?.data?.length) {
+            setForm((p) => {
+              p.lineChartLoading = false;
+              p.barChartLoading = false;
+            });
+            return;
+          }
           const { xAxisData, seriesData } = formChartData(res.data);
           barCartDataOptions.xAxis.data = xAxisData;
           barCartDataOptions.series[0].data = seriesData;
-          barCartDataOptions.series[0].name = typeList[form.typeValue - 1].name;
-          barCartDataOptions.yAxis.name = typeList[form.typeValue - 1].unit;
+          barCartDataOptions.series[0].name =
+            typeList[form.energyType - 1].name;
+          barCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
           lineCartDataOptions.xAxis.data = xAxisData;
           lineCartDataOptions.series[0].data = seriesData;
           lineCartDataOptions.series[0].name =
-            typeList[form.typeValue - 1].name;
-          lineCartDataOptions.yAxis.name = typeList[form.typeValue - 1].unit;
+            typeList[form.energyType - 1].name;
+          lineCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
           setBarChartData(Object.assign({}, barCartDataOptions));
           setLineChartData(Object.assign({}, lineCartDataOptions));
         }
@@ -88,8 +105,9 @@ export default () => {
       energyConsumptionOverview({
         energyType,
         dateType,
-        queryStartDate: '2022-04-01',
-        queryEndDate: '2022-04-30',
+        queryStartDate: qsd,
+        queryEndDate: qed,
+        regionIdList: [selectData.value],
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
           const { xAxisData, seriesData } = formChartData(res.data);
@@ -97,8 +115,8 @@ export default () => {
             barCartDataOptions.xAxis.data = xAxisData;
             barCartDataOptions.series[0].data = seriesData;
             barCartDataOptions.series[0].name =
-              typeList[form.typeValue - 1].name;
-            barCartDataOptions.yAxis.name = typeList[form.typeValue - 1].unit;
+              typeList[form.energyType - 1].name;
+            barCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
             setBarChartData(Object.assign({}, barCartDataOptions));
           }
         }
@@ -121,7 +139,7 @@ export default () => {
 
   const onClickTag = (item: any) => {
     setTabCurrentDay(item.value);
-    getChartData(form.typeValue, item.value, 'barChart');
+    getChartData(form.energyType, item.value, 'barChart');
   };
 
   const formatSelectOption = (data: []) => {
@@ -145,7 +163,7 @@ export default () => {
           Object.assign(
             {},
             {
-              value: selectData.options[0],
+              value: selectData.options[0].value,
               options: selectData.options,
             },
           ),
@@ -154,17 +172,25 @@ export default () => {
     });
   };
 
+  const onSelectChange = (value: any) => {
+    setSelectData({
+      value: value,
+      options: selectData.options,
+    });
+  };
+
   useEffect(() => {
     getRegionList();
   }, []);
 
   useEffect(() => {
-    getChartData(form.typeValue, form.areaValue, 'both');
-    getEnergyConsumptionOverviewQOQ(form.typeValue);
-  }, [form.typeValue, form.areaValue]);
+    setTabCurrentDay(dayTypeList[0].value);
+    getChartData(form.energyType, selectData.value.value, 'both');
+    getEnergyConsumptionOverviewQOQ(form.energyType);
+  }, [form.energyType, selectData.value]);
 
   const getEnergyConsumptionOverviewQOQ = (energyType: number) => {
-    const queryStartDate = '2022-04-15' || formatDate();
+    const queryStartDate = formatDate();
     energyConsumptionOverviewQOQ({ energyType, queryStartDate }).then(
       (res: any) => {
         if (res?.meta?.code === 200) {
@@ -178,10 +204,9 @@ export default () => {
               hbd[name] = '+' + hbd[name];
             }
             if (name.includes('Rate')) {
-              hbd[name] = hbd[name] + '%';
+              if (typeof hbd[name] === 'number') hbd[name] = hbd[name] + '%';
             }
           }
-          console.log(hbd);
           setHuanbiData(hbd);
         }
       },
@@ -193,8 +218,8 @@ export default () => {
         <HeaderFilterBox>
           <Select
             size="large"
-            value={form.typeValue}
-            style={{ width: 120 }}
+            value={form.energyType}
+            style={{ width: 160 }}
             onChange={handleChange}
           >
             {typeList.map((item) => (
@@ -205,13 +230,28 @@ export default () => {
           </Select>
           <Select
             size="large"
-            placeholder="区域"
-            value={form.areaValue}
-            style={{ width: 320, marginLeft: '16px' }}
-          ></Select>
+            value={selectData.value}
+            onChange={onSelectChange}
+            style={{
+              width: '320px',
+              marginLeft: '24px',
+            }}
+          >
+            {selectData.options.map((item: any, index: number) => {
+              return (
+                <Option value={item?.value} key={index}>
+                  {item?.label}
+                </Option>
+              );
+            })}
+          </Select>
         </HeaderFilterBox>
         <LineCartBox title="日用能平均曲线">
-          <MyChartBox id="lineChart" options={lineChart}></MyChartBox>
+          <MyChartBox
+            id="lineChart"
+            options={lineChart}
+            loading={form.lineChartLoading}
+          ></MyChartBox>
         </LineCartBox>
         <div className="content-box">
           <MyCard className="chain-list" title="环比">
@@ -221,7 +261,7 @@ export default () => {
                   {huanBiData?.todayNumber || 2001.42}
                 </div>
                 <div className="desc">{`今日用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -229,7 +269,7 @@ export default () => {
                   {huanBiData?.yesterdayNumber || 2001.42}
                 </div>
                 <div className="desc">{`昨日用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -238,7 +278,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.dayQOQDiff || 2001.42}
-                  {typeList[form.typeValue - 1].unit}
+                  {typeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -249,7 +289,7 @@ export default () => {
                   {huanBiData?.thisMouthNumber || 2001.42}
                 </div>
                 <div className="desc">{`当月用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -257,7 +297,7 @@ export default () => {
                   {huanBiData?.lastMouthNumber || 2001.42}
                 </div>
                 <div className="desc">{`上月用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -266,7 +306,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.mouthQOQDiff || 2001.42}
-                  {typeList[form.typeValue - 1].unit}
+                  {typeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -277,7 +317,7 @@ export default () => {
                   {huanBiData?.thisYearNumber || 2001.42}
                 </div>
                 <div className="desc">{`当年用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -285,7 +325,7 @@ export default () => {
                   {huanBiData?.lastYearNumber || 2001.42}
                 </div>
                 <div className="desc">{`上年用能(${
-                  typeList[form.typeValue - 1].unit
+                  typeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -294,7 +334,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.yearQOQDiff || 2001.42}
-                  {typeList[form.typeValue - 1].unit}
+                  {typeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -313,7 +353,11 @@ export default () => {
                 </Tag>
               ))}
             </div>
-            <MyChartBox id="barChart" options={barChart}></MyChartBox>
+            <MyChartBox
+              id="barChart"
+              options={barChart}
+              loading={form.barChartLoading}
+            ></MyChartBox>
           </BarCartBox>
         </div>
       </PageBox>

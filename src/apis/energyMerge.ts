@@ -28,7 +28,7 @@ export interface energyConsumptionBulletinBoardDate
 }
 // 能源概况
 export const energyConsumptionOverview = async (
-  data: energyConsumptionOverviewData,
+  data: energyConsumptionBulletinBoardDate,
 ) => {
   return await request('/ea/webEnergy/energyConsumptionOverview', {
     method: 'POST',

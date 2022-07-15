@@ -8,4 +8,7 @@ export const Page = styled.div`
   .filterBox {
     display: flex;
   }
+  .ant-select {
+    margin-right: 20px;
+  }
 `;

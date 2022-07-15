@@ -46,10 +46,10 @@ export default () => {
       render: (text, record, index) => {
         return (
           <Space size="middle">
-            <a>查看</a>
-            <a>编辑</a>
+            <a style={{ color: 'white' }}>查看</a>
+            <a style={{ color: 'white' }}>编辑</a>
             <Link to={`/eqMerge/areaNode/add?parentId=${record.id}`}>
-              新增下一节点
+              <a style={{ color: 'white' }}>新增下一节点</a>
             </Link>
           </Space>
         );
