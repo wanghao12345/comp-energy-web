@@ -29,10 +29,11 @@ const RealBodyOption = () => {
   const templateProps = useContext(TemplateContext);
   const options = optionsData[templateProps.energyType - 1];
   const [tab, setTab] = useState(tabStatus.RealTime);
+  const [chartLoading, setChartLoading] = useState(false);
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   //图表数据
-  const [chartData, setChartData] = useState<any>([]);
+  const [chartData, setChartData] = useState<any>();
   //表数据
   const [dataSource, setDataSource] = useState<any>([]);
   //表头
@@ -52,6 +53,7 @@ const RealBodyOption = () => {
   };
 
   const getRealTimeRes = (values?: any) => {
+    setChartLoading(true);
     if (tab === tabStatus.RealTime) {
       const searchDate = values?.date || form.getFieldValue('date');
       const { queryStartDate, queryEndDate } = formatTime(searchDate.toDate());
@@ -61,6 +63,7 @@ const RealBodyOption = () => {
         queryStartDate: queryStartDate,
         queryEndDate: queryEndDate,
       }).then((res: any) => {
+        setChartLoading(false);
         if (res?.meta?.code === 200) {
           console.log(res.data);
           formatColumnAndChartData(
@@ -742,10 +745,13 @@ const RealBodyOption = () => {
       chartOption.series = [chartOption.series[0]];
       chartOption.yAxis.name = 'NM3';
     }
-
-    setChartData(Object.assign({}, chartOption));
     setColumns([...columns]);
     setDataSource([...columnDataSource]);
+    if (!data?.list?.length) {
+      setChartData(undefined);
+      return;
+    }
+    setChartData(Object.assign({}, chartOption));
   };
 
   useEffect(() => {
@@ -889,7 +895,11 @@ const RealBodyOption = () => {
       {tab === tabStatus.RealTime ? (
         <>
           <div className="echart-box">
-            <MyChartBox id="realTime" options={chartData} />
+            <MyChartBox
+              id="realTime"
+              loading={chartLoading}
+              options={chartData}
+            />
           </div>
           <Button size="large" type="primary">
             导出

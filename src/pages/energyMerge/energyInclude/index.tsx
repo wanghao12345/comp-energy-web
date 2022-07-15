@@ -67,9 +67,14 @@ export default () => {
       moment().toDate(),
       dateType,
     );
+
     const qsd = queryStartDate.split(' ')[0];
     const qed = queryEndDate.split(' ')[0];
     if (updateType === 'both') {
+      setForm((p) => {
+        p.barChartLoading = true;
+        p.lineChartLoading = true;
+      });
       energyConsumptionOverview({
         energyType,
         dateType: 1,
@@ -77,12 +82,14 @@ export default () => {
         queryEndDate: qed,
         regionIdList: [selectData.value],
       }).then((res: any) => {
+        setForm((p) => {
+          p.lineChartLoading = false;
+          p.barChartLoading = false;
+        });
         if (res?.meta?.code === 200) {
           if (!res?.data?.length) {
-            setForm((p) => {
-              p.lineChartLoading = false;
-              p.barChartLoading = false;
-            });
+            setBarChartData(undefined);
+            setLineChartData(undefined);
             return;
           }
           const { xAxisData, seriesData } = formChartData(res.data);
@@ -102,6 +109,9 @@ export default () => {
       });
     }
     if (updateType === 'barChart') {
+      setForm((p) => {
+        p.barChartLoading = true;
+      });
       energyConsumptionOverview({
         energyType,
         dateType,
@@ -109,7 +119,14 @@ export default () => {
         queryEndDate: qed,
         regionIdList: [selectData.value],
       }).then((res: any) => {
+        setForm((p) => {
+          p.barChartLoading = false;
+        });
         if (res?.meta?.code === 200) {
+          if (!res?.data?.length) {
+            setBarChartData(undefined);
+            return;
+          }
           const { xAxisData, seriesData } = formChartData(res.data);
           if (updateType === 'barChart') {
             barCartDataOptions.xAxis.data = xAxisData;

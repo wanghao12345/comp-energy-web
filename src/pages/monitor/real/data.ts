@@ -126,7 +126,7 @@ export const chartOption = {
   },
   tooltip: {
     trigger: 'axis',
-    transitionDuration: 0,
+    transitionDuration: 10000,
   },
   legend: {
     top: 30,

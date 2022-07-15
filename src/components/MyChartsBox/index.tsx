@@ -103,7 +103,7 @@ const noDate = {
           lineWidth: 1,
         },
         keyframeAnimation: {
-          duration: 3000,
+          duration: 1500,
           loop: false,
           keyframes: [
             {
