@@ -139,8 +139,8 @@ const noDate = {
 const MyChartBox: FC<Iprops> = memo((props) => {
   const { id = 'chart', options, loading } = props;
   const myEchart = useRef<any>(null);
-
-  useEffect(() => {
+  const isLoaded = useRef<any>(null);
+  const initializeAndMonitor = () => {
     const dom = document.getElementById(id) as any;
     myEchart.current?.dispose();
     myEchart.current = echarts.init(dom);
@@ -153,14 +153,22 @@ const MyChartBox: FC<Iprops> = memo((props) => {
         myEchart.current?.setOption(_merge(_cloneDeep(baseOptions), options));
       }
     }
-    const reSizeFn = () => {
-      myEchart.current?.resize();
-    };
-    window.addEventListener('resize', reSizeFn);
-    return () => {
-      window.removeEventListener('resize', reSizeFn);
-    };
+    if (!isLoaded.current) {
+      isLoaded.current = true;
+      const reSizeFn = () => {
+        myEchart.current?.resize();
+      };
+      window.addEventListener('resize', reSizeFn);
+      return () => {
+        window.removeEventListener('resize', reSizeFn);
+      };
+    }
+  };
+
+  useEffect(() => {
+    initializeAndMonitor();
   }, [options, loading]);
+
   return (
     <>
       <MyChartBoxComp {...props} id={id} />

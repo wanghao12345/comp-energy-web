@@ -39,11 +39,11 @@ interface huanbiProps {
 export default () => {
   const [form, setForm] = useImmer({
     energyType: 1,
-    lineChartLoading: true,
-    barChartLoading: true,
+    lineChartLoading: 1,
+    barChartLoading: 1,
   });
   const [huanBiData, setHuanbiData] = useState<huanbiProps | null>();
-  const [tabCurrentDay, setTabCurrentDay] = useImmer(1);
+  const [tabCurrentDay, setTabDateType] = useImmer(1);
   //中间折线图
   const [lineChart, setLineChartData] = useState<any>();
   //右下角柱状图
@@ -60,11 +60,12 @@ export default () => {
 
   const getChartData = (
     energyType: number,
+    regionList: number,
     dateType: number,
     updateType: string,
   ) => {
     const { queryStartDate, queryEndDate } = formatTime(
-      moment().toDate(),
+      new Date(1649952000000),
       dateType,
     );
 
@@ -72,19 +73,19 @@ export default () => {
     const qed = queryEndDate.split(' ')[0];
     if (updateType === 'both') {
       setForm((p) => {
-        p.barChartLoading = true;
-        p.lineChartLoading = true;
+        p.barChartLoading = 1;
+        p.lineChartLoading = 1;
       });
       energyConsumptionOverview({
         energyType,
         dateType: 1,
         queryStartDate: qsd,
         queryEndDate: qed,
-        regionIdList: [selectData.value],
+        regionIdList: [regionList],
       }).then((res: any) => {
         setForm((p) => {
-          p.lineChartLoading = false;
-          p.barChartLoading = false;
+          p.lineChartLoading = 0;
+          p.barChartLoading = 0;
         });
         if (res?.meta?.code === 200) {
           if (!res?.data?.length) {
@@ -92,7 +93,7 @@ export default () => {
             setLineChartData(undefined);
             return;
           }
-          const { xAxisData, seriesData } = formChartData(res.data);
+          const { xAxisData, seriesData } = formChartData(res.data, dateType);
           barCartDataOptions.xAxis.data = xAxisData;
           barCartDataOptions.series[0].data = seriesData;
           barCartDataOptions.series[0].name =
@@ -110,7 +111,7 @@ export default () => {
     }
     if (updateType === 'barChart') {
       setForm((p) => {
-        p.barChartLoading = true;
+        p.barChartLoading = 1;
       });
       energyConsumptionOverview({
         energyType,
@@ -120,14 +121,14 @@ export default () => {
         regionIdList: [selectData.value],
       }).then((res: any) => {
         setForm((p) => {
-          p.barChartLoading = false;
+          p.barChartLoading = 0;
         });
         if (res?.meta?.code === 200) {
           if (!res?.data?.length) {
             setBarChartData(undefined);
             return;
           }
-          const { xAxisData, seriesData } = formChartData(res.data);
+          const { xAxisData, seriesData } = formChartData(res.data, dateType);
           if (updateType === 'barChart') {
             barCartDataOptions.xAxis.data = xAxisData;
             barCartDataOptions.series[0].data = seriesData;
@@ -141,11 +142,15 @@ export default () => {
     }
   };
 
-  const formChartData = (data: chartProps[]) => {
+  const formChartData = (data: chartProps[], dateType: number) => {
     const xAxisData: string[] = [];
     const seriesData: number[] = [];
     data.map((item) => {
-      xAxisData.push(item.x);
+      let day = item.x;
+      if (dateType == 3) {
+        day = item.x.split('-')[1] + '-' + item.x.split('-')[2];
+      }
+      xAxisData.push(day);
       seriesData.push(formatNumer(item.y));
     });
     return {
@@ -155,8 +160,8 @@ export default () => {
   };
 
   const onClickTag = (item: any) => {
-    setTabCurrentDay(item.value);
-    getChartData(form.energyType, item.value, 'barChart');
+    setTabDateType(item.value);
+    getChartData(form.energyType, selectData.value, item.value, 'barChart');
   };
 
   const formatSelectOption = (data: []) => {
@@ -201,8 +206,8 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    setTabCurrentDay(dayTypeList[0].value);
-    getChartData(form.energyType, selectData.value.value, 'both');
+    setTabDateType(dayTypeList[0].value);
+    getChartData(form.energyType, selectData.value, 1, 'both');
     getEnergyConsumptionOverviewQOQ(form.energyType);
   }, [form.energyType, selectData.value]);
 

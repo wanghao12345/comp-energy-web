@@ -50,9 +50,10 @@ export const TabsContainer = styled.div`
 
 export const BodyContainer = styled.div`
   box-sizing: border-box;
-  padding: 24px;
+  padding: 20px;
   height: calc(100vh - 80px);
   background: #142655;
   min-height: 500px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
+  overflow: hidden;
 `;

@@ -2,6 +2,9 @@ export const lineCartDataOptions = {
   xAxis: {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    axisLabel: {
+      rotate: 20,
+    },
   },
   tooltip: {
     trigger: 'axis',
@@ -55,16 +58,31 @@ export const barCartDataOptions = {
   xAxis: {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    axisLabel: {
+      rotate: 20,
+    },
   },
   yAxis: {
     type: 'value',
     name: 'kW.h',
   },
+  dataZoom: [
+    {
+      type: 'slider',
+      show: true,
+      xAxisIndex: [0],
+      left: '9%',
+      bottom: -5,
+      start: 10,
+      end: 90, //初始化滚动条
+    },
+  ],
   series: [
     {
       name: 'Highest',
       type: 'bar',
       data: [10, 11, 13, 11, 12, 12, 9],
+      barWidth: 15,
       markPoint: {
         label: {
           color: '#fff',
