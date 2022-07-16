@@ -29,7 +29,7 @@ const RealBodyOption = () => {
   const templateProps = useContext(TemplateContext);
   const options = optionsData[templateProps.energyType - 1];
   const [tab, setTab] = useState(tabStatus.RealTime);
-  const [chartLoading, setChartLoading] = useState(false);
+  const [chartLoading, setChartLoading] = useState(1);
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   //图表数据
@@ -53,7 +53,7 @@ const RealBodyOption = () => {
   };
 
   const getRealTimeRes = (values?: any) => {
-    setChartLoading(true);
+    setChartLoading(0);
     if (tab === tabStatus.RealTime) {
       const searchDate = values?.date || form.getFieldValue('date');
       const { queryStartDate, queryEndDate } = formatTime(searchDate.toDate());
@@ -63,7 +63,7 @@ const RealBodyOption = () => {
         queryStartDate: queryStartDate,
         queryEndDate: queryEndDate,
       }).then((res: any) => {
-        setChartLoading(false);
+        setChartLoading(0);
         if (res?.meta?.code === 200) {
           console.log(res.data);
           formatColumnAndChartData(
@@ -91,11 +91,6 @@ const RealBodyOption = () => {
   ) => {
     const columnDataSource: any[] = [];
     let columns: any[] = [
-      {
-        title: 'ID',
-        dataIndex: 'index',
-        tip: '唯一的 key',
-      },
       {
         title: '采集时间',
         dataIndex: 'time',
@@ -130,31 +125,29 @@ const RealBodyOption = () => {
     if (type === 1) {
       if (detailType === '电流') {
         columns = [
-          // {
-          //   title: 'ID',
-          //   dataIndex: 'key',
-          //   tip: '唯一的 key',
-          //   className:'tableHiddle',
-          // },
           {
             title: '采集时间',
             dataIndex: 'time',
             key: 'time',
+            responsive: ['md'],
           },
           {
             title: 'Ia（A） ',
             dataIndex: 'A',
             key: 'A',
+            responsive: ['md'],
           },
           {
             title: 'Ib（A）',
             dataIndex: 'B',
             key: 'B',
+            responsive: ['md'],
           },
           {
             title: 'Ic（A）',
             dataIndex: 'C',
             key: 'C',
+            responsive: ['md'],
           },
         ];
         data.list.map((item: any, index: number) => {
@@ -439,7 +432,7 @@ const RealBodyOption = () => {
                 { type: 'min', name: 'Min' },
               ],
               label: {
-                color: '#432bac',
+                color: '#fff',
               },
             },
             lineStyle: {
@@ -562,7 +555,7 @@ const RealBodyOption = () => {
                 { type: 'min', name: 'Min' },
               ],
               label: {
-                color: '#432bac',
+                color: '#fff',
               },
             },
             lineStyle: {
@@ -746,7 +739,9 @@ const RealBodyOption = () => {
       chartOption.yAxis.name = 'NM3';
     }
     setColumns([...columns]);
-    setDataSource([...columnDataSource]);
+    setTimeout(() => {
+      setDataSource([...columnDataSource]);
+    }, 200);
     if (!data?.list?.length) {
       setChartData(undefined);
       return;
@@ -909,8 +904,8 @@ const RealBodyOption = () => {
       <div className="table-box">
         <Table
           size="small"
-          rowKey={'time'}
-          key={'time'}
+          rowKey={'A'}
+          key={'A'}
           dataSource={dataSource}
           columns={columns}
           scroll={{

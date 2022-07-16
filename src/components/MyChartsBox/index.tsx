@@ -6,7 +6,7 @@ import { MyChartBoxComp } from './style';
 interface Iprops {
   id: string;
   options: any;
-  loading?: boolean;
+  loading?: number;
 }
 const baseOptions = {
   grid: {
@@ -15,7 +15,9 @@ const baseOptions = {
     right: 0,
     bottom: 0,
   },
-  tooltip: {},
+  tooltip: {
+    transitionDuration: 0, //加上这个可以防止抖动
+  },
   xAxis: {
     axisLabel: {
       color: '#fff',
@@ -94,7 +96,7 @@ const noDate = {
         top: 'center',
         style: {
           text: '无数据',
-          fontSize: 50,
+          fontSize: 40,
           fontWeight: 'bold',
           lineDash: [0, 200],
           lineDashOffset: 0,
@@ -103,7 +105,7 @@ const noDate = {
           lineWidth: 1,
         },
         keyframeAnimation: {
-          duration: 1500,
+          duration: 1000,
           loop: false,
           keyframes: [
             {

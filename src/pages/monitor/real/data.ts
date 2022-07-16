@@ -117,7 +117,7 @@ export const ContactColumns = [
     key: 'name',
   },
 ];
-
+export const LineColors = ['#FFEF6C', '#FD264E', '#2DFCC0', '#381ae0'];
 export const chartOption = {
   grid: {
     left: 40,
@@ -126,8 +126,8 @@ export const chartOption = {
   },
   tooltip: {
     trigger: 'axis',
-    transitionDuration: 10000,
   },
+  color: LineColors,
   legend: {
     top: 30,
     textStyle: {
