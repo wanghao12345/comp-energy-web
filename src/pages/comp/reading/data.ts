@@ -13,6 +13,6 @@ export const columnsOther = [
   },
   {
     title: '差值',
-    dataIndex: 'flowAccumulate',
+    dataIndex: 'cz',
   },
 ];

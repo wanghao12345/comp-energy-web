@@ -10,7 +10,8 @@ import { RealBodyContainer } from './style';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
-import { columnsOther } from './data';
+import { EnergyType } from '@/commonInterface';
+import { formatNumer } from '@/utils/common';
 const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
@@ -28,6 +29,7 @@ const RealBodyOption = () => {
   ]);
   const [timePicker, setTimePicker] = useState(moment());
   const [dataSource, setDataSource] = useState<any>([]);
+  const [columns, setColumns] = useState<any>([]);
   const [pagination, setPagintion] = useState({
     total: 0,
     current: 1,
@@ -64,7 +66,66 @@ const RealBodyOption = () => {
       if (res?.meta?.code === 200) {
         res?.data?.list.map((item: any) => {
           item.regionId = getRegionName(parseInt(item.regionId || '1'));
+          item.activeElectricalEnergyCurrent = formatNumer(
+            item.activeElectricalEnergyCurrent,
+          );
+          item.activeElectricalEnergy = formatNumer(
+            item.activeElectricalEnergy,
+          );
+          item.dstart =
+            item.activeElectricalEnergyCurrent - item.activeElectricalEnergy;
+          item.start = item.flowCurrent - item.flow;
         });
+        if (templateProps.energyType === EnergyType.Electric) {
+          const tcolumns = [
+            {
+              title: '创建时间',
+              dataIndex: 'createDate',
+            },
+            {
+              title: '节点名称',
+              dataIndex: 'regionId',
+            },
+            {
+              title: '起始抄表值',
+              dataIndex: 'dstart',
+            },
+            {
+              title: '截止数值',
+              dataIndex: 'activeElectricalEnergyCurrent',
+            },
+            {
+              title: '差值',
+              dataIndex: 'activeElectricalEnergy',
+            },
+          ];
+          setColumns(tcolumns);
+        } else {
+          const tcolumns = [
+            {
+              title: '创建时间',
+              dataIndex: 'createDate',
+            },
+            {
+              title: '节点名称',
+              dataIndex: 'regionId',
+            },
+            {
+              title: '起始抄表值',
+              dataIndex: 'start',
+            },
+            {
+              title: '截止数值',
+              dataIndex: 'flowCurrent',
+            },
+            {
+              title: '差值',
+              dataIndex: 'flow',
+            },
+          ];
+          setColumns(tcolumns);
+        }
+
         setDataSource(res?.data?.list);
         setPagintion({
           ...pagination,
@@ -126,7 +187,7 @@ const RealBodyOption = () => {
         <Table
           size="middle"
           dataSource={dataSource}
-          columns={columnsOther}
+          columns={columns}
           rowKey="activePower"
           key="activePower"
           onChange={onTableChange}

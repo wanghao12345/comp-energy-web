@@ -118,7 +118,7 @@ export default [
           },
           {
             path: '/alarm/event',
-            name: '事件记录',
+            name: '事件记录（产品未做）',
             component: '@/pages/monitor/board',
           },
         ],
@@ -154,7 +154,7 @@ export default [
       },
       {
         path: '/devops',
-        name: '运维管理',
+        name: '运维管理（产品未做）',
         icon: <DeploymentUnitOutlined />,
         routes: [
           {

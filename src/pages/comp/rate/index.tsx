@@ -12,7 +12,7 @@ import {
 import MyChartBox from '@/components/myChartsBox';
 import { barStaticChartData, circleChart, circleChart1 } from './data';
 import { electricMultiRate } from '@/apis/enterpriseReport';
-import { boardDayListnoDay } from '@/commonInterface';
+import { boardDayListnoDay, TimeType } from '@/commonInterface';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { getRegionTreeList } from '@/apis';
@@ -22,17 +22,20 @@ const { Option } = Select;
 const { Column, ColumnGroup } = Table;
 const RatePage = () => {
   const [form, setForm] = useImmer({
-    dateType: 2,
+    dateType: TimeType.Week,
     queryStartDate: new Date(),
+    dPieLoading: 1,
+    mPieLoading: 1,
+    dBarLoading: 1,
   });
-  const [pieChartData, setPieChartData] = useState({
-    electricity: circleChart,
-    money: circleChart1,
+  const [pieChartData, setPieChartData] = useState<any>({
+    electricity: undefined,
+    money: undefined,
   });
 
-  const [barChartData, setBarchartData] = useState(barStaticChartData);
+  const [barChartData, setBarchartData] = useState<any>();
   const [selectData, setSelectData] = useState<any>({
-    value: { label: '站点', value: 1 },
+    value: undefined,
     options: [],
   });
   const [dataSource, setDataSource] = useState<any>([]);
@@ -56,9 +59,9 @@ const RatePage = () => {
   const formatResponseDataTotal = (data: any) => {
     const keys = Object.keys(data);
     keys.map((item, index) => {
-      pieChartData.electricity.series[0].data[index].value =
+      circleChart.series[0].data[index].value =
         data[item]?.activeElectricalEnergy;
-      pieChartData.money.series[0].data[index].value = data[item]?.electricCost;
+      circleChart1.series[0].data[index].value = data[item]?.electricCost;
     });
     setPieChartData({
       electricity: Object.assign({}, pieChartData.electricity),
@@ -86,10 +89,10 @@ const RatePage = () => {
         };
         columnData[index].push(column);
       });
-      barChartData.series[index].data = dataList;
+      barStaticChartData.series[index].data = dataList;
     });
-    barChartData.xAxis.data = [...new Set(xAxisData)];
-    setBarchartData(Object.assign({}, barChartData));
+    barStaticChartData.xAxis.data = [...new Set(xAxisData)];
+    setBarchartData(Object.assign({}, barStaticChartData));
     const tempDataSource: any[] = [];
     columnData[0].map((item: any, index: number) => {
       const column = {
@@ -145,10 +148,18 @@ const RatePage = () => {
       queryStartDate: queryStartDate.split(' ')[0],
       queryEndDate: queryEndDate.split(' ')[0],
       dateType: form.dateType,
-      regionIdList: reginIdList || [selectData.value?.value],
+      regionIdList: reginIdList || [selectData.value],
     }).then((res: any) => {
+      setForm((p) => {
+        p.dBarLoading = 0;
+        p.dPieLoading = 0;
+        p.mPieLoading = 0;
+      });
       if (res?.meta?.code === 200) {
-        console.log(res?.data);
+        if (!Object.keys(res?.data?.dataTotal || {})?.length) {
+          setPieChartData({ electricity: undefined, money: undefined });
+          return;
+        }
         formatResponseDataTotal(res?.data?.dataTotal || {});
         formatResponseDataList(res?.data?.dataList || {});
       }
@@ -163,7 +174,7 @@ const RatePage = () => {
           Object.assign(
             {},
             {
-              value: selectData.options[0],
+              value: selectData.options[0].value,
               options: selectData.options,
             },
           ),
@@ -239,6 +250,7 @@ const RatePage = () => {
             <MyChartBox
               id="rate-chart-box1"
               options={pieChartData.electricity}
+              loading={form.dPieLoading}
             ></MyChartBox>
           </div>
           <div className="rate-item-box">
@@ -246,6 +258,7 @@ const RatePage = () => {
             <MyChartBox
               id="rate-chart-box2"
               options={pieChartData.money}
+              loading={form.mPieLoading}
             ></MyChartBox>
           </div>
         </RateBodyLeftContainer>
