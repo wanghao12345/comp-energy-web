@@ -1,3 +1,5 @@
+import moment, { Moment } from 'moment';
+
 export const debounce = (fn: (params: any) => void, ms: number) => {
   let timer: any;
   return (...args: any) => {
@@ -219,3 +221,83 @@ export const getYear = (date: Date) => {
     yearEnd: `${yaer}-12-${lastDay} 23:59:59`,
   };
 };
+
+// 今天昨天明天时间处理 v==3为昨天。v==6为今天。v==9为明天
+export function getTheDay(date: Date, v: number) {
+  let b = 24 * 60 * 60 * 1000; //一天的时间
+  let day = date; //当天的时间
+  v == 3
+    ? day.setTime(day.getTime() - b)
+    : v == 6
+    ? day.setTime(day.getTime())
+    : day.setTime(day.getTime() + b);
+  let dayMon =
+    day.getMonth() + 1 >= 10 ? day.getMonth() + 1 : '0' + (day.getMonth() + 1);
+  let dayDat = day.getDate() + 1 >= 10 ? day.getDate() : '0' + day.getDate();
+  let s = day.getFullYear() + '-' + dayMon + '-' + dayDat;
+  return s;
+}
+//获取本、上、下周开始结束时间
+/**
+ * @description 得到本、上、下周的起始、结束日期
+ * @param {Number} n 不传或0代表本周，-1代表上周，1代表下周
+ */
+export function getTheWeek(date1: Date, n: number) {
+  var now = date1;
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDay(); //返回星期几的某一天;
+  n = day == 0 ? n + 6 : n + (day - 1);
+  now.setDate(now.getDate() - n);
+  var date = now.getDate();
+  var s =
+    year +
+    '-' +
+    (month < 10 ? '0' + month : month) +
+    '-' +
+    (date < 10 ? '0' + date : date);
+  return s;
+}
+//获取本、上、下月开始结束时间
+/**
+ * @description 得到本月、上月、下月的起始、结束日期
+ * @param {Number} n 不传或0代表本月，-1代表上月，1代表下月
+ */
+
+export function Timetools(date1: Date, n: number) {
+  var now = date1;
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1 + n;
+  var date = new Date(year, month, 1).getDate();
+  var s =
+    year +
+    '-' +
+    (month < 10 ? '0' + month : month) +
+    '-' +
+    (date < 10 ? '0' + date : date);
+  return s;
+}
+//计算本上下季度
+/*type='s'为开始时间，type='e'季度结束时间
+  n=0,-1,1(本，上，下季度)
+*/
+export function getTheQuater(date: Moment, type: string, n: number) {
+  let currentQuarter = date.quarter(); // 当前是第几季度
+  let currentYear = date.year(); // 当前年
+  let getQuar: any = currentQuarter + n;
+  // 本季度开始
+  if (type == 's') {
+    let startMoth = moment(moment(currentYear + '-01-01').toDate()).quarter(
+      getQuar,
+    );
+    return moment(startMoth).format('YYYY-MM-DD');
+  } else if (type == 'e') {
+    let endMonth: any = 3 * parseInt(getQuar); //当季度最后一个月
+    /* 对月数进行格式化 */
+    if (endMonth < 10) endMonth = '0' + endMonth;
+    else endMonth += '';
+    let endMonthDays = moment(currentYear + '-' + endMonth).daysInMonth(); // 末尾月天数
+    let endDays = currentYear + '-' + endMonth + '-' + endMonthDays; //完整年月日整合
+    return moment(endDays).format('YYYY-MM-DD');
+  }
+}

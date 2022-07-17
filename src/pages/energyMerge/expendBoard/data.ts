@@ -9,9 +9,10 @@ export const barCartDataOptions = {
   },
   series: [
     {
-      name: 'Highest',
+      name: '',
       type: 'bar',
       data: [10, 11, 13, 11, 12, 12, 9],
+      barWidth: 35,
       markPoint: {
         label: {
           color: '#fff',
@@ -33,7 +34,6 @@ export const barCartDataOptions = {
       itemStyle: {
         color: '#72d5df',
       },
-      barWidth: '20%',
     },
   ],
 };

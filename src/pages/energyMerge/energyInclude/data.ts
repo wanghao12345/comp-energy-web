@@ -1,10 +1,8 @@
 export const lineCartDataOptions = {
   xAxis: {
+    name: 'afeafaefaf',
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    axisLabel: {
-      rotate: 20,
-    },
   },
   tooltip: {
     trigger: 'axis',
@@ -59,7 +57,7 @@ export const barCartDataOptions = {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     axisLabel: {
-      rotate: 20,
+      rotate: 50,
     },
   },
   yAxis: {
@@ -73,7 +71,7 @@ export const barCartDataOptions = {
       xAxisIndex: [0],
       left: '9%',
       bottom: -5,
-      start: 10,
+      start: 0,
       end: 90, //初始化滚动条
     },
   ],

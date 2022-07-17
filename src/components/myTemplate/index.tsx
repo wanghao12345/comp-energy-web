@@ -11,7 +11,7 @@ import { Select, Input, Tree, Checkbox } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { RealContainer, RealOptionContainer } from './style';
 import { getRegionTreeList } from '@/apis';
-import { typeList } from '@/commonInterface';
+import { EnergyType, EnergyTypeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
 const { Option } = Select;
 
@@ -21,7 +21,7 @@ interface region {
 }
 
 export interface templageProps {
-  energyType: number;
+  energyType: EnergyType;
   area: number[];
   areaID: string[];
   regionList: region[];
@@ -29,7 +29,7 @@ export interface templageProps {
 }
 
 const defaultData: templageProps = {
-  energyType: 1,
+  energyType: EnergyType.Electric,
   area: [],
   areaID: [],
   regionList: [],
@@ -259,7 +259,7 @@ export const RealOption: FC<RealOptionProps> = memo(
           defaultValue={templageData.energyType as any}
           onChange={onChange}
         >
-          {typeList.map((item) => (
+          {EnergyTypeList.map((item) => (
             <Option key={item.value} value={item.value}>
               {item.name}
             </Option>

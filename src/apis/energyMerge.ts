@@ -24,7 +24,7 @@ export interface energyConsumptionOverviewData {
 
 export interface energyConsumptionBulletinBoardDate
   extends energyConsumptionOverviewData {
-  regionIdList: number[];
+  regionIdList?: number[];
 }
 // 能源概况
 export const energyConsumptionOverview = async (

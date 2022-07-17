@@ -51,7 +51,7 @@ export const dataSource = [
 ];
 
 export const getColumns = (type: string, unit: string) => {
-  const column = [
+  let column = [
     {
       title: '本期时间',
       dataIndex: 'A',
@@ -89,6 +89,35 @@ export const getColumns = (type: string, unit: string) => {
       key: 'G',
     },
   ];
+  if (type === 'normal') {
+    column = [
+      {
+        title: '采集时间',
+        dataIndex: 'A',
+        key: 'A',
+      },
+      // {
+      //   title: '节点名称',
+      //   dataIndex: 'B',
+      //   key: 'B',
+      // },
+      {
+        title: `本期能耗${unit}）`,
+        dataIndex: 'C',
+        key: 'C',
+      },
+      {
+        title: '上期时间',
+        dataIndex: 'D',
+        key: 'D',
+      },
+      {
+        title: `上期能耗${unit}）`,
+        dataIndex: 'E',
+        key: 'E',
+      },
+    ];
+  }
   return column;
 };
 export const barCartDataOptions = {

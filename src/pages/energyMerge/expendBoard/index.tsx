@@ -3,7 +3,7 @@ import { Select, DatePicker, Button } from 'antd';
 import { RealBodyContainer } from './style';
 import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
-import { boardDayList } from '@/commonInterface';
+import { boardDayList, EnergyTypeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
 import { useContext, useEffect, useState } from 'react';
 import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
@@ -30,8 +30,9 @@ const RealBodyOption = () => {
   const [form, setForm] = useImmer({
     dateType: 1,
     queryStartDate: new Date(),
+    loading: 1,
   });
-  const [barChartData, setBarChartData] = useState(barCartDataOptions);
+  const [barChartData, setBarChartData] = useState<any>();
   const handleDateTypeChange = (val: any) => {
     console.log(val);
     setForm((p) => {
@@ -54,6 +55,9 @@ const RealBodyOption = () => {
       form.queryStartDate,
       form.dateType,
     );
+    setForm((p) => {
+      p.loading = 1;
+    });
     energyConsumptionBulletinBoard({
       energyType: templateProps.energyType,
       dateType: form.dateType,
@@ -62,9 +66,21 @@ const RealBodyOption = () => {
       regionIdList: templateProps.area,
     }).then((res: any) => {
       if (res?.meta?.code === 200) {
-        const { xAxisData, seriesData } = formChartData(res?.data);
+        setForm((p) => {
+          p.loading = 0;
+        });
+        const data = res?.data;
+        if (!data.length) {
+          setBarChartData(undefined);
+          return;
+        }
+        const { xAxisData, seriesData } = formChartData(data);
         barCartDataOptions.xAxis.data = xAxisData;
+        barCartDataOptions.yAxis.name =
+          EnergyTypeList[templateProps.energyType - 1].unit;
         barCartDataOptions.series[0].data = seriesData;
+        barCartDataOptions.series[0].name =
+          boardDayList[form.dateType - 1].name + '消耗';
         setBarChartData(Object.assign({}, barCartDataOptions));
       }
     });
@@ -116,7 +132,11 @@ const RealBodyOption = () => {
         </Button>
       </div>
       <div className="echart-box">
-        <MyChartBox id="barChart" options={barChartData}></MyChartBox>
+        <MyChartBox
+          id="expend-barChart"
+          options={barChartData}
+          loading={form.loading}
+        ></MyChartBox>
       </div>
     </RealBodyContainer>
   );

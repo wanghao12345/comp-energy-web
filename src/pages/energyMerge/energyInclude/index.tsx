@@ -12,7 +12,7 @@ import {
   energyConsumptionOverviewQOQ,
 } from '@/apis/energyMerge';
 import { formatDate, formatNumer, formatTime } from '@/utils/common';
-import { dayTypeList, typeList } from '@/commonInterface';
+import { dayTypeList, EnergyTypeList, TimeType } from '@/commonInterface';
 import { getRegionTreeList } from '@/apis';
 import moment from 'moment';
 
@@ -64,10 +64,7 @@ export default () => {
     dateType: number,
     updateType: string,
   ) => {
-    const { queryStartDate, queryEndDate } = formatTime(
-      new Date(1649952000000),
-      dateType,
-    );
+    const { queryStartDate, queryEndDate } = formatTime(new Date(), dateType);
 
     const qsd = queryStartDate.split(' ')[0];
     const qed = queryEndDate.split(' ')[0];
@@ -78,7 +75,7 @@ export default () => {
       });
       energyConsumptionOverview({
         energyType,
-        dateType: 1,
+        dateType: TimeType.Day,
         queryStartDate: qsd,
         queryEndDate: qed,
         regionIdList: [regionList],
@@ -97,13 +94,15 @@ export default () => {
           barCartDataOptions.xAxis.data = xAxisData;
           barCartDataOptions.series[0].data = seriesData;
           barCartDataOptions.series[0].name =
-            typeList[form.energyType - 1].name;
-          barCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
+            EnergyTypeList[form.energyType - 1].name;
+          barCartDataOptions.yAxis.name =
+            EnergyTypeList[form.energyType - 1].unit;
           lineCartDataOptions.xAxis.data = xAxisData;
           lineCartDataOptions.series[0].data = seriesData;
           lineCartDataOptions.series[0].name =
-            typeList[form.energyType - 1].name;
-          lineCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
+            EnergyTypeList[form.energyType - 1].name;
+          lineCartDataOptions.yAxis.name =
+            EnergyTypeList[form.energyType - 1].unit;
           setBarChartData(Object.assign({}, barCartDataOptions));
           setLineChartData(Object.assign({}, lineCartDataOptions));
         }
@@ -133,8 +132,9 @@ export default () => {
             barCartDataOptions.xAxis.data = xAxisData;
             barCartDataOptions.series[0].data = seriesData;
             barCartDataOptions.series[0].name =
-              typeList[form.energyType - 1].name;
-            barCartDataOptions.yAxis.name = typeList[form.energyType - 1].unit;
+              EnergyTypeList[form.energyType - 1].name;
+            barCartDataOptions.yAxis.name =
+              EnergyTypeList[form.energyType - 1].unit;
             setBarChartData(Object.assign({}, barCartDataOptions));
           }
         }
@@ -147,7 +147,7 @@ export default () => {
     const seriesData: number[] = [];
     data.map((item) => {
       let day = item.x;
-      if (dateType == 3) {
+      if (dateType == TimeType.Month) {
         day = item.x.split('-')[1] + '-' + item.x.split('-')[2];
       }
       xAxisData.push(day);
@@ -244,7 +244,7 @@ export default () => {
             style={{ width: 160 }}
             onChange={handleChange}
           >
-            {typeList.map((item) => (
+            {EnergyTypeList.map((item) => (
               <Option key={item.value} value={item.value}>
                 {item.name}
               </Option>
@@ -270,7 +270,7 @@ export default () => {
         </HeaderFilterBox>
         <LineCartBox title="日用能平均曲线">
           <MyChartBox
-            id="lineChart"
+            id="energy-lineChart"
             options={lineChart}
             loading={form.lineChartLoading}
           ></MyChartBox>
@@ -283,7 +283,7 @@ export default () => {
                   {huanBiData?.todayNumber || 2001.42}
                 </div>
                 <div className="desc">{`今日用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -291,7 +291,7 @@ export default () => {
                   {huanBiData?.yesterdayNumber || 2001.42}
                 </div>
                 <div className="desc">{`昨日用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -300,7 +300,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.dayQOQDiff || 2001.42}
-                  {typeList[form.energyType - 1].unit}
+                  {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -311,7 +311,7 @@ export default () => {
                   {huanBiData?.thisMouthNumber || 2001.42}
                 </div>
                 <div className="desc">{`当月用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -319,7 +319,7 @@ export default () => {
                   {huanBiData?.lastMouthNumber || 2001.42}
                 </div>
                 <div className="desc">{`上月用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -328,7 +328,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.mouthQOQDiff || 2001.42}
-                  {typeList[form.energyType - 1].unit}
+                  {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -339,7 +339,7 @@ export default () => {
                   {huanBiData?.thisYearNumber || 2001.42}
                 </div>
                 <div className="desc">{`当年用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
@@ -347,7 +347,7 @@ export default () => {
                   {huanBiData?.lastYearNumber || 2001.42}
                 </div>
                 <div className="desc">{`上年用能(${
-                  typeList[form.energyType - 1].unit
+                  EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
@@ -356,7 +356,7 @@ export default () => {
                 </div>
                 <div className="title">
                   {huanBiData?.yearQOQDiff || 2001.42}
-                  {typeList[form.energyType - 1].unit}
+                  {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
               </div>
@@ -376,7 +376,7 @@ export default () => {
               ))}
             </div>
             <MyChartBox
-              id="barChart"
+              id="energy-barChart"
               options={barChart}
               loading={form.barChartLoading}
             ></MyChartBox>

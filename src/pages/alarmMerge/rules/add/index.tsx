@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, Switch, message } from 'antd';
 import { history } from 'umi';
 const { Option } = Select;
 import { FromButtonItem } from './style';
-import { typeList } from '@/commonInterface';
+import { EnergyTypeList } from '@/commonInterface';
 import {
   tbEarlyWarningAdd,
   tbEarlyWarningselectById,
@@ -96,7 +96,7 @@ export default () => {
         rules={[{ required: true, message: '请选择能源类型' }]}
       >
         <Select placeholder="请选择" allowClear>
-          {typeList.map((item) => {
+          {EnergyTypeList.map((item) => {
             return (
               <Option value={item.value} key={item.value}>
                 {item.name}

@@ -891,7 +891,7 @@ const RealBodyOption = () => {
         <>
           <div className="echart-box">
             <MyChartBox
-              id="realTime"
+              id="realTime-chartbox"
               loading={chartLoading}
               options={chartData}
             />
