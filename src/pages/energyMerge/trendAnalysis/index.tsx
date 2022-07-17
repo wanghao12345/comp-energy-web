@@ -117,24 +117,6 @@ const RealBodyOption = () => {
     if (currentTab === ITabStatus.monthOnmonth) {
       const { queryStartDate } = formatTime(form.queryStartDate, form.dateType);
       const qsd = queryStartDate.split(' ')[0];
-      // let lastQsd = formatDate(
-      //   new Date(form.queryStartDate.getTime() - 86400000),
-      // );
-      // if (form.dateType === TimeType.Week) {
-      //   lastQsd = getTheWeek(form.queryStartDate, -1);
-      // }
-      // if (form.dateType === TimeType.Month) {
-      //   lastQsd = Timetools(form.queryStartDate, -1) || '';
-      // }
-      // if (form.dateType === TimeType.Quarter) {
-      //   lastQsd = getTheQuater(form.cateGory, 's', -1) || '';
-      // }
-      // if (form.dateType === TimeType.Year) {
-      //   lastQsd = qsd.replace(
-      //     qsd.split('-')[0],
-      //     ((qsd.split('-')[0] as any) - 1) as any,
-      //   );
-      // }
       selectTrendAnalysisQOQByRegionIds({
         energyType: templateProps.energyType,
         dateType: form.dateType,
@@ -236,6 +218,10 @@ const RealBodyOption = () => {
             setForm((p) => {
               p.loading = 0;
             });
+            if (!res?.data?.length) {
+              setBarChartData(undefined);
+              return;
+            }
             if (res?.meta?.code === 200) {
               allData.push(res?.data);
               handleResponseData(allData, currentTabStatus);

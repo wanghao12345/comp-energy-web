@@ -8,7 +8,7 @@ import { selectEnergyLossByRegion } from '@/apis/energyMerge';
 import { useImmer } from 'use-immer';
 import moment from 'moment';
 import { formatDate, formatNumer } from '@/utils/common';
-import { typeList } from '@/commonInterface';
+import { EnergyTypeList } from '@/commonInterface';
 
 export default () => {
   const [tableData, setTableData] = useImmer<any[]>([]);
@@ -95,7 +95,7 @@ export default () => {
             width: '320px',
           }}
         >
-          {typeList.map((item) => (
+          {EnergyTypeList.map((item) => (
             <Option key={item.value} value={item.value}>
               {item.name}
             </Option>

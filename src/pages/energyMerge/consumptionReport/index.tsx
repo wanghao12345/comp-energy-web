@@ -3,7 +3,7 @@ import { Select, DatePicker, Button, Table } from 'antd';
 import { RealBodyContainer } from './style';
 const { Option } = Select;
 import { useContext, useEffect } from 'react';
-import { boardDayList, typeList } from '@/commonInterface';
+import { boardDayList, EnergyTypeList } from '@/commonInterface';
 import { formatDate, formatTime, getWeek } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
@@ -70,7 +70,7 @@ const RealBodyOption = () => {
     if (!data) {
       return [];
     }
-    const unit = typeList[templateProps.energyType - 1].unit;
+    const unit = EnergyTypeList[templateProps.energyType - 1].unit;
     const columns = [
       {
         title: '节点名称',
