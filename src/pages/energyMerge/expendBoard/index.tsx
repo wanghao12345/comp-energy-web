@@ -3,13 +3,14 @@ import { Select, DatePicker, Button } from 'antd';
 import { RealBodyContainer } from './style';
 import MyChartBox from '@/components/myChartsBox';
 import { barCartDataOptions } from './data';
-import { boardDayList, EnergyTypeList } from '@/commonInterface';
 import { useImmer } from 'use-immer';
 import { useContext, useEffect, useState } from 'react';
 import { energyConsumptionBulletinBoard } from '@/apis/energyMerge';
-import { formatNumer, formatTime } from '@/utils/common';
 import moment, { Moment } from 'moment';
-import MyTemplate, { TemplateContext } from '@/components/myTemplate';
+import { EnergyTypeList, boardDayList } from '@/commonInterface';
+import { TemplateContext } from '@/components';
+import MyTemplate from '@/components/myTemplate';
+import { formatTime, formatNumer } from '@/utils/common';
 const { Option } = Select;
 
 interface chartProps {
@@ -80,7 +81,7 @@ const RealBodyOption = () => {
           EnergyTypeList[templateProps.energyType - 1].unit;
         barCartDataOptions.series[0].data = seriesData;
         barCartDataOptions.series[0].name =
-          boardDayList[form.dateType - 1].name + '消耗';
+          (boardDayList[form.dateType - 1]?.name || '年') + '消耗';
         setBarChartData(Object.assign({}, barCartDataOptions));
       }
     });

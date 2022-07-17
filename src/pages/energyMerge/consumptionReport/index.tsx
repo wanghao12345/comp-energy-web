@@ -3,7 +3,7 @@ import { Select, DatePicker, Button, Table } from 'antd';
 import { RealBodyContainer } from './style';
 const { Option } = Select;
 import { useContext, useEffect } from 'react';
-import { boardDayList, EnergyTypeList } from '@/commonInterface';
+import { boardDayList, EnergyTypeList, TimeType } from '@/commonInterface';
 import { formatDate, formatTime, getWeek } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
@@ -80,7 +80,7 @@ const RealBodyOption = () => {
     ];
 
     data.map((item: any, index: number) => {
-      const qz = formatColumnTitle(item?.createDate || '2022-03-13 23:59:59');
+      const qz = formatColumnTitle(item?.statisticsDate || '2022-03-13', index);
       const column = { title: '', dataIndex: '', className: '' };
       column.title = `${qz}（${unit}）`;
       column.dataIndex = `time${index}`;
@@ -90,24 +90,20 @@ const RealBodyOption = () => {
     return columns;
   };
 
-  const formatColumnTitle = (item: string) => {
+  const formatColumnTitle = (item: string, index: number) => {
     let qz = item;
-    if (form.dateType === 1) {
-      qz = qz.split(' ')[1].split(':')[0] + '时';
+    if (form.dateType === TimeType.Day) {
+      let q: any = index;
+      if (index < 10) {
+        q = '0' + q;
+      }
+      qz = q + '时';
     }
-    if (form.dateType === 2) {
-      qz =
-        qz.split(' ')[0].split('-')[1] + '-' + qz.split(' ')[0].split('-')[2];
+    if (form.dateType === TimeType.Week) {
+      qz = qz.split('-')[1] + '-' + qz.split('-')[2];
     }
     if (form.dateType === 3) {
-      qz = qz.split(' ')[0].split('-')[2];
-    }
-    if (form.dateType === 4) {
-      qz = qz.split(' ')[0].split('-')[1] + '月';
-    }
-
-    if (form.dateType === 6) {
-      qz = qz.split(' ')[0].split('-')[0] + '月';
+      qz = qz.split('-')[1] + '-' + qz.split('-')[2];
     }
     return qz;
   };

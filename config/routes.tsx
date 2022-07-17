@@ -73,7 +73,7 @@ export default [
           },
           {
             path: '/energyMerge/flowCart',
-            name: '能源流向图',
+            name: '能源流向图（二期）',
             component: '@/pages/energyMerge/flowCart',
           },
         ],

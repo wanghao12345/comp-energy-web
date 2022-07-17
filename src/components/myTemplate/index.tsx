@@ -69,8 +69,8 @@ const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
         {},
         {
           energyType: defaultData.energyType,
-          area: [regionList[0].id],
-          areaID: [regionList[0].id.toString()],
+          area: [regionList[1].id],
+          areaID: [regionList[1].id.toString()],
           regionList: regionList,
           regionTree: regionTree,
         },

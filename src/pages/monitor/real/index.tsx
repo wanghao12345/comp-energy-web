@@ -773,8 +773,16 @@ const RealBodyOption = () => {
             onChange={onTabChange}
           >
             <TabPane tab={'实时数据'} key={tabStatus.RealTime}></TabPane>
-            <TabPane tab={'报警信息'} key={tabStatus.Warnning}></TabPane>
-            <TabPane tab={'通讯状态'} key={tabStatus.Contact}></TabPane>
+            <TabPane
+              tab={'报警信息（二期）'}
+              key={tabStatus.Warnning}
+              disabled
+            ></TabPane>
+            <TabPane
+              tab={'通讯状态（二期）'}
+              key={tabStatus.Contact}
+              disabled
+            ></TabPane>
           </Tabs>
         </div>
         <div className="search-box">
