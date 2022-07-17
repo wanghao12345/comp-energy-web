@@ -916,10 +916,11 @@ const RealBodyOption = () => {
           key={'A'}
           dataSource={dataSource}
           columns={columns}
+          pagination={{ pageSize: 5 }}
           scroll={{
             y:
               tab === tabStatus.RealTime
-                ? window.screen.height - 860
+                ? window.screen.availHeight - 650
                 : undefined,
           }}
         />

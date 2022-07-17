@@ -76,7 +76,7 @@ export const columnsOther = [
   },
   {
     title: '瞬时流量',
-    dataIndex: 'flowCurrent',
+    dataIndex: 'flowRate',
   },
   {
     title: '累计流量',

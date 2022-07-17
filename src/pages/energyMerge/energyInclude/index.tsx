@@ -279,27 +279,21 @@ export default () => {
           <MyCard className="chain-list" title="环比">
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.todayNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.todayNumber || 0}</div>
                 <div className="desc">{`今日用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.yesterdayNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.yesterdayNumber || 0}</div>
                 <div className="desc">{`昨日用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
-                <div className="title line">
-                  {huanBiData?.dayQOQRate || '100%'}
-                </div>
+                <div className="title line">{huanBiData?.dayQOQRate || 0}</div>
                 <div className="title">
-                  {huanBiData?.dayQOQDiff || 2001.42}
+                  {huanBiData?.dayQOQDiff || 0}
                   {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
@@ -307,27 +301,23 @@ export default () => {
             </div>
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.thisMouthNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.thisMouthNumber || 0}</div>
                 <div className="desc">{`当月用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.lastMouthNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.lastMouthNumber || 0}</div>
                 <div className="desc">{`上月用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
                 <div className="title line">
-                  {huanBiData?.mouthQOQRate || '100%'}
+                  {huanBiData?.mouthQOQRate || 0}
                 </div>
                 <div className="title">
-                  {huanBiData?.mouthQOQDiff || 2001.42}
+                  {huanBiData?.mouthQOQDiff || 0}
                   {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>
@@ -335,27 +325,21 @@ export default () => {
             </div>
             <div className="chain-row">
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.thisYearNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.thisYearNumber || 0}</div>
                 <div className="desc">{`当年用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item">
-                <div className="title">
-                  {huanBiData?.lastYearNumber || 2001.42}
-                </div>
+                <div className="title">{huanBiData?.lastYearNumber || 0}</div>
                 <div className="desc">{`上年用能(${
                   EnergyTypeList[form.energyType - 1].unit
                 })`}</div>
               </div>
               <div className="chain-row-item trend-box">
-                <div className="title line">
-                  {huanBiData?.yearQOQRate || '100%'}
-                </div>
+                <div className="title line">{huanBiData?.yearQOQRate || 0}</div>
                 <div className="title">
-                  {huanBiData?.yearQOQDiff || 2001.42}
+                  {huanBiData?.yearQOQDiff || 0}
                   {EnergyTypeList[form.energyType - 1].unit}
                 </div>
                 <div className="desc">趋势</div>

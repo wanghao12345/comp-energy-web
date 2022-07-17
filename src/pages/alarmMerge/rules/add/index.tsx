@@ -10,6 +10,7 @@ import {
   tbEarlyWarningupdateById,
 } from '@/apis/event';
 import { optionsData } from '@/pages/monitor/real/data';
+import { getDictionarySlectOptions } from '@/apis';
 
 const layout = {
   labelCol: { span: 8 },
@@ -17,6 +18,18 @@ const layout = {
 };
 export default () => {
   const [form] = Form.useForm();
+  const [eventType, setEventType] = useState<any>({
+    value: '',
+    options: [],
+  });
+  const [regionList, setregionList] = useState<any>({
+    value: '',
+    options: [],
+  });
+  const [energyType, setenergyType] = useState<any>({
+    value: '',
+    options: [],
+  });
   const onFinish = (values: any) => {
     const hide = message.loading('正在新增规则...', 50);
     if (id) {
@@ -64,20 +77,33 @@ export default () => {
         }
       });
     }
+    //时间类型
+    getDictionarySlectOptions({ groupCode: 'event_type' }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        setEventType({
+          value: res?.data[0],
+          options: res?.data,
+        });
+      }
+    });
+    getDictionarySlectOptions({ groupCode: 'energy_type' }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        setenergyType({
+          value: res?.data[0],
+          options: res?.data,
+        });
+      }
+    });
   }, []);
 
   return (
     <Form {...layout} form={form} name="control-ref" onFinish={onFinish}>
       <Form.Item
-        name="eventType"
+        name="event_type"
         label="事件类型"
         rules={[{ required: true, message: '请选择事件类型' }]}
       >
-        <Select placeholder="请选择" allowClear>
-          <Option value={1}>类型1</Option>
-          <Option value={2}>类型2</Option>
-          <Option value={3}>类型3</Option>
-        </Select>
+        <Select placeholder="请选择" allowClear></Select>
       </Form.Item>
       <Form.Item
         name="regionId"
@@ -91,15 +117,15 @@ export default () => {
         </Select>
       </Form.Item>
       <Form.Item
-        name="energy"
+        name="energy_type"
         label="能源类型"
         rules={[{ required: true, message: '请选择能源类型' }]}
       >
         <Select placeholder="请选择" allowClear>
-          {EnergyTypeList.map((item) => {
+          {energyType.options.map((item: any) => {
             return (
               <Option value={item.value} key={item.value}>
-                {item.name}
+                {item.key}
               </Option>
             );
           })}

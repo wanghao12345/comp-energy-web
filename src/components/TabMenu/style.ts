@@ -55,5 +55,5 @@ export const BodyContainer = styled.div`
   background: #142655;
   min-height: 500px;
   /* overflow-y: auto; */
-  overflow: hidden;
+  overflow: auto;
 `;

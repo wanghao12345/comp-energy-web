@@ -80,8 +80,4 @@ export const RateBodyRightBottomContainer = styled.div`
       border-right: 1px solid #f0f0f0;
     }
   }
-  .table {
-    height: calc(100vh - 650px);
-    overflow: auto;
-  }
 `;

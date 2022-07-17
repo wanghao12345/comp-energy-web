@@ -45,3 +45,12 @@ export const getRegionTreeList = async () => {
     method: 'POST',
   });
 };
+
+export const getDictionarySlectOptions = async (data: {
+  groupCode: string;
+}) => {
+  return await request('/ea/dictionary/selectList', {
+    method: 'POST',
+    data,
+  });
+};

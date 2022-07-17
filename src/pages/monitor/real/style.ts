@@ -70,7 +70,6 @@ export const RealBodyContainer = styled.div`
   .table-box {
     .ant-table {
       margin-top: 16px;
-      max-width: calc(100vw - 650px);
     }
   }
   .tableHiddle {
