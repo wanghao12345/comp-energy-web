@@ -22,41 +22,41 @@ export default () => {
   const columns = [
     {
       title: '节点名称',
-      dataIndex: 'name',
+      dataIndex: 'regionName',
     },
-    {
-      title: '仪表地址',
-      dataIndex: 'age',
-    },
+    // {
+    //   title: '仪表地址',
+    //   dataIndex: 'age',
+    // },
     {
       title: '仪表型号',
       dataIndex: 'model',
     },
     {
       title: '仪表名称',
-      dataIndex: 'address',
+      dataIndex: 'name',
     },
     {
       title: '仪表类型',
-      dataIndex: 'type',
+      dataIndex: 'typeName',
     },
     {
-      title: '创建人',
-      dataIndex: 'createUser',
+      title: '生产厂家',
+      dataIndex: 'manufacturer',
     },
-    {
-      title: '创建时间',
-      dataIndex: 'createDate',
-    },
-    {
-      title: '安装时间',
-      dataIndex: 'updateDate',
-    },
+    // {
+    //   title: '创建者',
+    //   dataIndex: 'creatorId',
+    // },
+    // {
+    //   title: '安装时间',
+    //   dataIndex: 'updateDate',
+    // },
     {
       title: '是否启用',
-      dataIndex: 'address',
-      render: () => {
-        return <Switch checked={true} />;
+      dataIndex: 'isEnable',
+      render: (record: any) => {
+        return <Switch checked={record ? true : false} />;
       },
     },
     {
@@ -136,26 +136,22 @@ export default () => {
     });
   };
 
-  useEffect(() => {
-    initSelectOptions();
-  }, []);
-
-  const initSelectOptions = () => {
-    getRegionTreeList().then((res: any) => {
-      if (res?.meta?.code === 200) {
-        formatSelectOption(res?.data);
-        setSelectNodeData(
-          Object.assign(
-            {},
-            {
-              value: undefined,
-              options: selectNodeData.options,
-            },
-          ),
-        );
-      }
-    });
-  };
+  // const initSelectOptions = () => {
+  //   getRegionTreeList().then((res: any) => {
+  //     if (res?.meta?.code === 200) {
+  //       formatSelectOption(res?.data);
+  //       setSelectNodeData(
+  //         Object.assign(
+  //           {},
+  //           {
+  //             value: undefined,
+  //             options: selectNodeData.options,
+  //           },
+  //         ),
+  //       );
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     tbEquipmentList();
@@ -177,9 +173,55 @@ export default () => {
       model: selectModelData?.value, //仪表型号
     }).then((res) => {
       if (res.meta.code === 200) {
-        setTableData(res.data.list);
+        const list = res?.data?.list;
+        if (!selectNodeData.options.length) {
+          getRegionTreeList().then((res: any) => {
+            if (res?.meta?.code === 200) {
+              formatSelectOption(res?.data);
+              setSelectNodeData(
+                Object.assign(
+                  {},
+                  {
+                    value: undefined,
+                    options: selectNodeData.options,
+                  },
+                ),
+              );
+              list.map((item: any, index: number) => {
+                item.key = index;
+                item.regionName = getRegionName(
+                  parseInt(item.regionId),
+                  selectNodeData.options,
+                );
+              });
+              setTableData(list);
+            }
+          });
+        } else {
+          list.map((item: any, index: number) => {
+            item.key = index;
+            item.regionName = getRegionName(
+              parseInt(item.regionId),
+              selectNodeData.options,
+            );
+          });
+          setTableData(list);
+        }
       }
     });
+  };
+
+  const getRegionName = (id: number, regionList: []) => {
+    let name = '';
+    if (!regionList) {
+      return '';
+    }
+    regionList.map((item: any) => {
+      if (item.value === id) {
+        name = item.label;
+      }
+    });
+    return name;
   };
 
   const onSelectChange = (value: any, type: string) => {
@@ -293,7 +335,7 @@ export default () => {
         </Link>
       </div>
       <Table
-        rowKey="id"
+        rowKey="key"
         columns={columns}
         dataSource={tableData}
         onChange={paginationChange}
@@ -302,7 +344,7 @@ export default () => {
           current: params.current,
           total: params.total,
         }}
-        scroll={{ y: window.screen.availHeight - 390 }}
+        scroll={{ y: window.screen.availHeight - 420 }}
       />
     </Page>
   );

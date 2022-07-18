@@ -308,14 +308,19 @@ export function getTheQuater(date: Moment, type: string, n: number) {
   }
 }
 
-export const getSelectOptionObj = (obj: string[]) => {
-  const dictionary: any = {};
-  obj.map((item: string) => {
-    getDictionarySlectOptions({ groupCode: item }).then((res: any) => {
-      if (res?.meta?.code === 200) {
-        dictionary[item] = res?.data;
-      }
-    });
-  });
-  return dictionary;
-};
+// export const getSelectOptionObj = async(obj: string[]) => {
+//   const dictionary: any = {};
+//   const mySove = () => {
+//     obj.map(async (item: string, index: number) => {
+//       const res: any = await getDictionarySlectOptions({ groupCode: item });
+//       if (res?.meta?.code === 200) {
+//         dictionary[item] = res?.data;
+//       }
+//     });
+//     return dictionary;
+//   }
+//   let myPromise = new Promise((mySove) => {
+//     mySove(555);
+//   });
+//   return myPromise;
+// };

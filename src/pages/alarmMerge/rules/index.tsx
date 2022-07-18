@@ -60,11 +60,11 @@ export default () => {
       title: '阀值2',
       dataIndex: 'threshold2',
     },
-    {
-      title: '报警优先',
-      dataIndex: 'address',
-      width: 100,
-    },
+    // {
+    //   title: '报警优先',
+    //   dataIndex: 'address',
+    //   width: 100,
+    // },
     {
       title: '是否启用',
       dataIndex: 'enableName',
