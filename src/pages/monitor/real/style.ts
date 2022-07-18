@@ -32,6 +32,7 @@ export const RealBodyContainer = styled.div`
   border-radius: 4px;
   box-sizing: border-box;
   padding: 24px;
+  overflow: auto;
   .options-box {
     display: flex;
     align-items: center;

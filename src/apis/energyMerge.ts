@@ -50,7 +50,7 @@ export interface selectEnergyLossByRegionProps {
   energyType: number;
   queryStartDate: string;
   queryEndDate: string;
-  regionIdList: number[];
+  regionIdList?: number[];
 }
 
 // 损耗报表

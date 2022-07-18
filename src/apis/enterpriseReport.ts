@@ -7,7 +7,7 @@ import request from '@/utils/request';
 // }
 export interface electricMultiRateProps {
   queryStartDate: string;
-  queryEndDate: string;
+  queryEndDate?: string;
   dateType: number;
   regionIdList: number[];
 }

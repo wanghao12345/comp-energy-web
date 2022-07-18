@@ -534,7 +534,6 @@ const RealBodyOption = () => {
           dataSource={columnDataSource}
           pagination={{ pageSize: 10 }}
           columns={columns}
-          scroll={{ y: 'max-content' }}
           rowKey="Key"
           key="Key"
         />

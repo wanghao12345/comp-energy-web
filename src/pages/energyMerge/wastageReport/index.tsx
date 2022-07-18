@@ -54,14 +54,10 @@ export default () => {
   };
 
   const onSearchClick = () => {
-    getResponseData(optionValue, rangePickerValue, [1, 2, 3]);
+    getResponseData(optionValue, rangePickerValue);
   };
 
-  const getResponseData = (
-    optionValue: number,
-    dataRange: any,
-    regionIdList: number[],
-  ) => {
+  const getResponseData = (optionValue: number, dataRange: any) => {
     const qs = formatDate(dataRange[0].toDate());
     const qe = formatDate(dataRange[1].toDate());
     console.log(qs, qe);
@@ -69,7 +65,6 @@ export default () => {
       energyType: optionValue,
       queryStartDate: qs,
       queryEndDate: qe,
-      regionIdList: regionIdList,
     }).then((res) => {
       if (res.meta?.code === 200) {
         const data = res.data;
@@ -82,7 +77,7 @@ export default () => {
   };
 
   useEffect(() => {
-    getResponseData(optionValue, rangePickerValue, [1, 2, 3]);
+    getResponseData(optionValue, rangePickerValue);
   }, []);
   return (
     <Page>

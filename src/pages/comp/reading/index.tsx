@@ -33,9 +33,9 @@ const RealBodyOption = () => {
   const [pagination, setPagintion] = useState({
     total: 0,
     current: 1,
-    size: 10,
+    size: 15,
   });
-
+  const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
     setrangePickerValue(range);
   };
@@ -48,6 +48,7 @@ const RealBodyOption = () => {
     getTableSourceData();
   };
   const getTableSourceData = () => {
+    setLoading(true);
     const queryStartDate =
       (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
     const queryEndDate =
@@ -63,6 +64,7 @@ const RealBodyOption = () => {
       queryStartDate: queryStartDate,
       queryEndDate: queryEndDate,
     }).then((res: any) => {
+      setLoading(false);
       if (res?.meta?.code === 200) {
         res?.data?.list.map((item: any) => {
           item.regionId = getRegionName(parseInt(item.regionId || '1'));
@@ -191,9 +193,10 @@ const RealBodyOption = () => {
           rowKey="activePower"
           key="activePower"
           onChange={onTableChange}
+          loading={loading}
           pagination={{
-            defaultCurrent: 1,
-            defaultPageSize: 10,
+            defaultCurrent: pagination.current,
+            defaultPageSize: pagination.size,
             total: pagination.total,
           }}
         />

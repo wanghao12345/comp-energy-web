@@ -2,8 +2,12 @@ import styled from 'styled-components';
 import MyCard from '@/components/myCard';
 export const PageBox = styled.div`
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   .content-box {
     display: flex;
+    flex: 1;
     & > div {
       flex: 1;
     }
