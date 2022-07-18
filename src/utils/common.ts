@@ -1,3 +1,4 @@
+import { getDictionarySlectOptions } from '@/apis';
 import moment, { Moment } from 'moment';
 
 export const debounce = (fn: (params: any) => void, ms: number) => {
@@ -306,3 +307,15 @@ export function getTheQuater(date: Moment, type: string, n: number) {
     return moment(endDays).format('YYYY-MM-DD');
   }
 }
+
+export const getSelectOptionObj = (obj: string[]) => {
+  const dictionary: any = {};
+  obj.map((item: string) => {
+    getDictionarySlectOptions({ groupCode: item }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        dictionary[item] = res?.data;
+      }
+    });
+  });
+  return dictionary;
+};

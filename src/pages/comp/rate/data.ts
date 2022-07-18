@@ -58,14 +58,14 @@ export const circleChart = {
         },
         {
           value: 735,
-          name: '谷',
+          name: '平',
           itemStyle: {
             color: '#1B81FB',
           },
         },
         {
           value: 1048,
-          name: '平',
+          name: '谷',
           itemStyle: {
             color: '#3B57A2',
           },
@@ -135,14 +135,14 @@ export const circleChart1 = {
         },
         {
           value: 735,
-          name: '谷',
+          name: '平',
           itemStyle: {
             color: '#1B81FB',
           },
         },
         {
           value: 1048,
-          name: '平',
+          name: '谷',
           itemStyle: {
             color: '#3B57A2',
           },
@@ -155,10 +155,21 @@ export const circleChart1 = {
 export const barStaticChartData = {
   grid: {
     left: 30,
-    right: 30,
-    top: 80,
+    right: 40,
+    top: 60,
     bottom: 30,
   },
+  dataZoom: [
+    {
+      type: 'slider',
+      show: false,
+      xAxisIndex: [0],
+      left: '9%',
+      bottom: -5,
+      start: 0,
+      end: 80, //初始化滚动条
+    },
+  ],
   tooltip: {
     trigger: 'axis',
   },
@@ -178,6 +189,7 @@ export const barStaticChartData = {
     },
     axisLabel: {
       color: '#FFFFFF',
+      rotate: 30,
     },
     nameTextStyle: {
       color: '#FFFFFF',
@@ -219,12 +231,12 @@ export const barStaticChartData = {
       name: '尖',
       type: 'bar',
       stack: 'total',
-      barWidth: 50,
       smooth: true,
+      barWidth: 10,
       itemStyle: {
         color: '#D65050',
       },
-      data: [100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400],
+      data: [1],
     },
     {
       name: '峰',
@@ -234,17 +246,7 @@ export const barStaticChartData = {
       lineStyle: {
         color: '#E7804A',
       },
-      data: [100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400],
-    },
-    {
-      name: '谷',
-      type: 'bar',
-      stack: 'total',
-      smooth: true,
-      lineStyle: {
-        color: '#1B81FB',
-      },
-      data: [100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400],
+      data: [1],
     },
     {
       name: '平',
@@ -252,9 +254,19 @@ export const barStaticChartData = {
       stack: 'total',
       smooth: true,
       lineStyle: {
+        color: '#1B81FB',
+      },
+      data: [1],
+    },
+    {
+      name: '谷',
+      type: 'bar',
+      stack: 'total',
+      smooth: true,
+      lineStyle: {
         color: '#3B57A2',
       },
-      data: [100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400],
+      data: [1],
     },
   ],
 };

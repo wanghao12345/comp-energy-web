@@ -15,6 +15,14 @@ export enum TimeType {
   HalfYear = 5,
   Year = 6,
 }
+
+//尖2峰1平4谷3
+export enum MeterParameters {
+  jian = '2',
+  feng = '1',
+  ping = '4',
+  gu = '3',
+}
 export interface ITypeList {
   name: string;
   value: number;

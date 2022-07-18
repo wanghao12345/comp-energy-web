@@ -46,6 +46,7 @@ export const getRegionTreeList = async () => {
   });
 };
 
+//查字典
 export const getDictionarySlectOptions = async (data: {
   groupCode: string;
 }) => {

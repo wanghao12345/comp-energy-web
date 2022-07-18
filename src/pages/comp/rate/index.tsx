@@ -12,7 +12,11 @@ import {
 import MyChartBox from '@/components/myChartsBox';
 import { barStaticChartData, circleChart, circleChart1 } from './data';
 import { electricMultiRate } from '@/apis/enterpriseReport';
-import { boardDayListnoDay, TimeType } from '@/commonInterface';
+import {
+  boardDayListnoDay,
+  MeterParameters,
+  TimeType,
+} from '@/commonInterface';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { getRegionTreeList } from '@/apis';
@@ -58,14 +62,100 @@ const RatePage = () => {
 
   const formatResponseDataTotal = (data: any) => {
     const keys = Object.keys(data);
-    keys.map((item, index) => {
-      circleChart.series[0].data[index].value =
-        data[item]?.activeElectricalEnergy;
-      circleChart1.series[0].data[index].value = data[item]?.electricCost;
+    const mySeries = {
+      jian: 0,
+      feng: 0,
+      ping: 0,
+      gu: 0,
+      jianCost: 0,
+      fengCost: 0,
+      pingCost: 0,
+      guCost: 0,
+    };
+    keys.map((item) => {
+      if (item === MeterParameters.jian) {
+        mySeries.jian = data[item]?.activeElectricalEnergy || 0;
+        mySeries.jianCost = data[item]?.electricCost || 0;
+      }
+      if (item === MeterParameters.feng) {
+        mySeries.feng = data[item]?.activeElectricalEnergy || 0;
+        mySeries.fengCost = data[item]?.electricCost || 0;
+      }
+      if (item === MeterParameters.ping) {
+        mySeries.ping = data[item]?.activeElectricalEnergy || 0;
+        mySeries.pingCost = data[item]?.electricCost || 0;
+      }
+      if (item === MeterParameters.gu) {
+        mySeries.gu = data[item]?.activeElectricalEnergy || 0;
+        mySeries.guCost = data[item]?.electricCost || 0;
+      }
     });
+
+    circleChart.series[0].data = [
+      {
+        value: mySeries.jian,
+        name: '尖',
+        itemStyle: {
+          color: '#D65050',
+        },
+      },
+      {
+        value: mySeries.feng,
+        name: '峰',
+        itemStyle: {
+          color: '#E7804A',
+        },
+      },
+      {
+        value: mySeries.ping,
+        name: '平',
+        itemStyle: {
+          color: '#1B81FB',
+        },
+      },
+      {
+        value: mySeries.gu,
+        name: '谷',
+        itemStyle: {
+          color: '#3B57A2',
+        },
+      },
+    ];
+
+    circleChart1.series[0].data = [
+      {
+        value: mySeries.jianCost,
+        name: '尖',
+        itemStyle: {
+          color: '#D65050',
+        },
+      },
+      {
+        value: mySeries.fengCost,
+        name: '峰',
+        itemStyle: {
+          color: '#E7804A',
+        },
+      },
+      {
+        value: mySeries.pingCost,
+        name: '平',
+        itemStyle: {
+          color: '#1B81FB',
+        },
+      },
+      {
+        value: mySeries.guCost,
+        name: '谷',
+        itemStyle: {
+          color: '#3B57A2',
+        },
+      },
+    ];
+
     setPieChartData({
-      electricity: Object.assign({}, pieChartData.electricity),
-      money: Object.assign({}, pieChartData.money),
+      electricity: Object.assign({}, circleChart),
+      money: Object.assign({}, circleChart1),
     });
   };
 
@@ -89,7 +179,32 @@ const RatePage = () => {
         };
         columnData[index].push(column);
       });
-      barStaticChartData.series[index].data = dataList;
+      //按照尖峰平谷的顺序
+      if (item === MeterParameters.jian) {
+        barStaticChartData.series[0].data = dataList;
+        barStaticChartData.xAxis.name =
+          boardDayListnoDay[form.dateType - 2]?.name || '年';
+      }
+      if (item === MeterParameters.feng) {
+        barStaticChartData.series[1].data = dataList;
+        barStaticChartData.xAxis.name =
+          boardDayListnoDay[form.dateType - 2]?.name || '年';
+      }
+      if (item === MeterParameters.ping) {
+        barStaticChartData.series[2].data = dataList;
+        barStaticChartData.xAxis.name =
+          boardDayListnoDay[form.dateType - 2]?.name || '年';
+      }
+      if (item === MeterParameters.gu) {
+        barStaticChartData.series[3].data = dataList;
+        barStaticChartData.xAxis.name =
+          boardDayListnoDay[form.dateType - 2]?.name || '年';
+      }
+      if (dataList.length > 10) {
+        barStaticChartData.series[0]['barWidth'] = undefined;
+      } else {
+        barStaticChartData.series[0]['barWidth'] = 40;
+      }
     });
     barStaticChartData.xAxis.data = [...new Set(xAxisData)];
     setBarchartData(Object.assign({}, barStaticChartData));
@@ -112,8 +227,8 @@ const RatePage = () => {
         tod: 0,
         tom: 0,
       };
-      column.tod = column.fd + column.sd + column.td + column.fod;
-      column.tom = column.fm + column.sm + column.tm + column.fom;
+      column.tod = formatNumer(column.fd + column.sd + column.td + column.fod);
+      column.tom = formatNumer(column.fm + column.sm + column.tm + column.fom);
       tempDataSource.push(column);
     });
     setDataSource(tempDataSource);
@@ -140,6 +255,11 @@ const RatePage = () => {
   };
 
   const getElectricMultiRate = (reginIdList?: number[]) => {
+    setForm((p) => {
+      p.dBarLoading = 1;
+      p.dPieLoading = 1;
+      p.mPieLoading = 1;
+    });
     const { queryStartDate, queryEndDate } = formatTime(
       form.queryStartDate,
       form.dateType,
@@ -158,6 +278,8 @@ const RatePage = () => {
       if (res?.meta?.code === 200) {
         if (!Object.keys(res?.data?.dataTotal || {})?.length) {
           setPieChartData({ electricity: undefined, money: undefined });
+          setDataSource([]);
+          setBarchartData(undefined);
           return;
         }
         formatResponseDataTotal(res?.data?.dataTotal || {});
@@ -267,16 +389,18 @@ const RatePage = () => {
             <MyChartBox
               id="enterprise-reate-bar"
               options={barChartData}
+              loading={form.dBarLoading}
             ></MyChartBox>
           </RateBodyRightTopContainer>
           <RateBodyRightBottomContainer>
             {/* <Table size="middle" dataSource={dataSource} columns={columns} /> */}
             <Table
               dataSource={dataSource}
-              rowKey="time"
-              key="time"
+              rowKey="key"
+              key="key"
               size="small"
               className="table"
+              pagination={{ pageSize: 10 }}
             >
               <Column title="时间" dataIndex="time" key="time" width={110} />
               <ColumnGroup title="尖">

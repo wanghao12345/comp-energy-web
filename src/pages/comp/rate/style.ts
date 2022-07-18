@@ -40,7 +40,8 @@ export const RateBodyLeftContainer = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 56px 45px;
+  padding: 40px 30px;
+  min-width: 300px;
   .rate-item-box {
     width: 100%;
     height: 50%;
@@ -67,6 +68,7 @@ export const RateBodyRightContainer = styled.div`
 export const RateBodyRightTopContainer = styled.div`
   width: 100%;
   height: 45%;
+  min-height: 350px;
   margin-bottom: 24px;
   border: 1px solid rgba(67, 140, 172);
   box-sizing: border-box;
@@ -74,7 +76,9 @@ export const RateBodyRightTopContainer = styled.div`
 `;
 export const RateBodyRightBottomContainer = styled.div`
   width: 100%;
+  flex: 1;
   .ant-table {
+    overflow: auto;
     .ant-table-thead > tr:not(:last-child) > th[colspan] {
       border-bottom: 1px solid #f0f0f0;
       border-right: 1px solid #f0f0f0;

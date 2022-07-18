@@ -18,23 +18,27 @@ export default () => {
   const columns = [
     {
       title: '节点名称',
-      dataIndex: 'regionId',
+      dataIndex: 'regionName',
+      width: 100,
     },
     {
       title: '能源类型',
-      dataIndex: 'energyParameter',
+      dataIndex: 'equipmentTypeName',
+      width: 100,
     },
     {
       title: '仪表名称',
       dataIndex: 'name',
+      width: 100,
     },
     {
       title: '事件类型',
-      dataIndex: 'eventType',
+      dataIndex: 'eventTypeName',
+      width: 120,
     },
     {
       title: '参数',
-      dataIndex: 'energyParameter',
+      dataIndex: 'energyParameterName',
     },
     {
       title: '阀值',
@@ -42,7 +46,7 @@ export default () => {
     },
     {
       title: '条件',
-      dataIndex: 'condition1',
+      dataIndex: 'condition1Name',
     },
     {
       title: '阀值',
@@ -50,7 +54,7 @@ export default () => {
     },
     {
       title: '条件2',
-      dataIndex: 'condition2',
+      dataIndex: 'condition2Name',
     },
     {
       title: '阀值2',
@@ -59,14 +63,16 @@ export default () => {
     {
       title: '报警优先',
       dataIndex: 'address',
+      width: 100,
     },
     {
       title: '是否启用',
-      dataIndex: 'isEnable',
+      dataIndex: 'enableName',
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
+      width: 180,
     },
     {
       title: '操作',
