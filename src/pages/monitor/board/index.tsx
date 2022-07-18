@@ -53,6 +53,9 @@ const BoardTop = () => {
     const { queryStartDate, queryEndDate } = formatTime(new Date(), 6);
     const qsd = queryStartDate.split(' ')[0];
     const qed = queryEndDate.split(' ')[0];
+
+    const thisYear = qsd.split('-')[0];
+    const lastYear = parseInt(thisYear) - 1;
     //年用电-去年
     const dchartOption = barChartOption1;
     energyConsumptionOverview({
@@ -71,6 +74,7 @@ const BoardTop = () => {
         const { xAxisData, seriesData } = formChartData(res.data);
         dchartOption.xAxis.data = xAxisData;
         dchartOption.series[0].data = seriesData;
+        dchartOption.series[0].name = lastYear.toString();
         //年用电-当年
         energyConsumptionOverview({
           energyType: EnergyType.Electric,
@@ -85,6 +89,7 @@ const BoardTop = () => {
             }
             const { seriesData } = formChartData(res.data);
             dchartOption.series[1].data = seriesData;
+            dchartOption.series[1].name = thisYear;
             setDbarChartOption(dchartOption);
           }
         });
@@ -174,7 +179,7 @@ const BoardTop = () => {
     const xAxisData: string[] = [];
     const seriesData: number[] = [];
     data.map((item) => {
-      let day = item.x;
+      let day = item.x.split('-')[1];
       xAxisData.push(day);
       seriesData.push(formatNumer(item.y));
     });
@@ -285,6 +290,51 @@ const BoardBottomLeft = () => {
           <span>{eneryData?.yearGasNatural}</span>
         </div>
       </div>
+      <div className="data-item-box">
+        <div className="title-box">用蒸汽能耗（Nm3)</div>
+        <div className="item-box">
+          <span>日用蒸汽量</span>
+          <span>{eneryData?.dayGasSteam}</span>
+        </div>
+        <div className="item-box">
+          <span>月用蒸汽量</span>
+          <span>{eneryData?.mouthGasSteam}</span>
+        </div>
+        <div className="item-box">
+          <span>年用蒸汽量</span>
+          <span>{eneryData?.yearGasSteam}</span>
+        </div>
+      </div>
+      <div className="data-item-box">
+        <div className="title-box">用氮气能耗（Nm3)</div>
+        <div className="item-box">
+          <span>日用氮气量</span>
+          <span>{eneryData?.dayGasNitrogen}</span>
+        </div>
+        <div className="item-box">
+          <span>月用氮气量</span>
+          <span>{eneryData?.mouthGasNitrogen}</span>
+        </div>
+        <div className="item-box">
+          <span>年用氮气量</span>
+          <span>{eneryData?.yearGasNitrogen}</span>
+        </div>
+      </div>
+      <div className="data-item-box">
+        <div className="title-box">用空气能耗（Nm3)</div>
+        <div className="item-box">
+          <span>日用空气量</span>
+          <span>{eneryData?.dayGasAir}</span>
+        </div>
+        <div className="item-box">
+          <span>月用空气量</span>
+          <span>{eneryData?.mouthGasAir}</span>
+        </div>
+        <div className="item-box">
+          <span>年用空气量</span>
+          <span>{eneryData?.yearGasAir}</span>
+        </div>
+      </div>
     </BoardBottomLeftContainer>
   );
 };
@@ -343,6 +393,30 @@ const BoardBottomRight = () => {
       <div className="option-box">
         <h3>能耗趋势</h3>
         <div className="tab-box">
+          <Button
+            onClick={() => {
+              shiftTabStatus(EnergyType.Electric);
+            }}
+            type={tabStatus === EnergyType.Electric ? 'primary' : 'default'}
+          >
+            电
+          </Button>
+          <Button
+            onClick={() => {
+              shiftTabStatus(EnergyType.Water);
+            }}
+            type={tabStatus === EnergyType.Water ? 'primary' : 'default'}
+          >
+            水
+          </Button>
+          <Button
+            onClick={() => {
+              shiftTabStatus(EnergyType.NaturalGas);
+            }}
+            type={tabStatus === EnergyType.NaturalGas ? 'primary' : 'default'}
+          >
+            天然气
+          </Button>
           <Button
             onClick={() => {
               shiftTabStatus(EnergyType.Steam);

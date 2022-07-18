@@ -126,6 +126,17 @@ export const barCartDataOptions = {
       color: '#fff',
     },
   },
+  dataZoom: [
+    {
+      type: 'slider',
+      show: true,
+      xAxisIndex: [0],
+      left: '9%',
+      bottom: -5,
+      start: 0,
+      end: 80, //初始化滚动条
+    },
+  ],
   xAxis: {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -142,7 +153,6 @@ export const barCartDataOptions = {
       itemStyle: {
         color: '#72d5df',
       },
-      barWidth: '20%',
     },
     {
       name: '昨日能耗',
@@ -151,7 +161,6 @@ export const barCartDataOptions = {
       itemStyle: {
         color: '#315679',
       },
-      barWidth: '20%',
     },
   ],
 };

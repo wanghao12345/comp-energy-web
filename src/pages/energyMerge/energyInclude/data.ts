@@ -72,7 +72,7 @@ export const barCartDataOptions = {
       left: '9%',
       bottom: -5,
       start: 0,
-      end: 90, //初始化滚动条
+      end: 80, //初始化滚动条
     },
   ],
   series: [
@@ -80,7 +80,6 @@ export const barCartDataOptions = {
       name: 'Highest',
       type: 'bar',
       data: [10, 11, 13, 11, 12, 12, 9],
-      barWidth: 15,
       markPoint: {
         label: {
           color: '#fff',

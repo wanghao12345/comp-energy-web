@@ -1,6 +1,6 @@
 // 能源管理=>趋势分析
 import { Select, Tabs, DatePicker, Button, Table } from 'antd';
-import { barCartDataOptions, dataSource, getColumns } from './data';
+import { getColumns } from './data';
 import { RealBodyContainer } from './style';
 import MyChartBox from '@/components/myChartsBox';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
@@ -11,14 +11,7 @@ import {
   selectTrendAnalysisYOYByRegionIds,
 } from '@/apis/energyMerge';
 import { boardDayList, EnergyTypeList, TimeType } from '@/commonInterface';
-import {
-  formatDate,
-  formatNumer,
-  formatTime,
-  getTheQuater,
-  getTheWeek,
-  Timetools,
-} from '@/utils/common';
+import { formatDate, formatNumer, formatTime } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 const { Option } = Select;
@@ -40,7 +33,8 @@ enum ITabStatus {
 const RealBodyOption = () => {
   const [currentTab, setTab] = useState(ITabStatus.normal);
   const templateProps = useContext(TemplateContext);
-  const [columnDataSource, setDataSource] = useState();
+  const [columnDataSource, setDataSource] = useState<any>();
+  const [columns, setColumns] = useState<any>();
   const onTabChange = (key: any) => {
     setTab(key);
   };
@@ -92,6 +86,7 @@ const RealBodyOption = () => {
         if (res?.meta?.code === 200) {
           if (!res?.data?.length) {
             setBarChartData(undefined);
+            setDataSource([]);
             return;
           }
           const allData = [res.data];
@@ -104,6 +99,7 @@ const RealBodyOption = () => {
             if (res?.meta?.code === 200) {
               if (!res?.data?.length) {
                 setBarChartData(undefined);
+                setDataSource([]);
                 return;
               }
               allData.push(res?.data);
@@ -129,6 +125,7 @@ const RealBodyOption = () => {
         if (res?.meta?.code === 200) {
           if (!res?.data?.length) {
             setBarChartData(undefined);
+            setDataSource([]);
             return;
           }
           handleResponseData(res?.data, currentTabStatus);
@@ -158,8 +155,8 @@ const RealBodyOption = () => {
       }
 
       if (form.dateType === TimeType.Week) {
-        const lastWeek = parseInt(form.cateGory.format('W'));
-        const newDate = moment().week(lastWeek).toDate();
+        const lastWeek = form.cateGory.week() - 1;
+        const newDate = moment().week(lastWeek).startOf('week').toDate();
         const { queryStartDate, queryEndDate } = formatTime(
           newDate,
           form.dateType,
@@ -168,8 +165,8 @@ const RealBodyOption = () => {
         lastqed = queryEndDate.split(' ')[0];
       }
       if (form.dateType === TimeType.Month) {
-        const lastWeek = parseInt(form.cateGory.format('M'));
-        const newDate = moment().month(lastWeek).toDate();
+        const lastMonth = form.cateGory.month() - 1;
+        const newDate = moment().month(lastMonth).startOf('month').toDate();
         const { queryStartDate, queryEndDate } = formatTime(
           newDate,
           form.dateType,
@@ -178,8 +175,11 @@ const RealBodyOption = () => {
         lastqed = queryEndDate.split(' ')[0];
       }
       if (form.dateType === TimeType.Quarter) {
-        const lastWeek = parseInt(form.cateGory.format('Q')) - 1;
-        const newDate = moment().quarter(lastWeek).toDate();
+        const lsatquarter = form.cateGory.quarter() - 1;
+        const newDate = moment()
+          .quarter(lsatquarter)
+          .startOf('quarter')
+          .toDate();
         const { queryStartDate, queryEndDate } = formatTime(
           newDate,
           form.dateType,
@@ -220,6 +220,7 @@ const RealBodyOption = () => {
             });
             if (!res?.data?.length) {
               setBarChartData(undefined);
+              setDataSource([]);
               return;
             }
             if (res?.meta?.code === 200) {
@@ -286,6 +287,11 @@ const RealBodyOption = () => {
         ],
       };
       setBarChartData(Object.assign({}, ibarChartData));
+      const icolumns = getColumns(
+        currentTab,
+        EnergyTypeList[templateProps.energyType - 1].unit,
+      );
+      setColumns(icolumns);
       setDataSource(columns);
     }
     if (currentTabStatus === ITabStatus.yaerOnyear) {
@@ -315,7 +321,6 @@ const RealBodyOption = () => {
             itemStyle: {
               color: '#72D5DF',
             },
-            barWidth: 50,
           },
           {
             name: '上期能耗',
@@ -324,11 +329,15 @@ const RealBodyOption = () => {
             itemStyle: {
               color: '#3B83EE',
             },
-            barWidth: 50,
           },
         ],
       };
       setBarChartData(Object.assign({}, ibarChartData));
+      const icolumns = getColumns(
+        currentTab,
+        EnergyTypeList[templateProps.energyType - 1].unit,
+      );
+      setColumns(icolumns);
       setDataSource(columns);
     }
     if (currentTabStatus === ITabStatus.normal) {
@@ -358,7 +367,6 @@ const RealBodyOption = () => {
             itemStyle: {
               color: '#72D5DF',
             },
-            barWidth: 50,
           },
           {
             name: '上期能耗',
@@ -367,11 +375,15 @@ const RealBodyOption = () => {
             itemStyle: {
               color: '#3B83EE',
             },
-            barWidth: 50,
           },
         ],
       };
       setBarChartData(Object.assign({}, ibarChartData));
+      const icolumns = getColumns(
+        currentTab,
+        EnergyTypeList[templateProps.energyType - 1].unit,
+      );
+      setColumns(icolumns);
       setDataSource(columns);
     }
   };
@@ -381,8 +393,9 @@ const RealBodyOption = () => {
     const columns: any = [];
     if (currentTabStatus === ITabStatus.monthOnmonth) {
       let column: any = {};
-      data.reverse().map((item: any) => {
+      data.reverse().map((item: any, index: number) => {
         column = {
+          Key: index,
           A: item.statisticsDate,
           B: item.regionName,
           C: formatNumer(item.flow, 5),
@@ -402,22 +415,26 @@ const RealBodyOption = () => {
 
     if (currentTabStatus === ITabStatus.yaerOnyear) {
       let column: any = {};
-      data[0].reverse().map((item: any) => {
+      data[0].map((item: any, index: number) => {
         column = {
-          A: item.statisticsDate,
+          Key: index,
+          D: item.statisticsDate,
           B: item.regionName,
-          C: formatNumer(item.flow, 5),
+          E: formatNumer(item.flow, 5),
         };
-        xAxisData.push(item.statisticsDate);
-        seriesData[0].push(item.flow);
-      });
-      data[1].reverse().map((item: any) => {
-        column.D = item.statisticsDate;
-        column.E = formatNumer(item.flow, 5);
-        column.F = formatNumer(column.C - item.flow, 5);
-        column.G = formatNumer(column.C - item.flow, 5) < 0 ? '下降' : '上升';
-        seriesData[1].push(item.flow);
+        column.A = data[1][index]?.statisticsDate;
+        column.C = formatNumer(data[1][index]?.flow, 5);
+        column.F = formatNumer(data[1][index]?.flow || 0 - column.E, 5);
+        column.G =
+          formatNumer(data[1][index]?.flow || 0 - column.E, 5) < 0
+            ? '下降'
+            : '上升';
         columns.push(column);
+        seriesData[0].push(item.flow);
+        xAxisData.push(item.statisticsDate?.split('-')[1]);
+      });
+      data[1].map((item: any) => {
+        seriesData[1].push(item.flow);
       });
     }
 
@@ -425,17 +442,19 @@ const RealBodyOption = () => {
       let column: any = {};
       data[0].map((item: any, index: number) => {
         column = {
+          Key: index,
           D: item.x,
           E: item.y,
         };
+        column.A = data[1][index]?.x || item.x;
+        column.C = data[1][index]?.y || 0;
+        xAxisData.push(item.x?.split('-')[1]);
+
+        columns.push(column);
         seriesData[1].push(item.y);
       });
       data[1].map((item: any) => {
-        column.A = item.x;
-        column.C = item.y;
-        xAxisData.push(item.x);
         seriesData[0].push(item.y);
-        columns.push(column);
       });
     }
     return {
@@ -473,7 +492,7 @@ const RealBodyOption = () => {
             <Select
               size="large"
               value={form.dateType}
-              style={{ width: 120 }}
+              style={{ width: 180 }}
               onChange={handleDateTypeChange}
             >
               {boardDayList.map((item) => (
@@ -511,15 +530,13 @@ const RealBodyOption = () => {
       </div>
       <div className="table-box">
         <Table
-          scroll={{ y: window.screen.availHeight - 820 }}
           size="middle"
           dataSource={columnDataSource}
-          columns={getColumns(
-            currentTab,
-            EnergyTypeList[templateProps.energyType - 1].unit,
-          )}
-          rowKey="A"
-          key="A"
+          pagination={{ pageSize: 10 }}
+          columns={columns}
+          scroll={{ y: 'max-content' }}
+          rowKey="Key"
+          key="Key"
         />
       </div>
     </RealBodyContainer>

@@ -19,7 +19,7 @@ export const barChartOption1 = {
       left: 50,
       bottom: -5,
       start: 0,
-      end: 90, //初始化滚动条
+      end: 80, //初始化滚动条
     },
   ],
   xAxis: {
@@ -55,7 +55,7 @@ export const barChartOption1 = {
     {
       type: 'bar',
       name: '2021',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -68,7 +68,7 @@ export const barChartOption1 = {
     {
       type: 'bar',
       name: '2022',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -101,7 +101,7 @@ export const barChartOption2 = {
       left: 50,
       bottom: -5,
       start: 0,
-      end: 90, //初始化滚动条
+      end: 80, //初始化滚动条
     },
   ],
   xAxis: {
@@ -137,7 +137,7 @@ export const barChartOption2 = {
     {
       type: 'bar',
       name: '2021',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -150,7 +150,7 @@ export const barChartOption2 = {
     {
       type: 'bar',
       name: '2022',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -184,7 +184,7 @@ export const barChartOption3 = {
       left: 50,
       bottom: -5,
       start: 0,
-      end: 90, //初始化滚动条
+      end: 80, //初始化滚动条
     },
   ],
   xAxis: {
@@ -220,7 +220,7 @@ export const barChartOption3 = {
     {
       type: 'bar',
       name: '2021',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -233,7 +233,7 @@ export const barChartOption3 = {
     {
       type: 'bar',
       name: '2022',
-      barWidth: 20,
+
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',

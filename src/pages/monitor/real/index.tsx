@@ -912,17 +912,11 @@ const RealBodyOption = () => {
       <div className="table-box">
         <Table
           size="small"
-          rowKey={'A'}
-          key={'A'}
+          rowKey={'key'}
+          key={'key'}
           dataSource={dataSource}
           columns={columns}
-          pagination={{ pageSize: 5 }}
-          scroll={{
-            y:
-              tab === tabStatus.RealTime
-                ? window.screen.availHeight - 650
-                : undefined,
-          }}
+          pagination={{ pageSize: 10 }}
         />
       </div>
     </RealBodyContainer>
