@@ -211,6 +211,7 @@ const RatePage = () => {
     const tempDataSource: any[] = [];
     columnData[0].map((item: any, index: number) => {
       const column = {
+        key: index,
         time: columnData[0][index].time,
         fd: columnData[0][index]?.fd || 0,
         fm: columnData[0][index]?.fm || 0,

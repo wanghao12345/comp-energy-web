@@ -39,9 +39,10 @@ export default () => {
   };
 
   const formatTableDataSecond = (data: any) => {
-    data.map((item: any) => {
+    data.map((item: any, index: number) => {
       item.CZ = item.current - item.lowTotal;
       if (item.children && item.children?.length) {
+        item.key = index + Math.random();
         item.Rate = formatNumer((item.CZ / item.current) * 100) + '%';
         item.children.map((tt: any) => {
           formatTableDataSecond(item.children);
@@ -110,7 +111,8 @@ export default () => {
         </Button>
       </div>
       <Table
-        rowKey="id"
+        rowKey="key"
+        key="key"
         pagination={false}
         columns={columns}
         dataSource={tableData}

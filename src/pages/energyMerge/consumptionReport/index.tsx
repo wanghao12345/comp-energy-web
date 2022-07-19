@@ -81,7 +81,8 @@ const RealBodyOption = () => {
 
     data.map((item: any, index: number) => {
       const qz = formatColumnTitle(item?.statisticsDate || '2022-03-13', index);
-      const column = { title: '', dataIndex: '', className: '' };
+      const column = { title: '', dataIndex: '', className: '', key: 1 };
+      column.key = index;
       column.title = `${qz}（${unit}）`;
       column.dataIndex = `time${index}`;
       column.className = 'columnWidth';
@@ -159,8 +160,8 @@ const RealBodyOption = () => {
         <div className="table-box">
           <Table
             size="small"
-            rowKey="A"
-            key="A"
+            rowKey="key"
+            key="key"
             pagination={false}
             dataSource={form.dataSource}
             columns={form.columns}

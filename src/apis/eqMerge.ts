@@ -8,6 +8,8 @@ export interface getEquipmentListProps {
   model?: string; //仪表型号
   manufacturer?: string; //生产厂家
   equipmentCode?: number; //设备的编号
+  regionId?: string;
+  isEnable?: number;
 }
 // 接口：设备列表
 export const getTbEquipmentList = async (data: getEquipmentListProps) => {

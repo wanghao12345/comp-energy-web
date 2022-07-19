@@ -59,7 +59,7 @@ export default () => {
       </Form.Item>
       {parentData.parentId ? (
         <Form.Item name="parentName" label="父节点名称">
-          <Input disabled placeholder="请输入" />
+          <Input readOnly placeholder="请输入" />
         </Form.Item>
       ) : null}
       <Form.Item name="isEnable" label="是否启用" valuePropName="selected">

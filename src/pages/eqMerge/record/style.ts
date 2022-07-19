@@ -8,7 +8,11 @@ export const Page = styled.div`
   .filterBox {
     display: flex;
   }
-  .ant-select {
+  .ant-select,
+  .ant-input-affix-wrapper {
     margin-right: 20px;
   }
+  /* .ant-input {
+    margin-right: 20px;
+  } */
 `;

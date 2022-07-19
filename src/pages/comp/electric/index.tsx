@@ -64,8 +64,9 @@ const RealBodyOption = () => {
     }).then((res: any) => {
       setLoading(false);
       if (res?.meta?.code === 200) {
-        res?.data?.list.map((item: any) => {
+        res?.data?.list.map((item: any, index: number) => {
           item.regionId = getRegionName(parseInt(item.regionId || '1'));
+          item.key = index;
         });
         setDataSource(res?.data?.list);
         setPagintion({
@@ -129,8 +130,8 @@ const RealBodyOption = () => {
           size="middle"
           dataSource={dataSource}
           columns={templateProps.energyType === 1 ? columns : columnsOther}
-          rowKey="activePower"
-          key="activePower"
+          rowKey="key"
+          key="key"
           onChange={onTableChange}
           loading={loading}
           pagination={{

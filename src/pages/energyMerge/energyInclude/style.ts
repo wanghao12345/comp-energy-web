@@ -65,7 +65,8 @@ export const PageBox = styled.div`
 `;
 export const HeaderFilterBox = styled.div``;
 export const LineCartBox = styled(MyCard)`
-  height: 320px;
+  height: calc(100vh - 630px);
+  min-height: 320px;
   margin: 24px 0;
 `;
 export const BarCartBox = styled(MyCard)`

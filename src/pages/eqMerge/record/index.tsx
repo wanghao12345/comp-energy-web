@@ -4,19 +4,18 @@ import {
   Table,
   Space,
   Switch,
-  DatePicker,
   Select,
-  Input,
-  Form,
   TablePaginationConfig,
   Popconfirm,
   message,
+  Input,
 } from 'antd';
 import { Page } from './style';
 import { Link } from 'umi';
 import { useState, useEffect } from 'react';
 import { getTbEquipmentList } from '@/apis/eqMerge';
-import { getRegionTreeList } from '@/apis';
+import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
+import { SearchOutlined } from '@ant-design/icons';
 const { Option } = Select;
 export default () => {
   const columns = [
@@ -25,13 +24,9 @@ export default () => {
       dataIndex: 'regionName',
     },
     // {
-    //   title: '仪表地址',
-    //   dataIndex: 'age',
+    //   title: '仪表型号',
+    //   dataIndex: 'model',
     // },
-    {
-      title: '仪表型号',
-      dataIndex: 'model',
-    },
     {
       title: '仪表名称',
       dataIndex: 'name',
@@ -48,10 +43,22 @@ export default () => {
     //   title: '创建者',
     //   dataIndex: 'creatorId',
     // },
-    // {
-    //   title: '安装时间',
-    //   dataIndex: 'updateDate',
-    // },
+    {
+      title: '生产日期',
+      dataIndex: 'manufactureDate',
+    },
+    {
+      title: '检定日期',
+      dataIndex: 'verificationDate',
+    },
+    {
+      title: '检定周期',
+      dataIndex: 'verificationCycle',
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateDate',
+    },
     {
       title: '是否启用',
       dataIndex: 'isEnable',
@@ -61,7 +68,7 @@ export default () => {
     },
     {
       title: '操作',
-      width: 200,
+      width: 150,
       render: (text: any, record: any) => {
         return (
           <Space size="middle">
@@ -70,10 +77,10 @@ export default () => {
                 编辑
               </Button>
             </Link>
-            <Popconfirm
+            {/* <Popconfirm
               title="确认删除？"
               color={'#293949'}
-              onConfirm={() => {}}
+              onConfirm={() => { }}
               onCancel={() => {
                 message.info('取消删除!');
               }}
@@ -81,12 +88,13 @@ export default () => {
               <Button size="large" type="ghost">
                 删除
               </Button>
-            </Popconfirm>
+            </Popconfirm> */}
           </Space>
         );
       },
     },
   ];
+  const [loading, setLoading] = useState(true);
   const [params, setParams] = useState({
     current: 1,
     size: 10,
@@ -101,18 +109,12 @@ export default () => {
 
   const [selectModelData, setSelectModelData] = useState<any>({
     value: undefined,
-    options: [
-      { label: '电表', value: 1 },
-      { label: '水表', value: 2 },
-    ],
+    options: [],
   });
 
   const [selectTypeData, setSelectTypeData] = useState<any>({
     value: undefined,
-    options: [
-      { label: '类型1', value: 1 },
-      { label: '类型2', value: 2 },
-    ],
+    options: [],
   });
 
   const [selectEnableData, setSelectEnableData] = useState<any>({
@@ -136,22 +138,45 @@ export default () => {
     });
   };
 
-  // const initSelectOptions = () => {
-  //   getRegionTreeList().then((res: any) => {
-  //     if (res?.meta?.code === 200) {
-  //       formatSelectOption(res?.data);
-  //       setSelectNodeData(
-  //         Object.assign(
-  //           {},
-  //           {
-  //             value: undefined,
-  //             options: selectNodeData.options,
-  //           },
-  //         ),
-  //       );
-  //     }
-  //   });
-  // };
+  const initSelectOptions = () => {
+    //初始化站点数据
+    // getRegionTreeList().then((res: any) => {
+    //   if (res?.meta?.code === 200) {
+    //     formatSelectOption(res?.data);
+    //     setSelectNodeData(
+    //       Object.assign(
+    //         {},
+    //         {
+    //           value: undefined,
+    //           options: selectNodeData.options,
+    //         },
+    //       ),
+    //     );
+    //   }
+    // });
+    //初始化仪表类型
+    getDictionarySlectOptions({ groupCode: 'energy_type' }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        const data = res?.data;
+        data.map((item: any) => {
+          const obj = {
+            label: item.key + '表',
+            value: item.value,
+          };
+          selectTypeData.options.push(obj);
+        });
+        console.log(selectTypeData.options);
+        setSelectTypeData({
+          value: undefined,
+          options: selectTypeData.options,
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    initSelectOptions();
+  }, []);
 
   useEffect(() => {
     tbEquipmentList();
@@ -166,14 +191,22 @@ export default () => {
   };
 
   const tbEquipmentList = () => {
+    setLoading(true);
     getTbEquipmentList({
       current: params.current,
       size: params.size,
       type: selectTypeData?.value, //设备类型
       model: selectModelData?.value, //仪表型号
+      regionId: selectNodeData?.value, //节点
+      isEnable: selectEnableData?.value, //是否禁用
     }).then((res) => {
+      setLoading(false);
       if (res.meta.code === 200) {
         const list = res?.data?.list;
+        if (!list || !list.length) {
+          setTableData([]);
+          return;
+        }
         if (!selectNodeData.options.length) {
           getRegionTreeList().then((res: any) => {
             if (res?.meta?.code === 200) {
@@ -273,7 +306,16 @@ export default () => {
             })}
           </Select>
 
-          <Select
+          <Input
+            type="text"
+            placeholder="仪表型号"
+            suffix={<SearchOutlined />}
+            style={{
+              width: '180px',
+            }}
+            // onChange={onInputChange}
+          ></Input>
+          {/* <Select
             size="large"
             value={selectModelData.value}
             placeholder="仪表型号"
@@ -289,7 +331,7 @@ export default () => {
                 </Option>
               );
             })}
-          </Select>
+          </Select> */}
 
           <Select
             size="large"
@@ -336,15 +378,17 @@ export default () => {
       </div>
       <Table
         rowKey="key"
+        key="key"
         columns={columns}
         dataSource={tableData}
         onChange={paginationChange}
+        loading={loading}
         pagination={{
           pageSize: params.size,
           current: params.current,
           total: params.total,
         }}
-        scroll={{ y: window.screen.availHeight - 420 }}
+        scroll={{ y: window.screen.height - 420 }}
       />
     </Page>
   );

@@ -36,18 +36,18 @@ export default () => {
     {
       title: '是否启用',
       dataIndex: 'isEnable',
-      render: (text, { isEnable }, index) => {
+      render: (isEnable: any) => {
         return <Switch checked={isEnable === 1} />;
       },
     },
     {
       title: '操作',
       // dataIndex: 'address',
-      render: (text, record, index) => {
+      render: (text: any, record: any, index: any) => {
         return (
           <Space size="middle">
-            <a style={{ color: 'white' }}>查看</a>
-            <a style={{ color: 'white' }}>编辑</a>
+            {/* <a style={{ color: 'white' }}>查看</a>
+            <a style={{ color: 'white' }}>编辑</a> */}
             <Link to={`/eqMerge/areaNode/add?parentId=${record.id}`}>
               <a style={{ color: 'white' }}>新增下一节点</a>
             </Link>

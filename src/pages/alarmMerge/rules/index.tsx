@@ -6,6 +6,7 @@ import {
   TablePaginationConfig,
   Popconfirm,
   message,
+  Switch,
 } from 'antd';
 import { RulesPage } from './style';
 import { Link } from 'umi';
@@ -19,22 +20,22 @@ export default () => {
     {
       title: '节点名称',
       dataIndex: 'regionName',
-      width: 100,
+      width: 120,
     },
     {
       title: '能源类型',
       dataIndex: 'equipmentTypeName',
-      width: 100,
+      width: 120,
     },
     {
       title: '仪表名称',
       dataIndex: 'name',
-      width: 100,
+      width: 120,
     },
     {
       title: '事件类型',
       dataIndex: 'eventTypeName',
-      width: 120,
+      width: 160,
     },
     {
       title: '参数',
@@ -75,6 +76,13 @@ export default () => {
       width: 180,
     },
     {
+      title: '是否启用',
+      dataIndex: 'isEnable',
+      render: (record: any) => {
+        return <Switch checked={record ? true : false} />;
+      },
+    },
+    {
       title: '操作',
       width: 200,
       render: (text: any, record: any) => {
@@ -102,6 +110,7 @@ export default () => {
       },
     },
   ];
+  const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current: 1,
     size: 20,
@@ -127,10 +136,12 @@ export default () => {
     });
   };
   const getTableSource = () => {
+    setLoading(true);
     tbEarlyWarningSelectList({
       current: pagination.current,
       size: pagination.size,
     }).then((res: any) => {
+      setLoading(false);
       if (res?.meta?.code === 200) {
         setDataSource(res?.data?.list);
         setPagination({
@@ -160,7 +171,11 @@ export default () => {
           total: pagination.total,
           current: pagination.current,
         }}
-        scroll={{ y: window.screen.availHeight - 385 }}
+        loading={loading}
+        scroll={{
+          y: window.screen.availHeight - 385,
+          x: window.screen.availWidth - 250,
+        }}
         onChange={onTableChange}
         rowKey="createDate"
         key="createDate"

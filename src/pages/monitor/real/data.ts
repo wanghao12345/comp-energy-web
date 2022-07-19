@@ -120,8 +120,8 @@ export const ContactColumns = [
 export const LineColors = ['#FFEF6C', '#FD264E', '#2DFCC0', '#381ae0'];
 export const chartOption = {
   grid: {
-    left: 40,
-    right: 20,
+    left: 30,
+    right: 40,
     top: 80,
   },
   tooltip: {
@@ -136,6 +136,7 @@ export const chartOption = {
   },
   xAxis: {
     type: 'category',
+    name: '时',
     axisLine: {
       lineStyle: {
         color: '#6C6E79',

@@ -33,6 +33,8 @@ export default () => {
         if (res?.meta?.code === 200) {
           message.success(id ? '更新成功！' : '新增成功!');
           history.go(-1);
+        } else {
+          message.warn(res?.message);
         }
         hide();
       });
@@ -44,6 +46,8 @@ export default () => {
         if (res?.meta?.code === 200) {
           message.success(id ? '更新成功！' : '新增成功!');
           history.go(-1);
+        } else {
+          message.warn(res?.message);
         }
         hide();
       });
