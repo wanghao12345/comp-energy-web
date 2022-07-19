@@ -86,7 +86,7 @@ export default () => {
         rowKey="id"
         columns={columns}
         dataSource={tableData}
-        scroll={{ y: 600 }}
+        scroll={{ y: window.screen.height - 450 }}
         pagination={false}
       />
     </Page>

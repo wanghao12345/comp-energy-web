@@ -388,7 +388,7 @@ export default () => {
           current: params.current,
           total: params.total,
         }}
-        scroll={{ y: window.screen.height - 420 }}
+        scroll={{ y: window.screen.height - 450 }}
       />
     </Page>
   );

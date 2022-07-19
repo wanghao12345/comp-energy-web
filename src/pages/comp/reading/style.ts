@@ -12,7 +12,7 @@ export const RealBodyContainer = styled.div`
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
   box-sizing: border-box;
-  padding: 24px;
+  padding: 24px 16px 0 16px;
   overflow: auto;
   .options-box {
     display: flex;

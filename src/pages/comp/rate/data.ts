@@ -4,7 +4,7 @@ export const circleChart = {
   },
   grid: {
     top: 0,
-    bottom: 150,
+    bottom: 100,
   },
   legend: {
     bottom: 30,

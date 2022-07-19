@@ -316,7 +316,7 @@ const RatePage = () => {
             value={selectData.value}
             onChange={onSelectChange}
             style={{
-              width: '320px',
+              width: '280px',
             }}
           >
             {selectData.options.map((item: any, index: number) => {
@@ -330,7 +330,7 @@ const RatePage = () => {
           <Select
             size="large"
             value={form.dateType}
-            style={{ width: 120 }}
+            style={{ width: 180 }}
             onChange={handleDateTypeChange}
           >
             {boardDayListnoDay.map((item) => (
