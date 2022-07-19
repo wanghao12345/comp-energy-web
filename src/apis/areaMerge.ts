@@ -1,7 +1,11 @@
 import request from '@/utils/request';
-
+export interface queryTreeProps {
+  current: number;
+  size: number;
+  name?: string;
+}
 // 区域节点树
-export const queryTree = async (data: any) => {
+export const queryTree = async (data: queryTreeProps) => {
   return await request('/ea/tbRegion/selectTreeList', {
     method: 'POST',
     data,

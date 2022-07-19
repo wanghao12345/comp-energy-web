@@ -180,7 +180,7 @@ export default () => {
 
   useEffect(() => {
     tbEquipmentList();
-  }, [params]);
+  }, [params.current]);
 
   const onClickSearch = () => {
     tbEquipmentList();
@@ -203,6 +203,10 @@ export default () => {
       setLoading(false);
       if (res.meta.code === 200) {
         const list = res?.data?.list;
+        setParams({
+          ...params,
+          total: res?.data?.count,
+        });
         if (!list || !list.length) {
           setTableData([]);
           return;

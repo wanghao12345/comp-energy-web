@@ -1,24 +1,39 @@
 // 设备管理=>区域节点
-import { Button, Table, Space, Switch, Input, Form } from 'antd';
+import {
+  Button,
+  Table,
+  Space,
+  Switch,
+  Input,
+  Form,
+  TablePaginationConfig,
+} from 'antd';
 import { Page } from './style';
 import { SearchOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import { queryTree } from '@/apis/areaMerge';
 import { history, Link } from 'umi';
 export default () => {
-  const [params, setParams] = useState({});
+  const [name, setName] = useState('');
   const [tableData, setTableData] = useState<any>([]);
-  useEffect(() => {
-    queryTree({
-      ...params,
-    }).then((res) => {
-      if (res.meta.code === 200) {
-        setTableData(res.data);
-      }
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    size: 20,
+    total: 0,
+  });
+
+  const onTableChange = (pconfig: TablePaginationConfig) => {
+    setPagination({
+      ...pagination,
+      current: pconfig.current || 1,
     });
-  }, [params, history]);
-  const startSearch = (val) => {
-    setParams({ ...params, ...val });
+  };
+
+  const startSearch = (val: any) => {
+    const { name } = val;
+    setName(name);
+    getAreaNodes(name);
   };
   const columns = [
     {
@@ -56,6 +71,22 @@ export default () => {
       },
     },
   ];
+  const getAreaNodes = (cname?: string) => {
+    setLoading(true);
+    queryTree({
+      current: pagination.current,
+      size: pagination.size,
+      name: cname || name,
+    }).then((res) => {
+      setLoading(false);
+      if (res.meta.code === 200) {
+        setTableData(res.data);
+      }
+    });
+  };
+  useEffect(() => {
+    getAreaNodes();
+  }, [pagination.current, history]);
   return (
     <Page>
       <div className="headerBox">
@@ -87,7 +118,13 @@ export default () => {
         columns={columns}
         dataSource={tableData}
         scroll={{ y: window.screen.height - 450 }}
-        pagination={false}
+        onChange={onTableChange}
+        loading={loading}
+        pagination={{
+          pageSize: pagination.size,
+          current: pagination.current,
+          total: pagination.total,
+        }}
       />
     </Page>
   );
