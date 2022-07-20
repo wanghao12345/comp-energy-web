@@ -156,6 +156,18 @@ export default [
             name: '新增区域节点',
             component: '@/pages/eqMerge/areaNode/add',
           },
+          {
+            hideInMenu: true,
+            path: '/eqMerge/areaNode/detail',
+            name: '查看节点详情',
+            component: '@/pages/eqMerge/areaNode/detail',
+          },
+          {
+            hideInMenu: true,
+            path: '/eqMerge/areaNode/edit',
+            name: '更新节点信息',
+            component: '@/pages/eqMerge/areaNode/edit',
+          },
         ],
       },
       {

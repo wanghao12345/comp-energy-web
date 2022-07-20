@@ -10,17 +10,21 @@ const layout = {
 };
 export default () => {
   const [parentData, setParentData] = useImmer({
-    parentId: '1',
-    parentName: '',
+    id: '1',
+    name: '',
+    remark: '',
+    isEnable: 1,
   });
   const formRef = useRef<any>();
   useEffect(() => {
-    const id = history.location?.query?.parentId;
+    const id = history.location?.query?.id;
     if (id) {
       findById({ id }).then((res) => {
         setParentData((data) => {
-          data.parentId = res.data.id;
-          data.parentName = res.data.name;
+          data.id = res.data.id;
+          data.name = res.data.name;
+          data.remark = res.data?.remark;
+          data.isEnable = res.data?.isEnable;
         });
         formRef?.current?.resetFields();
       });
@@ -29,7 +33,7 @@ export default () => {
   const onFinish = async (values: any) => {
     const res = await addTree({
       ...values,
-      parentId: parentData.parentId,
+      id: parentData.id,
       isEnable: values.isEnable ? 1 : 0,
     });
     if (res?.meta?.code === 200) {
@@ -44,39 +48,39 @@ export default () => {
     <FormPage
       ref={formRef}
       {...layout}
-      initialValues={{ parentName: parentData.parentName }}
+      initialValues={{
+        name: parentData.name,
+        remark: parentData.remark,
+        isEnable: parentData.isEnable,
+        id: parentData.id,
+      }}
       name="control-ref"
       onFinish={onFinish}
     >
-      <Form.Item
-        name="name"
-        label="节点名称"
-        rules={[{ required: true, message: '请输入节点名称' }]}
-      >
-        <Input placeholder="请输入" />
-      </Form.Item>
-      {parentData.parentId ? (
-        <Form.Item name="parentName" label="父节点名称">
-          <Input disabled placeholder="请输入" style={{ color: '#bdb4b4' }} />
+      {parentData.id ? (
+        <Form.Item name="id" label="节点ID">
+          <Input readOnly />
+        </Form.Item>
+      ) : null}
+      {parentData.name ? (
+        <Form.Item name="name" label="节点名称">
+          <Input readOnly />
         </Form.Item>
       ) : null}
       <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
-        <Switch />
+        <Switch disabled />
       </Form.Item>
       <Form.Item name="remark" label="备注">
         <Input.TextArea
           allowClear
           maxLength={500}
           autoSize={{ minRows: 3, maxRows: 6 }}
-          placeholder="请输入备注"
+          readOnly
         />
       </Form.Item>
       <FromButtonItem>
-        <Button htmlType="button" onClick={onCancel}>
-          取消
-        </Button>
-        <Button type="primary" htmlType="submit">
-          确认
+        <Button htmlType="button" onClick={onCancel} type="primary">
+          返回
         </Button>
       </FromButtonItem>
     </FormPage>

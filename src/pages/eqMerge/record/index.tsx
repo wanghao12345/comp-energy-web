@@ -305,7 +305,8 @@ export default () => {
           <Select
             size="large"
             value={selectNodeData.value}
-            placeholder="站点"
+            placeholder="节点名称"
+            allowClear
             onChange={(value) => onSelectChange(value, 'node')}
             style={{
               width: '160px',
@@ -352,6 +353,7 @@ export default () => {
             value={selectTypeData.value}
             placeholder="仪表类型"
             onChange={(value) => onSelectChange(value, 'type')}
+            allowClear
             style={{
               width: '180px',
             }}
@@ -367,6 +369,7 @@ export default () => {
           <Select
             size="large"
             placeholder="状态"
+            allowClear
             style={{
               width: '140px',
             }}
