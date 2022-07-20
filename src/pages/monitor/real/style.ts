@@ -34,14 +34,6 @@ export const RealBodyContainer = styled.div`
   padding: 24px;
   overflow: auto;
   position: relative;
-  /*chrome 和Safari*/
-  ::-webkit-scrollbar {
-    width: 0 !important;
-  }
-  /*IE 10+*/
-  -ms-overflow-style: none;
-  /*Firefox*/
-  overflow: -moz-scrollbars-none;
   .options-box {
     display: flex;
     align-items: center;

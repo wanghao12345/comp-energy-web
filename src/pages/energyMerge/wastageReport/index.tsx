@@ -116,7 +116,7 @@ export default () => {
         pagination={false}
         columns={columns}
         dataSource={tableData}
-        scroll={{ y: window.screen.height - 440 }}
+        scroll={{ y: window.screen.height - 440, x: 500 }}
         // rowSelection={{ ...rowSelection }}
       />
     </Page>

@@ -14,10 +14,12 @@ export const BoardTopContainer = styled.div`
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
   margin-bottom: 24px;
-  padding: 16px 22px;
+  padding: 8px 22px;
   display: flex;
   flex-direction: column;
-  min-height: 320px;
+  min-height: 350px;
+  min-width: 700px;
+  overflow: auto;
   h3 {
     color: rgba(255, 255, 255);
     font-size: 14px;
@@ -55,8 +57,8 @@ export const BoardBottomLeftContainer = styled.div`
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
   flex-shrink: 1;
-  overflow-y: auto;
-  overflow-x: auto;
+  overflow: auto;
+  min-width: 400px;
   box-sizing: border-box;
   h3 {
     width: 100%;

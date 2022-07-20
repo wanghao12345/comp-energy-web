@@ -11,17 +11,17 @@ export const barChartOption1 = {
       color: '#FFFFFF',
     },
   },
-  dataZoom: [
-    {
-      type: 'slider',
-      show: true,
-      xAxisIndex: [0],
-      left: 50,
-      bottom: -5,
-      start: 0,
-      end: 80, //初始化滚动条
-    },
-  ],
+  // dataZoom: [
+  //   {
+  //     type: 'slider',
+  //     show: true,
+  //     xAxisIndex: [0],
+  //     left: 50,
+  //     bottom: -5,
+  //     start: 0,
+  //     end: 80, //初始化滚动条
+  //   },
+  // ],
   xAxis: {
     type: 'category',
     axisLine: {
@@ -93,17 +93,17 @@ export const barChartOption2 = {
       color: '#FFFFFF',
     },
   },
-  dataZoom: [
-    {
-      type: 'slider',
-      show: true,
-      xAxisIndex: [0],
-      left: 50,
-      bottom: -5,
-      start: 0,
-      end: 80, //初始化滚动条
-    },
-  ],
+  // dataZoom: [
+  //   {
+  //     type: 'slider',
+  //     show: true,
+  //     xAxisIndex: [0],
+  //     left: 50,
+  //     bottom: -5,
+  //     start: 0,
+  //     end: 80, //初始化滚动条
+  //   },
+  // ],
   xAxis: {
     type: 'category',
     axisLine: {
@@ -176,17 +176,17 @@ export const barChartOption3 = {
       color: '#FFFFFF',
     },
   },
-  dataZoom: [
-    {
-      type: 'slider',
-      show: true,
-      xAxisIndex: [0],
-      left: 50,
-      bottom: -5,
-      start: 0,
-      end: 80, //初始化滚动条
-    },
-  ],
+  // dataZoom: [
+  //   {
+  //     type: 'slider',
+  //     show: true,
+  //     xAxisIndex: [0],
+  //     left: 50,
+  //     bottom: -5,
+  //     start: 0,
+  //     end: 80, //初始化滚动条
+  //   },
+  // ],
   xAxis: {
     type: 'category',
     axisLine: {

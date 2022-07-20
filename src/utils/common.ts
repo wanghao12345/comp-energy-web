@@ -269,7 +269,6 @@ export function getTheWeek(date1: Date, n: number) {
  * @description 得到本月、上月、下月的起始、结束日期
  * @param {Number} n 不传或0代表本月，-1代表上月，1代表下月
  */
-
 export function Timetools(date1: Date, n: number) {
   var now = date1;
   var year = now.getFullYear();
@@ -324,3 +323,96 @@ export function getTheQuater(date: Moment, type: string, n: number) {
 //   });
 //   return myPromise;
 // };
+
+export function dateFtt(fmt: any, date: any) {
+  var o: any = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds(),
+    'q+': Math.floor((date.getMonth() + 3) / 3),
+    S: date.getMilliseconds(),
+    // 毫秒
+  };
+  if (/(y+)/.test(fmt))
+    fmt = fmt.replace(
+      RegExp.$1,
+      (date.getFullYear() + '').substr(4 - RegExp.$1.length),
+    );
+  for (var k in o)
+    if (new RegExp('(' + k + ')').test(fmt))
+      fmt = fmt.replace(
+        RegExp.$1,
+        RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length),
+      );
+  return fmt;
+}
+export function addMonth(date: any, add: any) {
+  if (date instanceof Date) {
+    let nowMonth = date.getMonth();
+    let newMonth = nowMonth + add;
+    date.setMonth(newMonth);
+    return date;
+  }
+}
+export function fb(jsonOld: any, key: any, type: any, dateType: any) {
+  if (!key) {
+    return '';
+  }
+  let jsonOldData = jsonOld.data;
+  for (let i = 0; i < jsonOldData.length; i++) {
+    let x = jsonOldData[i].x;
+    let len = jsonOldData[i].x.length;
+    if (dateType == 2) {
+      let upperDateStr = dateFtt(
+        'yyyy-MM-dd',
+        new Date(new Date(x).getTime() + 7 * 1000 * 60 * 60 * 24),
+      );
+      if (key == upperDateStr) {
+        return type == 1 ? jsonOldData[i].x : jsonOldData[i].y;
+      }
+    } else if (dateType == 3) {
+      if (key.substring(3, 5) == x.substring(8, 10)) {
+        return type == 1 ? jsonOldData[i].x : jsonOldData[i].y;
+      }
+    } else if (dateType == 4) {
+      let upperDateStr = dateFtt('yyyy-MM', addMonth(new Date(x), 3));
+      if (key == upperDateStr) {
+        return type == 1 ? jsonOldData[i].x : jsonOldData[i].y;
+      }
+    } else {
+      let xStr =
+        len == 2
+          ? x
+          : len == 7
+          ? x.substring(5, 7)
+          : len == 10
+          ? x.substring(5, 10)
+          : '';
+      if (key == xStr) {
+        return type == 1 ? jsonOldData[i].x : jsonOldData[i].y;
+      }
+    }
+  }
+  return '';
+}
+export function getTrendsNewArray(jsonOld: any, jsonCurr: any, dateType: any) {
+  let jsonCurrData = jsonCurr.data;
+  for (let i = 0; i < jsonCurrData.length; i++) {
+    let x = jsonCurrData[i].x;
+    let len = jsonCurrData[i].x.length;
+    let xStr =
+      len == 2
+        ? x
+        : len == 7
+        ? x.substring(5, 7)
+        : len == 10
+        ? x.substring(5, 10)
+        : '';
+    xStr = dateType == 2 || dateType == 4 ? x : xStr;
+    jsonCurrData[i].upperX = fb(jsonOld, xStr, 1, dateType);
+    jsonCurrData[i].upperY = fb(jsonOld, xStr, 2, dateType);
+  }
+  return jsonCurr;
+}

@@ -61,6 +61,12 @@ export const RealBodyContainer = styled.div`
     box-sizing: border-box;
     width: calc(100vw - 664px);
     height: calc(100vh - 220px);
+    @media (max-width: 1440px) {
+      width: calc(100vw - 564px);
+    }
+    @media (max-width: 1000px) {
+      width: calc(100vw - 410px);
+    }
     overflow: auto;
   }
   .tableColWidth {

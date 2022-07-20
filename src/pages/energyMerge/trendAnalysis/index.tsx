@@ -11,7 +11,12 @@ import {
   selectTrendAnalysisYOYByRegionIds,
 } from '@/apis/energyMerge';
 import { boardDayList, EnergyTypeList, TimeType } from '@/commonInterface';
-import { formatDate, formatNumer, formatTime } from '@/utils/common';
+import {
+  formatDate,
+  formatNumer,
+  formatTime,
+  getTrendsNewArray,
+} from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 const { Option } = Select;
@@ -183,7 +188,7 @@ const RealBodyOption = () => {
         regionIdList: templateProps.area,
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
-          const allData = [res?.data || []];
+          const allData = [res];
           energyConsumptionOverview({
             energyType: templateProps.energyType,
             dateType: form.dateType,
@@ -200,7 +205,7 @@ const RealBodyOption = () => {
               return;
             }
             if (res?.meta?.code === 200) {
-              allData.push(res?.data || []);
+              allData.push(res);
               handleResponseData(allData, currentTabStatus);
             }
           });
@@ -463,9 +468,8 @@ const RealBodyOption = () => {
       };
       const name = getRegionName(templateProps.area);
       let column: any = {};
-      const allData = getTrends(data[0], data[1]);
-      console.log(allData, 'alldata');
-      allData.map((item: any, index: number) => {
+      const allData = getTrendsNewArray(data[0], data[1], form.dateType);
+      allData.data.map((item: any, index: number) => {
         const y = formatNumer(item.y || 0, 3);
         const uppery = formatNumer(item.upperY || 0, 3);
         column = {
@@ -486,50 +490,6 @@ const RealBodyOption = () => {
       seriesData,
       columns,
     };
-  };
-
-  const getTrends = (jsonOld: any, jsonCurr: any) => {
-    let jsonCurrData = jsonCurr;
-    for (let i = 0; i < jsonCurrData.length; i++) {
-      let x = jsonCurrData[i].x;
-      let len = jsonCurrData[i].x.length;
-      let xStr =
-        len == 2
-          ? x
-          : len == 7
-          ? x.substring(5, 7)
-          : len == 10
-          ? x.substring(5, 10)
-          : '';
-      jsonCurrData[i]['upperX'] = formatTrend(jsonOld, xStr, 1);
-      jsonCurrData[i]['upperY'] = formatTrend(jsonOld, xStr, 2);
-    }
-    return jsonCurr;
-  };
-
-  const formatTrend = (jsonOld: any, key: any, type: any) => {
-    let jsonOldData = jsonOld;
-    for (let i = 0; i < jsonOldData.length; i++) {
-      let x = jsonOldData[i].x;
-      let len = jsonOldData[i].x.length;
-      let xStr =
-        len == 2
-          ? x
-          : len == 7
-          ? x.substring(5, 7)
-          : len == 10
-          ? x.substring(5, 10)
-          : '';
-      if (key == xStr) {
-        if (type == 1) {
-          return jsonOldData[i].x;
-        }
-        if (type == 2) {
-          return jsonOldData[i].y;
-        }
-      }
-    }
-    return '';
   };
 
   useEffect(() => {

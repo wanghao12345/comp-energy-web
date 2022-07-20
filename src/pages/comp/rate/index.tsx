@@ -74,20 +74,20 @@ const RatePage = () => {
     };
     keys.map((item) => {
       if (item === MeterParameters.jian) {
-        mySeries.jian = data[item]?.activeElectricalEnergy || 0;
-        mySeries.jianCost = data[item]?.electricCost || 0;
+        mySeries.jian = formatNumer(data[item]?.activeElectricalEnergy || 0);
+        mySeries.jianCost = formatNumer(data[item]?.electricCost || 0);
       }
       if (item === MeterParameters.feng) {
-        mySeries.feng = data[item]?.activeElectricalEnergy || 0;
-        mySeries.fengCost = data[item]?.electricCost || 0;
+        mySeries.feng = formatNumer(data[item]?.activeElectricalEnergy || 0);
+        mySeries.fengCost = formatNumer(data[item]?.electricCost || 0);
       }
       if (item === MeterParameters.ping) {
-        mySeries.ping = data[item]?.activeElectricalEnergy || 0;
-        mySeries.pingCost = data[item]?.electricCost || 0;
+        mySeries.ping = formatNumer(data[item]?.activeElectricalEnergy || 0);
+        mySeries.pingCost = formatNumer(data[item]?.electricCost || 0);
       }
       if (item === MeterParameters.gu) {
-        mySeries.gu = data[item]?.activeElectricalEnergy || 0;
-        mySeries.guCost = data[item]?.electricCost || 0;
+        mySeries.gu = formatNumer(data[item]?.activeElectricalEnergy || 0);
+        mySeries.guCost = formatNumer(data[item]?.electricCost || 0);
       }
     });
 
@@ -170,12 +170,17 @@ const RatePage = () => {
       const dataList: any[] = [];
       data[item].map((list: any) => {
         xAxisData.push(list?.statisticsDate);
-        dataList.push(list?.activeElectricalEnergy);
+        const activeElectricalEnergy = formatNumer(
+          list?.activeElectricalEnergy,
+          3,
+        );
+        const electricCost = formatNumer(list?.electricCost, 2);
+        dataList.push(activeElectricalEnergy);
         const column = {
           time: list?.statisticsDate,
-          fd: list?.activeElectricalEnergy,
-          fm: list?.electricCost,
-          fq: formatNumer(list?.electricCost / list?.activeElectricalEnergy),
+          fd: activeElectricalEnergy,
+          fm: electricCost,
+          fq: formatNumer(list?.electricCost / list?.activeElectricalEnergy, 5),
         };
         columnData[index].push(column);
       });

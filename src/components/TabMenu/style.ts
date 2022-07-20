@@ -54,14 +54,5 @@ export const BodyContainer = styled.div`
   height: calc(100vh - 80px);
   background: #142655;
   min-height: 600px;
-  /* overflow-y: auto; */
   overflow: auto;
-  /*chrome 和Safari*/
-  ::-webkit-scrollbar {
-    width: 0 !important;
-  }
-  /*IE 10+*/
-  -ms-overflow-style: none;
-  /*Firefox*/
-  overflow: -moz-scrollbars-none;
 `;

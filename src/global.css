@@ -1,6 +1,21 @@
 html,
 body {
   font-family: SourceHanSansSC-regular;
+  margin: 0;
+  padding: 0;
+ 
+}
+body ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+body ::-webkit-scrollbar-track{
+  background: #163361;
+  border-radius: 3px;
+}
+body ::-webkit-scrollbar-thumb {
+  background: #4781bb;
+  border-radius: 3px;
 }
 /* layout */
 .ant-layout-sider {

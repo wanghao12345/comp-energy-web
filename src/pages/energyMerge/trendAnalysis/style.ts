@@ -30,7 +30,12 @@ export const RealBodyContainer = styled.div`
   border-radius: 4px;
   box-sizing: border-box;
   overflow: auto;
+  position: relative;
   .options-box {
+    position: sticky;
+    top: 0;
+    background: #142655;
+    z-index: 9;
     .tab-box {
       padding: 24px;
       padding-bottom: 0;

@@ -30,14 +30,6 @@ export const RealOptionContainer = styled.div`
     margin-top: 12px;
     overflow: auto;
     height: calc(100% - 140px);
-    /*chrome 和Safari*/
-    ::-webkit-scrollbar {
-      width: 0 !important;
-    }
-    /*IE 10+*/
-    -ms-overflow-style: none;
-    /*Firefox*/
-    overflow: -moz-scrollbars-none;
   }
   .radioGroup {
     margin: 24px 0 12px 0;

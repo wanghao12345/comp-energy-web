@@ -5,6 +5,7 @@ export const RateContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 export const RateOptionsContainer = styled.div`
@@ -12,6 +13,10 @@ export const RateOptionsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background: #142655;
   .left {
     .ant-select {
       margin-right: 24px;
