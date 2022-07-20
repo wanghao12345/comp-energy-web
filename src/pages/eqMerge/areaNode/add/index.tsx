@@ -32,11 +32,9 @@ export default () => {
       parentId: parentData.parentId,
       isEnable: values.isEnable !== 0 ? 1 : 0,
     });
-    if (res.meta.code === 200) {
+    if (res?.meta?.code === 200) {
       message.success('操作成功');
       onCancel();
-    } else {
-      message.error('操作失败');
     }
   };
   const onCancel = () => {
@@ -59,7 +57,7 @@ export default () => {
       </Form.Item>
       {parentData.parentId ? (
         <Form.Item name="parentName" label="父节点名称">
-          <Input readOnly placeholder="请输入" />
+          <Input disabled placeholder="请输入" style={{ color: '#bdb4b4' }} />
         </Form.Item>
       ) : null}
       <Form.Item name="isEnable" label="是否启用" valuePropName="selected">

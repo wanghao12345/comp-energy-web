@@ -43,7 +43,7 @@ export default [
         routes: [
           {
             path: '/energyMerge/energyInclude',
-            name: '用能概括',
+            name: '用能概况',
             component: '@/pages/energyMerge/energyInclude',
           },
           {
@@ -138,6 +138,12 @@ export default [
             path: '/eqMerge/record/add',
             name: '新增设备档案',
             component: '@/pages/eqMerge/record/add',
+          },
+          {
+            hideInMenu: true,
+            path: '/eqMerge/record/detail',
+            name: '查看设备档案',
+            component: '@/pages/eqMerge/record/detail',
           },
           {
             path: '/eqMerge/areaNode',

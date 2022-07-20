@@ -8,9 +8,7 @@ import {
   tbEarlyWarningselectById,
   tbEarlyWarningupdateById,
 } from '@/apis/event';
-import { optionsData } from '@/pages/monitor/real/data';
 import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
-import { DefaultOptionType } from 'antd/lib/select';
 
 const layout = {
   labelCol: { span: 8 },
@@ -31,10 +29,10 @@ export default () => {
         id: id,
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
-          message.success(id ? '更新成功！' : '新增成功!');
-          history.go(-1);
-        } else {
-          message.warn(res?.message);
+          message.success('更新成功！');
+          setTimeout(() => {
+            history.go(-1);
+          }, 300);
         }
         hide();
       });
@@ -44,10 +42,10 @@ export default () => {
         isEnable: values?.isEnable ? 1 : 0,
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
-          message.success(id ? '更新成功！' : '新增成功!');
-          history.go(-1);
-        } else {
-          message.warn(res?.message);
+          message.success('新增成功!');
+          setTimeout(() => {
+            history.go(-1);
+          }, 300);
         }
         hide();
       });

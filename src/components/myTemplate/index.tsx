@@ -82,6 +82,10 @@ const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
     data.map((item: any) => {
       if (item?.children && item?.children.length) {
         formatRegionList(item?.children);
+        regionList.current.push({
+          name: item?.name,
+          id: parseInt(item?.id || '1'),
+        });
       } else {
         regionList.current.push({
           name: item?.name,

@@ -1,6 +1,6 @@
 export const lineCartDataOptions = {
   xAxis: {
-    name: 'afeafaefaf',
+    name: '时',
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   },
@@ -64,17 +64,17 @@ export const barCartDataOptions = {
     type: 'value',
     name: 'kW.h',
   },
-  dataZoom: [
-    {
-      type: 'slider',
-      show: true,
-      xAxisIndex: [0],
-      left: '9%',
-      bottom: -5,
-      start: 0,
-      end: 80, //初始化滚动条
-    },
-  ],
+  // dataZoom: [
+  //   {
+  //     type: 'slider',
+  //     show: true,
+  //     xAxisIndex: [0],
+  //     left: '9%',
+  //     bottom: -5,
+  //     start: 0,
+  //     end: 80, //初始化滚动条
+  //   },
+  // ],
   series: [
     {
       name: 'Highest',

@@ -35,6 +35,7 @@ const RealBodyOption = () => {
   });
   const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
+    console.log(range);
     setrangePickerValue(range);
   };
 
@@ -78,8 +79,8 @@ const RealBodyOption = () => {
   };
 
   const getRegionName = (id: number) => {
-    let name = templateProps.regionList[0].name;
-    templateProps.regionList.some((item) => {
+    let name = '';
+    templateProps.regionList.map((item) => {
       if (item.id === id) {
         name = item.name;
       }

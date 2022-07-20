@@ -33,11 +33,27 @@ export const RealBodyContainer = styled.div`
   box-sizing: border-box;
   padding: 24px;
   overflow: auto;
+  position: relative;
+  /*chrome 和Safari*/
+  ::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  /*IE 10+*/
+  -ms-overflow-style: none;
+  /*Firefox*/
+  overflow: -moz-scrollbars-none;
   .options-box {
     display: flex;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background: rgb(20, 38, 85);
+    z-index: 9;
     .tab-box {
       margin-right: 44px;
+      @media (max-width: 1440px) {
+        margin-right: 20px;
+      }
       .ant-tabs-nav {
         padding-left: 0;
         margin-bottom: 0;
@@ -66,7 +82,9 @@ export const RealBodyContainer = styled.div`
   }
   .echart-box {
     width: 100%;
-    height: 350px;
+    min-height: 350px;
+    min-width: 400px;
+    margin-bottom: 16px;
   }
   .table-box {
     .ant-table {

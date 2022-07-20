@@ -13,7 +13,11 @@ export const RealOptionContainer = styled.div`
   margin-right: 24px;
   box-sizing: border-box;
   padding: 24px 16px;
-  min-width: 250px;
+  transition: all 0.3s;
+  @media (max-width: 1440px) {
+    width: 250px;
+  }
+
   .ant-select {
     width: 100%;
     margin-bottom: 12px;
@@ -24,6 +28,16 @@ export const RealOptionContainer = styled.div`
   .ant-tree {
     color: #fff;
     margin-top: 12px;
+    overflow: auto;
+    height: calc(100% - 140px);
+    /*chrome 和Safari*/
+    ::-webkit-scrollbar {
+      width: 0 !important;
+    }
+    /*IE 10+*/
+    -ms-overflow-style: none;
+    /*Firefox*/
+    overflow: -moz-scrollbars-none;
   }
   .radioGroup {
     margin: 24px 0 12px 0;

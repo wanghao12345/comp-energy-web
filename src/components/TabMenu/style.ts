@@ -56,4 +56,12 @@ export const BodyContainer = styled.div`
   min-height: 600px;
   /* overflow-y: auto; */
   overflow: auto;
+  /*chrome 和Safari*/
+  ::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  /*IE 10+*/
+  -ms-overflow-style: none;
+  /*Firefox*/
+  overflow: -moz-scrollbars-none;
 `;

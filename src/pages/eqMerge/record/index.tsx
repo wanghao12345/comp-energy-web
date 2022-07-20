@@ -68,14 +68,20 @@ export default () => {
     },
     {
       title: '操作',
-      width: 150,
       render: (text: any, record: any) => {
         return (
           <Space size="middle">
-            <Link to={`/eqMerge/record/add?id=${record?.id}`}>
-              <Button size="large" type="primary">
-                编辑
-              </Button>
+            <Link
+              style={{ color: 'white' }}
+              to={`/eqMerge/record/detail?id=${record?.id}`}
+            >
+              查看
+            </Link>
+            <Link
+              style={{ color: 'white' }}
+              to={`/eqMerge/record/add?id=${record?.id}`}
+            >
+              编辑
             </Link>
             {/* <Popconfirm
               title="确认删除？"
@@ -129,6 +135,10 @@ export default () => {
     data.map((item: any) => {
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
+        selectNodeData.options.push({
+          label: item?.name,
+          value: parseInt(item?.id || '1'),
+        });
       } else {
         selectNodeData.options.push({
           label: item?.name,

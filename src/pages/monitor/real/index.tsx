@@ -798,7 +798,7 @@ const RealBodyOption = () => {
                   <Select
                     size="large"
                     style={{
-                      width: '160px',
+                      width: '130px',
                     }}
                   >
                     {options.length > 1
@@ -816,6 +816,7 @@ const RealBodyOption = () => {
                   <DatePicker
                     size="large"
                     name="date"
+                    style={{ width: '140px' }}
                     allowClear={false}
                     disabledDate={(current) => {
                       return current && current > moment().endOf('day');

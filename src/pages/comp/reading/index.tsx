@@ -1,10 +1,4 @@
-import {
-  DatePicker,
-  Button,
-  Table,
-  TimePicker,
-  TablePaginationConfig,
-} from 'antd';
+import { DatePicker, Button, Table, TablePaginationConfig } from 'antd';
 import moment, { Moment } from 'moment';
 import { RealBodyContainer } from './style';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
@@ -12,7 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
 import { EnergyType } from '@/commonInterface';
 import { formatNumer } from '@/utils/common';
-const { RangePicker } = DatePicker;
+const { RangePicker, TimePicker } = DatePicker;
 const RealPage = () => {
   return (
     <MyTemplate isShowCheckBox={true}>
@@ -37,6 +31,7 @@ const RealBodyOption = () => {
   });
   const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
+    console.log(range);
     setrangePickerValue(range);
   };
 
@@ -81,7 +76,7 @@ const RealBodyOption = () => {
         if (templateProps.energyType === EnergyType.Electric) {
           const tcolumns = [
             {
-              title: '创建时间',
+              title: '抄表时间',
               dataIndex: 'createDate',
             },
             {
@@ -105,7 +100,7 @@ const RealBodyOption = () => {
         } else {
           const tcolumns = [
             {
-              title: '创建时间',
+              title: '抄表时间',
               dataIndex: 'createDate',
             },
             {
@@ -138,8 +133,8 @@ const RealBodyOption = () => {
   };
 
   const getRegionName = (id: number) => {
-    let name = templateProps.regionList[0].name;
-    templateProps.regionList.some((item) => {
+    let name = '';
+    templateProps.regionList.map((item) => {
       if (item.id === id) {
         name = item.name;
       }
@@ -166,6 +161,8 @@ const RealBodyOption = () => {
             value={rangePickerValue}
             onChange={onChangeRangePick}
             allowClear={false}
+            format={'YYYY-MM-DD HH:mm:ss'}
+            picker="time"
             disabledDate={(current) => {
               return current && current >= moment().endOf('day');
             }}

@@ -29,15 +29,13 @@ export default () => {
         ...values,
         id: id,
         isEnable: values.isEnable ? 1 : 0,
-        verificationDate: values.verificationDate.format('YYYY-MM-DD HH:mm:ss'),
-        manufactureDate: values.manufactureDate.format('YYYY-MM-DD HH:mm:ss'),
+        verificationDate: values.verificationDate.format('YYYY-MM-DD'),
+        manufactureDate: values.manufactureDate.format('YYYY-MM-DD'),
       }).then((res: any) => {
         hide();
         if (res?.meta?.code === 200) {
           message.success('更新成功！');
           history.go(-1);
-        } else {
-          message.warn(res?.message);
         }
       });
     } else {
@@ -45,8 +43,8 @@ export default () => {
       tbEquipmentAdd({
         ...values,
         isEnable: values.isEnable ? 1 : 0,
-        verificationDate: values.verificationDate.format('YYYY-MM-DD HH:mm:ss'),
-        manufactureDate: values.manufactureDate.format('YYYY-MM-DD HH:mm:ss'),
+        verificationDate: values.verificationDate.format('YYYY-MM-DD'),
+        manufactureDate: values.manufactureDate.format('YYYY-MM-DD'),
       }).then((res: any) => {
         hide();
         if (res?.meta?.code === 200) {
@@ -112,6 +110,10 @@ export default () => {
     data.map((item: any) => {
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
+        regionList.current.push({
+          key: item?.name,
+          value: item?.id,
+        });
       } else {
         regionList.current.push({
           key: item?.name,

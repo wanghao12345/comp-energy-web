@@ -68,7 +68,7 @@ request.interceptors.response.use(async (response: any) => {
   const data = await response.clone().json();
   if (data?.meta?.code !== 200) {
     // 界面报错处理
-    message.error('网络异常，请刷新后重试！');
+    message.error(data?.meta?.msg || '网络异常，请刷新后重试！');
   }
 
   return response;

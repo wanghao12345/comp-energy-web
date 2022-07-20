@@ -96,7 +96,9 @@ export default () => {
             <Popconfirm
               title="确认删除？"
               color={'#293949'}
-              onConfirm={onConfirm}
+              onConfirm={() => {
+                onConfirm(record);
+              }}
               onCancel={() => {
                 message.info('取消删除!');
               }}

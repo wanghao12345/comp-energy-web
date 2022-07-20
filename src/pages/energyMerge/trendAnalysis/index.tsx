@@ -464,6 +464,7 @@ const RealBodyOption = () => {
       const name = getRegionName(templateProps.area);
       let column: any = {};
       const allData = getTrends(data[0], data[1]);
+      console.log(allData, 'alldata');
       allData.map((item: any, index: number) => {
         const y = formatNumer(item.y || 0, 3);
         const uppery = formatNumer(item.upperY || 0, 3);
