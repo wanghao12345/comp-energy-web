@@ -96,26 +96,31 @@ export const getColumns = (type: string, unit: string) => {
         dataIndex: 'A',
         key: 'A',
       },
-      // {
-      //   title: '节点名称',
-      //   dataIndex: 'B',
-      //   key: 'B',
-      // },
       {
-        title: `本期能耗${unit}）`,
+        title: '节点名称',
+        dataIndex: 'B',
+        key: 'B',
+      },
+      {
+        title: '能源类型',
         dataIndex: 'C',
         key: 'C',
       },
       {
-        title: '上期时间',
+        title: `本期能耗${unit}）`,
         dataIndex: 'D',
         key: 'D',
       },
-      {
-        title: `上期能耗${unit}）`,
-        dataIndex: 'E',
-        key: 'E',
-      },
+      // {
+      //   title: '上期时间',
+      //   dataIndex: 'D',
+      //   key: 'D',
+      // },
+      // {
+      //   title: `上期能耗${unit}）`,
+      //   dataIndex: 'E',
+      //   key: 'E',
+      // },
     ];
   }
   return column;

@@ -67,7 +67,7 @@ const RealBodyOption = () => {
     setForm((p) => {
       p.loading = 1;
     });
-    //查两年的数据
+    //同比分析
     if (currentTab === ITabStatus.yaerOnyear) {
       const { queryStartDate } = formatTime(form.queryStartDate, TimeType.Year);
       const qsd = queryStartDate.split(' ')[0];
@@ -75,37 +75,13 @@ const RealBodyOption = () => {
         energyType: templateProps.energyType,
         dateType: TimeType.Year,
         regionIdList: templateProps.area,
-        queryStartDate: qsd.replace(
-          qsd.split('-')[0],
-          ((qsd.split('-')[0] as any) - 1) as any,
-        ),
+        queryStartDate: qsd,
       }).then((res: any) => {
         setForm((p) => {
           p.loading = 0;
         });
         if (res?.meta?.code === 200) {
-          if (!res?.data?.length) {
-            setBarChartData(undefined);
-            setDataSource([]);
-            return;
-          }
-          const allData = [res.data];
-          selectTrendAnalysisYOYByRegionIds({
-            energyType: templateProps.energyType,
-            dateType: TimeType.Year,
-            regionIdList: templateProps.area,
-            queryStartDate: qsd,
-          }).then((res: any) => {
-            if (res?.meta?.code === 200) {
-              if (!res?.data?.length) {
-                setBarChartData(undefined);
-                setDataSource([]);
-                return;
-              }
-              allData.push(res?.data);
-              handleResponseData(allData, currentTabStatus);
-            }
-          });
+          handleResponseData(res?.data, currentTabStatus);
         }
       });
     }
@@ -207,7 +183,7 @@ const RealBodyOption = () => {
         regionIdList: templateProps.area,
       }).then((res: any) => {
         if (res?.meta?.code === 200) {
-          const allData = [res?.data];
+          const allData = [res?.data || []];
           energyConsumptionOverview({
             energyType: templateProps.energyType,
             dateType: form.dateType,
@@ -224,7 +200,7 @@ const RealBodyOption = () => {
               return;
             }
             if (res?.meta?.code === 200) {
-              allData.push(res?.data);
+              allData.push(res?.data || []);
               handleResponseData(allData, currentTabStatus);
             }
           });
@@ -255,9 +231,21 @@ const RealBodyOption = () => {
             color: '#fff',
           },
         },
-        toolTip: {
-          trigger: 'axis',
-          formatter: xAix,
+        tooltip: {
+          trigger: 'item',
+          formatter: function (data: any) {
+            // console.log(data.marker)
+            const dataMarker1 =
+              '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#72D5DF;"></span>';
+            const dataMarker2 =
+              '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#3B83EE;"></span>';
+            var text = data.name + '<br/>';
+            text +=
+              dataMarker1 + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
+            text +=
+              dataMarker2 + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
+            return text;
+          },
         },
         xAxis: {
           type: 'category',
@@ -269,20 +257,24 @@ const RealBodyOption = () => {
         },
         series: [
           {
+            name: '本期能耗',
             type: 'bar',
             data: seriesData[0],
             itemStyle: {
               color: '#72D5DF',
             },
             barWidth: 50,
+            barGap: '60%',
           },
           {
+            name: '环比能耗',
             type: 'bar',
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',
             },
             barWidth: 50,
+            barGap: '60%',
           },
         ],
       };
@@ -294,7 +286,10 @@ const RealBodyOption = () => {
       setColumns(icolumns);
       setDataSource(columns);
     }
-    if (currentTabStatus === ITabStatus.yaerOnyear) {
+    if (
+      currentTabStatus === ITabStatus.yaerOnyear ||
+      currentTabStatus === ITabStatus.normal
+    ) {
       const { xAxisData, seriesData, columns } = formChartData(
         data,
         currentTabStatus,
@@ -304,10 +299,23 @@ const RealBodyOption = () => {
           textStyle: {
             color: '#fff',
           },
+          data: ['本期能耗', '上期能耗'],
+        },
+        tooltip: {
+          trigger: 'item',
+          // formatter: function (data: any) {
+          //   console.log(data)
+          //   const dataMarker = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#192c49;"></span>';
+          //   var text = data.name + '<br/>';
+          //   text += dataMarker + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
+          //   text += dataMarker + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
+          //   return text;
+          // },
         },
         xAxis: {
           type: 'category',
           data: xAxisData,
+          axisTick: { show: false },
         },
         yAxis: {
           type: 'value',
@@ -321,6 +329,7 @@ const RealBodyOption = () => {
             itemStyle: {
               color: '#72D5DF',
             },
+            barGap: 0,
           },
           {
             name: '上期能耗',
@@ -340,121 +349,135 @@ const RealBodyOption = () => {
       setColumns(icolumns);
       setDataSource(columns);
     }
-    if (currentTabStatus === ITabStatus.normal) {
-      const { xAxisData, seriesData, columns } = formChartData(
-        data,
-        currentTabStatus,
-      );
-      const ibarChartData = {
-        legend: {
-          textStyle: {
-            color: '#fff',
-          },
-        },
-        xAxis: {
-          type: 'category',
-          data: xAxisData,
-        },
-        yAxis: {
-          type: 'value',
-          name: EnergyTypeList[templateProps.energyType - 1].unit,
-        },
-        series: [
-          {
-            name: '本期能耗',
-            type: 'bar',
-            data: seriesData[0],
-            itemStyle: {
-              color: '#72D5DF',
-            },
-          },
-          {
-            name: '上期能耗',
-            type: 'bar',
-            data: seriesData[1],
-            itemStyle: {
-              color: '#3B83EE',
-            },
-          },
-        ],
-      };
-      setBarChartData(Object.assign({}, ibarChartData));
-      const icolumns = getColumns(
-        currentTab,
-        EnergyTypeList[templateProps.energyType - 1].unit,
-      );
-      setColumns(icolumns);
-      setDataSource(columns);
-    }
+    // if (currentTabStatus === ITabStatus.normal) {
+    //   const { xAxisData, seriesData, columns } = formChartData(
+    //     data,
+    //     currentTabStatus,
+    //   );
+    //   const ibarChartData = {
+    //     legend: {
+    //       textStyle: {
+    //         color: '#fff',
+    //       },
+    //     },
+    //     xAxis: {
+    //       type: 'category',
+    //       data: xAxisData,
+    //     },
+    //     yAxis: {
+    //       type: 'value',
+    //       name: EnergyTypeList[templateProps.energyType - 1].unit,
+    //     },
+    //     series: [
+    //       {
+    //         name: '本期能耗',
+    //         type: 'bar',
+    //         data: seriesData[0],
+    //         itemStyle: {
+    //           color: '#72D5DF',
+    //         },
+    //       },
+    //       {
+    //         name: '上期能耗',
+    //         type: 'bar',
+    //         data: seriesData[1],
+    //         itemStyle: {
+    //           color: '#3B83EE',
+    //         },
+    //       },
+    //     ],
+    //   };
+    //   setBarChartData(Object.assign({}, ibarChartData));
+    //   const icolumns = getColumns(
+    //     currentTab,
+    //     EnergyTypeList[templateProps.energyType - 1].unit,
+    //   );
+    //   setColumns(icolumns);
+    //   setDataSource(columns);
+    // }
   };
   const formChartData = (data: any[], currentTabStatus: ITabStatus) => {
     const xAxisData: string[] = [];
     const seriesData: number[][] = [[], []];
     const columns: any = [];
-    if (currentTabStatus === ITabStatus.monthOnmonth) {
+    if (
+      currentTabStatus === ITabStatus.monthOnmonth ||
+      currentTabStatus === ITabStatus.yaerOnyear
+    ) {
       let column: any = {};
-      data.reverse().map((item: any, index: number) => {
+      data.map((item: any, index: number) => {
+        const current = formatNumer(item.flow, 5);
+        const last = formatNumer(item.flowUpper, 5);
         column = {
           Key: index,
           A: item.statisticsDate,
           B: item.regionName,
-          C: formatNumer(item.flow, 5),
-          D: item.statisticsDateStartUpper,
-          E: formatNumer(item.flowUpper, 5),
-          F: formatNumer(item.flow, 5) - formatNumer(item.flowUpper, 5),
-          G:
-            formatNumer(item.flow, 5) - formatNumer(item.flowUpper, 5) > 0
-              ? '上升'
-              : '下降',
+          C: current,
+          D: item.statisticsDateStartUpper || item.statisticsDateUpper,
+          E: last,
+          F: formatNumer(current - last),
+          G: item.flow - item.flowUpper > 0 ? '上升' : '下降',
         };
-        seriesData[0].push(item.flow);
-        seriesData[1].push(item.flowUpper);
+        xAxisData.push(item.statisticsDate);
+        seriesData[0].push(current);
+        seriesData[1].push(last);
         columns.push(column);
       });
     }
 
-    if (currentTabStatus === ITabStatus.yaerOnyear) {
-      let column: any = {};
-      data[0].map((item: any, index: number) => {
-        column = {
-          Key: index,
-          D: item.statisticsDate,
-          B: item.regionName,
-          E: formatNumer(item.flow, 5),
-        };
-        column.A = data[1][index]?.statisticsDate;
-        column.C = formatNumer(data[1][index]?.flow, 5);
-        column.F = formatNumer(data[1][index]?.flow || 0 - column.E, 5);
-        column.G =
-          formatNumer(data[1][index]?.flow || 0 - column.E, 5) < 0
-            ? '下降'
-            : '上升';
-        columns.push(column);
-        seriesData[0].push(item.flow);
-        xAxisData.push(item.statisticsDate?.split('-')[1]);
-      });
-      data[1].map((item: any) => {
-        seriesData[1].push(item.flow);
-      });
-    }
+    // if (currentTabStatus === ITabStatus.yaerOnyear) {
+    //   let column: any = {};
+    //   data[0].map((item: any, index: number) => {
+    //     column = {
+    //       Key: index,
+    //       D: item.statisticsDate,
+    //       B: item.regionName,
+    //       E: formatNumer(item.flow, 5),
+    //     };
+    //     column.A = data[1][index]?.statisticsDate;
+    //     column.C = formatNumer(data[1][index]?.flow, 5);
+    //     column.F = formatNumer(data[1][index]?.flow || 0 - column.E, 5);
+    //     column.G =
+    //       formatNumer(data[1][index]?.flow || 0 - column.E, 5) < 0
+    //         ? '下降'
+    //         : '上升';
+    //     columns.push(column);
+    //     seriesData[0].push(item.flow);
+    //     xAxisData.push(item.statisticsDate?.split('-')[1]);
+    //   });
+    //   data[1].map((item: any) => {
+    //     seriesData[1].push(item.flow);
+    //   });
+    // }
 
     if (currentTabStatus === ITabStatus.normal) {
+      const getRegionName = (ids: number[]) => {
+        const id = ids[0] || 1;
+        let name = '';
+        templateProps.regionList.map((item) => {
+          if (item.id === id) {
+            name = item.name;
+          }
+        });
+        return name;
+      };
+      const name = getRegionName(templateProps.area);
       let column: any = {};
-      data[0].map((item: any, index: number) => {
+      const allData = getTrends(data[0], data[1]);
+      allData.map((item: any, index: number) => {
+        const y = formatNumer(item.y || 0, 3);
+        const uppery = formatNumer(item.upperY || 0, 3);
         column = {
           Key: index,
-          D: item.x,
-          E: item.y,
+          A: item.x,
+          B: name,
+          C: EnergyTypeList[templateProps.energyType - 1].name,
+          D: y,
         };
-        column.A = data[1][index]?.x || item.x;
-        column.C = data[1][index]?.y || 0;
-        xAxisData.push(item.x?.split('-')[1]);
-
+        xAxisData.push(item.x);
+        seriesData[0].push(y);
+        seriesData[1].push(uppery);
         columns.push(column);
-        seriesData[1].push(item.y);
-      });
-      data[1].map((item: any) => {
-        seriesData[0].push(item.y);
       });
     }
     return {
@@ -462,6 +485,50 @@ const RealBodyOption = () => {
       seriesData,
       columns,
     };
+  };
+
+  const getTrends = (jsonOld: any, jsonCurr: any) => {
+    let jsonCurrData = jsonCurr;
+    for (let i = 0; i < jsonCurrData.length; i++) {
+      let x = jsonCurrData[i].x;
+      let len = jsonCurrData[i].x.length;
+      let xStr =
+        len == 2
+          ? x
+          : len == 7
+          ? x.substring(5, 7)
+          : len == 10
+          ? x.substring(5, 10)
+          : '';
+      jsonCurrData[i]['upperX'] = formatTrend(jsonOld, xStr, 1);
+      jsonCurrData[i]['upperY'] = formatTrend(jsonOld, xStr, 2);
+    }
+    return jsonCurr;
+  };
+
+  const formatTrend = (jsonOld: any, key: any, type: any) => {
+    let jsonOldData = jsonOld;
+    for (let i = 0; i < jsonOldData.length; i++) {
+      let x = jsonOldData[i].x;
+      let len = jsonOldData[i].x.length;
+      let xStr =
+        len == 2
+          ? x
+          : len == 7
+          ? x.substring(5, 7)
+          : len == 10
+          ? x.substring(5, 10)
+          : '';
+      if (key == xStr) {
+        if (type == 1) {
+          return jsonOldData[i].x;
+        }
+        if (type == 2) {
+          return jsonOldData[i].y;
+        }
+      }
+    }
+    return '';
   };
 
   useEffect(() => {

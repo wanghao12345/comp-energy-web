@@ -248,10 +248,10 @@ export const barChartOption3 = {
 
 export const ilineChartOption = {
   grid: {
-    left: 50,
+    left: 30,
     right: 20,
     top: 50,
-    bottom: 50,
+    bottom: 20,
   },
   tooltip: {
     trigger: 'axis',

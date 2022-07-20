@@ -129,7 +129,7 @@ const BoardTop = () => {
             const { seriesData } = formChartData(res.data);
             schartOption.series[1].data = seriesData;
             schartOption.yAxis.name = 'T';
-            setQbarChartOption(schartOption);
+            setSbarChartOption(schartOption);
           }
         });
       }
@@ -168,7 +168,7 @@ const BoardTop = () => {
             const { seriesData } = formChartData(res.data);
             qchartOption.series[1].data = seriesData;
             schartOption.yAxis.name = 'NM3';
-            setSbarChartOption(qchartOption);
+            setQbarChartOption(qchartOption);
           }
         });
       }

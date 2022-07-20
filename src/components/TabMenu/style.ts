@@ -53,7 +53,7 @@ export const BodyContainer = styled.div`
   padding: 20px;
   height: calc(100vh - 80px);
   background: #142655;
-  min-height: 500px;
+  min-height: 600px;
   /* overflow-y: auto; */
   overflow: auto;
 `;

@@ -17,6 +17,7 @@ export const BoardTopContainer = styled.div`
   padding: 16px 22px;
   display: flex;
   flex-direction: column;
+  min-height: 320px;
   h3 {
     color: rgba(255, 255, 255);
     font-size: 14px;
@@ -111,6 +112,10 @@ export const BoardBottomRightContainer = styled.div`
       font-size: 14px;
     }
     .tab-box {
+      width: 50%;
+      overflow: auto;
+      display: flex;
+      height: 70px;
     }
   }
   .charts-box {
