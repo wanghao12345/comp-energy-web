@@ -122,7 +122,7 @@ export const chartOption = {
   grid: {
     left: 30,
     right: 40,
-    top: 80,
+    top: 100,
   },
   tooltip: {
     trigger: 'axis',

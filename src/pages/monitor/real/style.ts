@@ -74,6 +74,7 @@ export const RealBodyContainer = styled.div`
   }
   .echart-box {
     width: 100%;
+    height: 400px;
     min-height: 350px;
     min-width: 400px;
     margin-bottom: 16px;

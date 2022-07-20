@@ -161,8 +161,7 @@ const RealBodyOption = () => {
             value={rangePickerValue}
             onChange={onChangeRangePick}
             allowClear={false}
-            format={'YYYY-MM-DD HH:mm:ss'}
-            picker="time"
+            // format={'YYYY-MM-DD HH:mm:ss'}
             disabledDate={(current) => {
               return current && current >= moment().endOf('day');
             }}
