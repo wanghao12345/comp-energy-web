@@ -69,11 +69,7 @@ export const RealBodyContainer = styled.div`
     }
     overflow: auto;
   }
-  .tableColWidth {
-    width: 120px;
-    min-width: 80px;
-  }
   .columnWidth {
-    min-width: 120px;
+    min-width: 150px;
   }
 `;

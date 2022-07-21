@@ -4,6 +4,7 @@ export const dayColumns = (unit: string) => {
       title: '节点名称',
       dataIndex: 'name',
       key: 'name',
+      fixed: 'left',
     },
     {
       title: `00时（${unit}）`,

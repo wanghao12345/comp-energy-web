@@ -75,17 +75,15 @@ const RealBodyOption = () => {
       {
         title: '节点名称',
         dataIndex: 'name',
-        className: 'tableColWidth',
+        className: 'columnWidth',
       },
     ];
 
     data.map((item: any, index: number) => {
       const qz = formatColumnTitle(item?.statisticsDate || '2022-03-13', index);
-      const column = { title: '', dataIndex: '', className: '', key: 1 };
-      column.key = index;
+      const column = { title: '', dataIndex: '', className: 'columnWidth' };
       column.title = `${qz}（${unit}）`;
       column.dataIndex = `time${index}`;
-      column.className = 'columnWidth';
       columns.push(column);
     });
     return columns;
@@ -159,9 +157,9 @@ const RealBodyOption = () => {
       <div className="tabWrapper">
         <div className="table-box">
           <Table
-            size="small"
-            rowKey="key"
-            key="key"
+            size="middle"
+            rowKey="id"
+            key="id"
             pagination={false}
             dataSource={form.dataSource}
             columns={form.columns}
