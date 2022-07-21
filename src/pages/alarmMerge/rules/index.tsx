@@ -76,13 +76,13 @@ export default () => {
       dataIndex: 'createDate',
       width: 180,
     },
-    {
-      title: '是否启用',
-      dataIndex: 'isEnable',
-      render: (record: any) => {
-        return <Switch checked={record ? true : false} />;
-      },
-    },
+    // {
+    //   title: '是否启用',
+    //   dataIndex: 'isEnable',
+    //   render: (record: any) => {
+    //     return <Switch checked={record ? true : false} />;
+    //   },
+    // },
     {
       title: '操作',
       width: 160,

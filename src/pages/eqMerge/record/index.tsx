@@ -434,7 +434,7 @@ export default () => {
         }}
         scroll={{
           y: window.screen.availHeight - 375,
-          x: window.screen.availWidth - 300,
+          x: 800,
         }}
       />
     </Page>

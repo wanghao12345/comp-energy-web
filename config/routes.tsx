@@ -125,7 +125,7 @@ export default [
       },
       {
         path: '/eqMerge',
-        name: '设备管理',
+        name: '系统管理',
         icon: <SettingOutlined />,
         routes: [
           {

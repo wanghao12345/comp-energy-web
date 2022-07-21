@@ -25,7 +25,7 @@ export default () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'address',
+      dataIndex: 'updateDate',
     },
     {
       title: '是否启用',
@@ -162,7 +162,7 @@ export default () => {
         dataSource={tableData}
         scroll={{
           y: window.screen.availHeight - 375,
-          x: window.screen.availWidth - 300,
+          x: 500,
         }}
         onChange={onTableChange}
         loading={loading}

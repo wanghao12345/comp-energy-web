@@ -31,7 +31,7 @@ const RealPage = () => {
 
 enum ITabStatus {
   normal = 'normal',
-  yaerOnyear = 'yaerOnyear',
+  yearOnyear = 'yearOnyear',
   monthOnmonth = 'monthOnmonth',
 }
 
@@ -73,7 +73,7 @@ const RealBodyOption = () => {
       p.loading = 1;
     });
     //同比分析
-    if (currentTab === ITabStatus.yaerOnyear) {
+    if (currentTab === ITabStatus.yearOnyear) {
       const { queryStartDate } = formatTime(form.queryStartDate, TimeType.Year);
       const qsd = queryStartDate.split(' ')[0];
       selectTrendAnalysisYOYByRegionIds({
@@ -248,7 +248,7 @@ const RealBodyOption = () => {
             text +=
               dataMarker1 + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
             text +=
-              dataMarker2 + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
+              dataMarker2 + '环比能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
             return text;
           },
         },
@@ -285,16 +285,13 @@ const RealBodyOption = () => {
       };
       setBarChartData(Object.assign({}, ibarChartData));
       const icolumns = getColumns(
-        currentTab,
+        currentTabStatus,
         EnergyTypeList[templateProps.energyType - 1].unit,
       );
-      setColumns(icolumns);
+      setColumns([...icolumns]);
       setDataSource(columns);
     }
-    if (
-      currentTabStatus === ITabStatus.yaerOnyear ||
-      currentTabStatus === ITabStatus.normal
-    ) {
+    if (currentTabStatus === ITabStatus.yearOnyear) {
       const { xAxisData, seriesData, columns } = formChartData(
         data,
         currentTabStatus,
@@ -304,7 +301,7 @@ const RealBodyOption = () => {
           textStyle: {
             color: '#fff',
           },
-          data: ['本期能耗', '上期能耗'],
+          data: ['本期能耗', '同比能耗'],
         },
         tooltip: {
           trigger: 'item',
@@ -337,7 +334,7 @@ const RealBodyOption = () => {
             barGap: 0,
           },
           {
-            name: '上期能耗',
+            name: '同比能耗',
             type: 'bar',
             data: seriesData[1],
             itemStyle: {
@@ -348,12 +345,87 @@ const RealBodyOption = () => {
       };
       setBarChartData(Object.assign({}, ibarChartData));
       const icolumns = getColumns(
-        currentTab,
+        currentTabStatus,
         EnergyTypeList[templateProps.energyType - 1].unit,
       );
-      setColumns(icolumns);
+      setColumns([...icolumns]);
       setDataSource(columns);
     }
+
+    if (currentTabStatus === ITabStatus.normal) {
+      const { xAxisData, seriesData, columns } = formChartData(
+        data,
+        currentTabStatus,
+      );
+      let legends = ['能耗', '昨日能耗'];
+      if (form.dateType === TimeType.Week) {
+        legends = ['能耗', '上周能耗'];
+      }
+      if (form.dateType === TimeType.Month) {
+        legends = ['能耗', '上月能耗'];
+      }
+      if (form.dateType === TimeType.Quarter) {
+        legends = ['能耗', '上季能耗'];
+      }
+      if (form.dateType === TimeType.Year) {
+        legends = ['能耗', '去年能耗'];
+      }
+      const ibarChartData = {
+        legend: {
+          textStyle: {
+            color: '#fff',
+          },
+          data: legends,
+        },
+        tooltip: {
+          trigger: 'item',
+          // formatter: function (data: any) {
+          //   console.log(data)
+          //   const dataMarker = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#192c49;"></span>';
+          //   var text = data.name + '<br/>';
+          //   text += dataMarker + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
+          //   text += dataMarker + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
+          //   return text;
+          // },
+        },
+        xAxis: {
+          type: 'category',
+          data: xAxisData,
+          axisTick: { show: false },
+        },
+        yAxis: {
+          type: 'value',
+          name: EnergyTypeList[templateProps.energyType - 1].unit,
+        },
+        series: [
+          {
+            name: legends[0],
+            type: 'bar',
+            data: seriesData[0],
+            itemStyle: {
+              color: '#72D5DF',
+            },
+            barGap: 0,
+          },
+          {
+            name: legends[1],
+            type: 'bar',
+            data: seriesData[1],
+            itemStyle: {
+              color: '#3B83EE',
+            },
+          },
+        ],
+      };
+      setBarChartData(Object.assign({}, ibarChartData));
+      const icolumns = getColumns(
+        currentTabStatus,
+        EnergyTypeList[templateProps.energyType - 1].unit,
+      );
+      setColumns([...icolumns]);
+      setDataSource(columns);
+    }
+
     // if (currentTabStatus === ITabStatus.normal) {
     //   const { xAxisData, seriesData, columns } = formChartData(
     //     data,
@@ -407,7 +479,7 @@ const RealBodyOption = () => {
     const columns: any = [];
     if (
       currentTabStatus === ITabStatus.monthOnmonth ||
-      currentTabStatus === ITabStatus.yaerOnyear
+      currentTabStatus === ITabStatus.yearOnyear
     ) {
       let column: any = {};
       data.map((item: any, index: number) => {
@@ -430,7 +502,7 @@ const RealBodyOption = () => {
       });
     }
 
-    // if (currentTabStatus === ITabStatus.yaerOnyear) {
+    // if (currentTabStatus === ITabStatus.yearOnyear) {
     //   let column: any = {};
     //   data[0].map((item: any, index: number) => {
     //     column = {
@@ -510,7 +582,7 @@ const RealBodyOption = () => {
             onChange={onTabChange}
           >
             <TabPane tab={'趋势分析'} key={ITabStatus.normal}></TabPane>
-            <TabPane tab={'同比分析'} key={ITabStatus.yaerOnyear}></TabPane>
+            <TabPane tab={'同比分析'} key={ITabStatus.yearOnyear}></TabPane>
             <TabPane tab={'环比分析'} key={ITabStatus.monthOnmonth}></TabPane>
           </Tabs>
         </div>
@@ -536,7 +608,7 @@ const RealBodyOption = () => {
             allowClear={false}
             defaultValue={moment()}
             picker={
-              currentTab === ITabStatus.yaerOnyear
+              currentTab === ITabStatus.yearOnyear
                 ? 'year'
                 : (boardDayList[form.dateType - 1]?.type as any) || 'year'
             }
@@ -564,6 +636,7 @@ const RealBodyOption = () => {
           columns={columns}
           rowKey="Key"
           key="Key"
+          scroll={{ x: 600, y: 400 }}
         />
       </div>
     </RealBodyContainer>

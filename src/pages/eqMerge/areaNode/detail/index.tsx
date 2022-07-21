@@ -126,7 +126,7 @@ export default () => {
             readOnly
           />
         </Form.Item>
-        <Form.Item name="updateDate" label="更新时间">
+        <Form.Item name="updateDate" label="创建时间">
           <Input readOnly />
         </Form.Item>
 
