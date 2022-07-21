@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Form, Input, Button, Select, Switch, message } from 'antd';
+import React, { useEffect, useRef } from 'react';
+import { Form, Input, Button, Switch, message } from 'antd';
 import { history } from 'umi';
 import { FromButtonItem, FormPage } from './style';
 import { addTree, findById } from '@/apis/areaMerge';
@@ -15,7 +15,7 @@ export default () => {
   });
   const formRef = useRef<any>();
   useEffect(() => {
-    const id = history.location?.query?.parentId;
+    const id = (history.location?.query?.parentId as any) || 1;
     if (id) {
       findById({ id }).then((res) => {
         setParentData((data) => {

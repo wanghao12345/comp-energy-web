@@ -6,8 +6,6 @@ import {
   Switch,
   Select,
   TablePaginationConfig,
-  Popconfirm,
-  message,
   Input,
 } from 'antd';
 import { Page } from './style';
@@ -22,6 +20,7 @@ export default () => {
     {
       title: '节点名称',
       dataIndex: 'regionName',
+      fixed: 'left',
     },
     // {
     //   title: '仪表型号',
@@ -30,10 +29,12 @@ export default () => {
     {
       title: '仪表名称',
       dataIndex: 'name',
+      fixed: 'left',
     },
     {
       title: '仪表类型',
       dataIndex: 'typeName',
+      width: 80,
     },
     {
       title: '生产厂家',
@@ -54,6 +55,7 @@ export default () => {
     {
       title: '检定周期',
       dataIndex: 'verificationCycle',
+      width: 100,
     },
     {
       title: '更新时间',
@@ -62,12 +64,15 @@ export default () => {
     {
       title: '是否启用',
       dataIndex: 'isEnable',
+      width: 100,
       render: (record: any) => {
         return <Switch checked={record ? true : false} />;
       },
     },
     {
       title: '操作',
+      width: 160,
+      fixed: 'right',
       render: (text: any, record: any) => {
         return (
           <Space size="middle">
@@ -405,7 +410,10 @@ export default () => {
           current: params.current,
           total: params.total,
         }}
-        scroll={{ y: window.screen.height - 450 }}
+        scroll={{
+          y: window.screen.availHeight - 385,
+          x: window.screen.availWidth - 250,
+        }}
       />
     </Page>
   );

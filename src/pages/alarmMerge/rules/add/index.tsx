@@ -118,6 +118,10 @@ export default () => {
     data.map((item: any) => {
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
+        regionList.current.push({
+          key: item?.name,
+          value: item?.id,
+        });
       } else {
         regionList.current.push({
           key: item?.name,

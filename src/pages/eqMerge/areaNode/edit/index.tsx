@@ -1,53 +1,95 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Switch, message } from 'antd';
-import { history } from 'umi';
 import { FromButtonItem, FormPage } from './style';
-import { addTree, findById } from '@/apis/areaMerge';
-import { useImmer } from 'use-immer';
+import { updateRegionById, findById } from '@/apis/areaMerge';
+import { history } from 'umi';
+import { getRegionTreeList } from '@/apis';
+
+const { Option } = Select;
+
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
 };
 export default () => {
-  const [parentData, setParentData] = useImmer({
-    parentId: '1',
-    parentName: '',
-  });
-  const formRef = useRef<any>();
-  useEffect(() => {
-    const id = history.location?.query?.parentId;
-    if (id) {
-      findById({ id }).then((res) => {
-        setParentData((data) => {
-          data.parentId = res.data.id;
-          data.parentName = res.data.name;
-        });
-        formRef?.current?.resetFields();
-      });
-    }
-  }, []);
+  const [form] = Form.useForm();
+  const [id, setId] = useState(1);
+
+  const [regionList, setRegionList] = useState<any>([
+    { key: '根', value: '0' },
+  ]);
+
   const onFinish = async (values: any) => {
-    const res = await addTree({
+    const res = await updateRegionById({
       ...values,
-      parentId: parentData.parentId,
+      id: id,
       isEnable: values.isEnable ? 1 : 0,
     });
     if (res?.meta?.code === 200) {
-      message.success('操作成功');
+      message.success(res?.meta?.msg);
       onCancel();
+    }
+  };
+
+  const getRegionListAndInitForm = () => {
+    getRegionTreeList().then((res: any) => {
+      if (res?.meta?.code === 200) {
+        formatSelectOption(res?.data);
+        setRegionList([...regionList]);
+        console.log(regionList);
+        initForm();
+      }
+    });
+  };
+
+  const formatSelectOption = (data: []) => {
+    data.map((item: any) => {
+      if (item?.children && item?.children.length) {
+        formatSelectOption(item?.children);
+        regionList.push({
+          key: item?.name,
+          value: item?.id,
+        });
+      } else {
+        regionList.push({
+          key: item?.name,
+          value: item?.id,
+        });
+      }
+    });
+  };
+
+  const initForm = () => {
+    if (window.location.search) {
+      const id = parseInt(window.location.search.split('=')[1] || '1');
+      setId(id);
+      findById({ id }).then((res) => {
+        if (res?.meta?.code === 200) {
+          const data = res?.data;
+          const keys = Object.keys(data);
+          keys.map((item) => {
+            const field: any = {};
+            field[item] = data[item];
+
+            if (item === 'isEnable') {
+              field[item] = data[item] ? true : false;
+            }
+            form.setFieldsValue(field);
+          });
+        }
+      });
     }
   };
   const onCancel = () => {
     history.go(-1);
   };
+
+  useEffect(() => {
+    getRegionListAndInitForm();
+  }, []);
+
   return (
-    <FormPage
-      ref={formRef}
-      {...layout}
-      initialValues={{ parentName: parentData.parentName }}
-      name="control-ref"
-      onFinish={onFinish}
-    >
+    <FormPage form={form} {...layout} name="control-ref" onFinish={onFinish}>
       <Form.Item
         name="name"
         label="节点名称"
@@ -55,11 +97,17 @@ export default () => {
       >
         <Input placeholder="请输入" />
       </Form.Item>
-      {parentData.parentId ? (
-        <Form.Item name="parentName" label="父节点名称">
-          <Input disabled placeholder="请输入" style={{ color: '#bdb4b4' }} />
-        </Form.Item>
-      ) : null}
+      <Form.Item name="parentId" label="父节点名称">
+        <Select placeholder="请选择">
+          {regionList.map((item: any) => {
+            return (
+              <Option value={item.value} key={item.value}>
+                {item.key}
+              </Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
       <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
         <Switch />
       </Form.Item>

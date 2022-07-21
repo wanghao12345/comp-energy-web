@@ -21,6 +21,7 @@ export default () => {
       title: '节点名称',
       dataIndex: 'regionName',
       width: 120,
+      fixed: 'left',
     },
     {
       title: '能源类型',
@@ -84,14 +85,19 @@ export default () => {
     },
     {
       title: '操作',
-      width: 200,
+      width: 160,
+      fixed: 'right',
       render: (text: any, record: any) => {
         return (
           <Space size="middle">
-            <Link to={`/alarm/rules/add?id=${record?.id}`}>
-              <Button size="large" type="primary">
+            <Link
+              style={{ color: 'white' }}
+              to={`/alarm/rules/add?id=${record?.id}`}
+            >
+              编辑
+              {/* <Button size="large" type="primary">
                 编辑
-              </Button>
+              </Button> */}
             </Link>
             <Popconfirm
               title="确认删除？"
@@ -103,9 +109,10 @@ export default () => {
                 message.info('取消删除!');
               }}
             >
-              <Button size="large" type="ghost">
+              <span style={{ color: 'white', cursor: 'pointer' }}>删除</span>
+              {/* <Button size="large" type="ghost">
                 删除
-              </Button>
+              </Button> */}
             </Popconfirm>
           </Space>
         );

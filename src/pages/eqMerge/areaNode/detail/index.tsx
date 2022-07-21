@@ -1,85 +1,125 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Switch, message } from 'antd';
-import { history } from 'umi';
 import { FromButtonItem, FormPage } from './style';
-import { addTree, findById } from '@/apis/areaMerge';
-import { useImmer } from 'use-immer';
+import { updateRegionById, findById } from '@/apis/areaMerge';
+import { history } from 'umi';
+import { getRegionTreeList } from '@/apis';
+
+const { Option } = Select;
+
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
 };
 export default () => {
-  const [parentData, setParentData] = useImmer({
-    id: '1',
-    name: '',
-    remark: '',
-    isEnable: 1,
-  });
-  const formRef = useRef<any>();
-  useEffect(() => {
-    const id = history.location?.query?.id;
-    if (id) {
-      findById({ id }).then((res) => {
-        setParentData((data) => {
-          data.id = res.data.id;
-          data.name = res.data.name;
-          data.remark = res.data?.remark;
-          data.isEnable = res.data?.isEnable;
-        });
-        formRef?.current?.resetFields();
-      });
-    }
-  }, []);
+  const [form] = Form.useForm();
+  const [id, setId] = useState(1);
+
+  const [regionList, setRegionList] = useState<any>([
+    { key: '根', value: '0' },
+  ]);
+
   const onFinish = async (values: any) => {
-    const res = await addTree({
+    const res = await updateRegionById({
       ...values,
-      id: parentData.id,
+      id: id,
       isEnable: values.isEnable ? 1 : 0,
     });
     if (res?.meta?.code === 200) {
-      message.success('操作成功');
+      message.success(res?.meta?.msg);
       onCancel();
+    }
+  };
+
+  const getRegionListAndInitForm = () => {
+    getRegionTreeList().then((res: any) => {
+      if (res?.meta?.code === 200) {
+        formatSelectOption(res?.data);
+        setRegionList([...regionList]);
+        console.log(regionList);
+        initForm();
+      }
+    });
+  };
+
+  const formatSelectOption = (data: []) => {
+    data.map((item: any) => {
+      if (item?.children && item?.children.length) {
+        formatSelectOption(item?.children);
+        regionList.push({
+          key: item?.name,
+          value: item?.id,
+        });
+      } else {
+        regionList.push({
+          key: item?.name,
+          value: item?.id,
+        });
+      }
+    });
+  };
+
+  const initForm = () => {
+    if (window.location.search) {
+      const id = parseInt(window.location.search.split('=')[1] || '1');
+      setId(id);
+      findById({ id }).then((res) => {
+        if (res?.meta?.code === 200) {
+          const data = res?.data;
+          const keys = Object.keys(data);
+          keys.map((item) => {
+            const field: any = {};
+            field[item] = data[item];
+
+            if (item === 'isEnable') {
+              field[item] = data[item] ? true : false;
+            }
+            form.setFieldsValue(field);
+          });
+        }
+      });
     }
   };
   const onCancel = () => {
     history.go(-1);
   };
+
+  useEffect(() => {
+    getRegionListAndInitForm();
+  }, []);
+
   return (
-    <FormPage
-      ref={formRef}
-      {...layout}
-      initialValues={{
-        name: parentData.name,
-        remark: parentData.remark,
-        isEnable: parentData.isEnable,
-        id: parentData.id,
-      }}
-      name="control-ref"
-      onFinish={onFinish}
-    >
-      {parentData.id ? (
-        <Form.Item name="id" label="节点ID">
-          <Input readOnly />
-        </Form.Item>
-      ) : null}
-      {parentData.name ? (
-        <Form.Item name="name" label="节点名称">
-          <Input readOnly />
-        </Form.Item>
-      ) : null}
+    <FormPage form={form} {...layout} name="control-ref" onFinish={onFinish}>
+      <Form.Item name="name" label="节点名称">
+        <Input readOnly />
+      </Form.Item>
+      <Form.Item name="parentId" label="父节点名称">
+        <Select placeholder="请选择" disabled>
+          {regionList.map((item: any) => {
+            return (
+              <Option value={item.value} key={item.value}>
+                {item.key}
+              </Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
       <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
         <Switch disabled />
       </Form.Item>
       <Form.Item name="remark" label="备注">
         <Input.TextArea
-          allowClear
           maxLength={500}
           autoSize={{ minRows: 3, maxRows: 6 }}
           readOnly
         />
       </Form.Item>
+      <Form.Item name="updateDate" label="更新时间">
+        <Input readOnly />
+      </Form.Item>
+
       <FromButtonItem>
-        <Button htmlType="button" onClick={onCancel} type="primary">
+        <Button htmlType="button" onClick={onCancel}>
           返回
         </Button>
       </FromButtonItem>
