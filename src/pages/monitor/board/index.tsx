@@ -111,7 +111,7 @@ const BoardTop = () => {
       ),
     }).then((res: any) => {
       if (res?.meta?.code === 200) {
-        setQloading(0);
+        setSloading(0);
         if (!res?.data?.length) {
           return;
         }
@@ -150,7 +150,7 @@ const BoardTop = () => {
       ),
     }).then((res: any) => {
       if (res?.meta?.code === 200) {
-        setSloading(0);
+        setQloading(0);
         if (!res?.data?.length) {
           return;
         }
@@ -167,7 +167,7 @@ const BoardTop = () => {
           if (res?.meta?.code === 200) {
             const { seriesData } = formChartData(res.data);
             qchartOption.series[1].data = seriesData;
-            schartOption.yAxis.name = 'NM3';
+            qchartOption.yAxis.name = 'NM3';
             setQbarChartOption(qchartOption);
           }
         });

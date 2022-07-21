@@ -16,25 +16,24 @@ import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
 import { SearchOutlined } from '@ant-design/icons';
 const { Option } = Select;
 export default () => {
-  const columns = [
+  const columns: any = [
     {
       title: '节点名称',
       dataIndex: 'regionName',
       fixed: 'left',
     },
-    // {
-    //   title: '仪表型号',
-    //   dataIndex: 'model',
-    // },
     {
       title: '仪表名称',
       dataIndex: 'name',
       fixed: 'left',
     },
     {
+      title: '仪表型号',
+      dataIndex: 'model',
+    },
+    {
       title: '仪表类型',
       dataIndex: 'typeName',
-      width: 80,
     },
     {
       title: '生产厂家',
@@ -106,6 +105,8 @@ export default () => {
     },
   ];
   const [loading, setLoading] = useState(true);
+  const [name, setName] = useState(undefined);
+  const [model, setModel] = useState(undefined);
   const [params, setParams] = useState({
     current: 1,
     size: 10,
@@ -118,10 +119,26 @@ export default () => {
     options: [],
   });
 
-  const [selectModelData, setSelectModelData] = useState<any>({
-    value: undefined,
-    options: [],
-  });
+  const onChangeNameInput = (e: any) => {
+    const val = e?.target?.value;
+    if (val) {
+      setName(val);
+    } else {
+      setName(undefined);
+    }
+  };
+  const onChangeModelInput = (e: any) => {
+    const val = e?.target?.value;
+    if (val) {
+      setModel(val);
+    } else {
+      setModel(undefined);
+    }
+  };
+  // const [selectModelData, setSelectModelData] = useState<any>({
+  //   value: undefined,
+  //   options: [],
+  // });
 
   const [selectTypeData, setSelectTypeData] = useState<any>({
     value: undefined,
@@ -210,8 +227,9 @@ export default () => {
     getTbEquipmentList({
       current: params.current,
       size: params.size,
+      name: name,
       type: selectTypeData?.value, //设备类型
-      model: selectModelData?.value, //仪表型号
+      model: model, //仪表型号
       regionId: selectNodeData?.value, //节点
       isEnable: selectEnableData?.value, //是否禁用
     }).then((res) => {
@@ -283,12 +301,6 @@ export default () => {
         value: value,
       });
     }
-    if (type === 'model') {
-      setSelectModelData({
-        ...selectModelData,
-        value: value,
-      });
-    }
     if (type === 'type') {
       setSelectTypeData({
         ...selectTypeData,
@@ -325,15 +337,25 @@ export default () => {
               );
             })}
           </Select>
-
           <Input
             type="text"
+            size="large"
+            placeholder="仪表名称"
+            suffix={<SearchOutlined />}
+            style={{
+              width: '180px',
+            }}
+            onChange={onChangeNameInput}
+          ></Input>
+          <Input
+            type="text"
+            size="large"
             placeholder="仪表型号"
             suffix={<SearchOutlined />}
             style={{
               width: '180px',
             }}
-            // onChange={onInputChange}
+            onChange={onChangeModelInput}
           ></Input>
           {/* <Select
             size="large"
@@ -411,8 +433,8 @@ export default () => {
           total: params.total,
         }}
         scroll={{
-          y: window.screen.availHeight - 385,
-          x: window.screen.availWidth - 250,
+          y: window.screen.availHeight - 375,
+          x: window.screen.availWidth - 300,
         }}
       />
     </Page>

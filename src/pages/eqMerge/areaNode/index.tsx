@@ -160,7 +160,10 @@ export default () => {
         rowKey="id"
         columns={columns}
         dataSource={tableData}
-        scroll={{ y: window.screen.height - 450 }}
+        scroll={{
+          y: window.screen.availHeight - 375,
+          x: window.screen.availWidth - 300,
+        }}
         onChange={onTableChange}
         loading={loading}
         pagination={{

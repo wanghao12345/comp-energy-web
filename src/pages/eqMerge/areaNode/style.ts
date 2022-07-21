@@ -6,3 +6,4 @@ export const Page = styled.div`
     padding-bottom: 24px;
   }
 `;
+export const CreateOrLookComp = styled.div``;

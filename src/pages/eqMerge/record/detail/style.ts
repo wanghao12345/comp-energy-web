@@ -8,3 +8,4 @@ export const FromButtonItem = styled(Form.Item)`
     align-items: center;
   }
 `;
+export const CreateOrLookComp = styled.div``;

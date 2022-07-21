@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker, message } from 'antd';
 import { history } from 'umi';
 const { Option } = Select;
-import { FromButtonItem } from './style';
+import { CreateOrLookComp, FromButtonItem } from './style';
 import {
   getTbEquipmentDetail,
   tbEquipmentAdd,
@@ -10,6 +10,7 @@ import {
 } from '@/apis/eqMerge';
 import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
 import moment from 'moment';
+import { PageLoading } from '@ant-design/pro-layout';
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
@@ -17,7 +18,7 @@ const layout = {
 export default () => {
   const [id, setId] = useState<number>();
   const [form] = Form.useForm();
-
+  const [loading, setLoading] = useState(true);
   const onCancel = () => {
     history.go(-1);
   };
@@ -38,6 +39,7 @@ export default () => {
               field[item] = data[item] ? true : false;
             }
             form.setFieldsValue(field);
+            setLoading(false);
           });
         }
       });
@@ -67,12 +69,19 @@ export default () => {
   }, []);
 
   return (
-    <Form {...layout} name="control-ref" form={form}>
-      <Form.Item name="equipmentCode" label="设备编号">
-        {/* rules={[{ required: true, message: '请输入仪表地址' }]} */}
-        <Input readOnly />
-      </Form.Item>
-      {/* <Form.Item
+    <CreateOrLookComp>
+      {loading ? <PageLoading></PageLoading> : null}
+      <Form
+        {...layout}
+        name="control-ref-detail"
+        form={form}
+        style={{ display: loading ? 'none' : 'block' }}
+      >
+        <Form.Item name="equipmentCode" label="设备编号">
+          {/* rules={[{ required: true, message: '请输入仪表地址' }]} */}
+          <Input readOnly />
+        </Form.Item>
+        {/* <Form.Item
         name="model"
         label="仪表型号"
         rules={[{ required: true, message: '请选择仪表型号' }]}
@@ -81,43 +90,44 @@ export default () => {
           
         </Select>
       </Form.Item> */}
-      <Form.Item name="type" label="仪表类型">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="name" label="仪表名称">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="regionId" label="区域节点">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="manufacturer" label="生产厂家">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="manufactureDate" label="生产日期">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="verificationDate" label="检定日期">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="verificationCycle" label="检定周期">
-        <Input readOnly />
-      </Form.Item>
-      <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
-        <Switch disabled />
-      </Form.Item>
-      <Form.Item name="remark" label="备注">
-        <Input.TextArea
-          allowClear
-          maxLength={500}
-          autoSize={{ minRows: 3, maxRows: 6 }}
-          readOnly
-        />
-      </Form.Item>
-      <FromButtonItem>
-        <Button onClick={onCancel} size="large" type="primary">
-          返回
-        </Button>
-      </FromButtonItem>
-    </Form>
+        <Form.Item name="type" label="仪表类型">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="name" label="仪表名称">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="regionId" label="区域节点">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="manufacturer" label="生产厂家">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="manufactureDate" label="生产日期">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="verificationDate" label="检定日期">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="verificationCycle" label="检定周期">
+          <Input readOnly />
+        </Form.Item>
+        <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
+          <Switch disabled />
+        </Form.Item>
+        <Form.Item name="remark" label="备注">
+          <Input.TextArea
+            allowClear
+            maxLength={500}
+            autoSize={{ minRows: 3, maxRows: 6 }}
+            readOnly
+          />
+        </Form.Item>
+        <FromButtonItem>
+          <Button onClick={onCancel} size="large" type="primary">
+            返回
+          </Button>
+        </FromButtonItem>
+      </Form>
+    </CreateOrLookComp>
   );
 };
