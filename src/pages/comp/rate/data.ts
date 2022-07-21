@@ -159,19 +159,11 @@ export const barStaticChartData = {
     top: 60,
     bottom: 30,
   },
-  dataZoom: [
-    {
-      type: 'slider',
-      show: false,
-      xAxisIndex: [0],
-      left: '9%',
-      bottom: -5,
-      start: 0,
-      end: 80, //初始化滚动条
-    },
-  ],
   tooltip: {
     trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
   },
   legend: {
     top: 30,
@@ -189,7 +181,6 @@ export const barStaticChartData = {
     },
     axisLabel: {
       color: '#FFFFFF',
-      rotate: 30,
     },
     nameTextStyle: {
       color: '#FFFFFF',

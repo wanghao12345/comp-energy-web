@@ -169,7 +169,18 @@ const RatePage = () => {
     keys.map((item, index) => {
       const dataList: any[] = [];
       data[item].map((list: any) => {
-        xAxisData.push(list?.statisticsDate);
+        let dateFormat = list?.statisticsDate;
+        let columnTime = '';
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          dateFormat = moment(dateFormat).format('DD');
+          columnTime = dateFormat + '日';
+        } else {
+          dateFormat = moment(dateFormat).format('MM');
+          columnTime = dateFormat + '月';
+        }
         const activeElectricalEnergy = formatNumer(
           list?.activeElectricalEnergy,
           3,
@@ -177,33 +188,58 @@ const RatePage = () => {
         const electricCost = formatNumer(list?.electricCost, 2);
         dataList.push(activeElectricalEnergy);
         const column = {
-          time: list?.statisticsDate,
+          time: columnTime,
           fd: activeElectricalEnergy,
           fm: electricCost,
           fq: formatNumer(list?.electricCost / list?.activeElectricalEnergy, 5),
         };
         columnData[index].push(column);
+        xAxisData.push(dateFormat);
       });
       //按照尖峰平谷的顺序
       if (item === MeterParameters.jian) {
         barStaticChartData.series[0].data = dataList;
-        barStaticChartData.xAxis.name =
-          boardDayListnoDay[form.dateType - 2]?.name || '年';
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          barStaticChartData.xAxis.name = '日';
+        } else {
+          barStaticChartData.xAxis.name = '月';
+        }
       }
       if (item === MeterParameters.feng) {
         barStaticChartData.series[1].data = dataList;
-        barStaticChartData.xAxis.name =
-          boardDayListnoDay[form.dateType - 2]?.name || '年';
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          barStaticChartData.xAxis.name = '日';
+        } else {
+          barStaticChartData.xAxis.name = '月';
+        }
       }
       if (item === MeterParameters.ping) {
         barStaticChartData.series[2].data = dataList;
-        barStaticChartData.xAxis.name =
-          boardDayListnoDay[form.dateType - 2]?.name || '年';
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          barStaticChartData.xAxis.name = '日';
+        } else {
+          barStaticChartData.xAxis.name = '月';
+        }
       }
       if (item === MeterParameters.gu) {
         barStaticChartData.series[3].data = dataList;
-        barStaticChartData.xAxis.name =
-          boardDayListnoDay[form.dateType - 2]?.name || '年';
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          barStaticChartData.xAxis.name = '日';
+        } else {
+          barStaticChartData.xAxis.name = '月';
+        }
       }
       if (dataList.length > 10) {
         barStaticChartData.series[0]['barWidth'] = undefined;
@@ -407,11 +443,23 @@ const RatePage = () => {
               size="small"
               className="table"
               pagination={{ pageSize: 10 }}
+              scroll={{ x: 1400 }}
             >
-              <Column title="时间" dataIndex="time" key="time" width={110} />
+              <Column
+                title="时间"
+                dataIndex="time"
+                key="time"
+                width={60}
+                fixed="left"
+              />
               <ColumnGroup title="尖">
                 <Column title="电量" dataIndex="fd" key="firstName" />
-                <Column title="单价（元/kW.h)" dataIndex="fq" key="lastName" />
+                <Column
+                  title="单价（元/kW.h)"
+                  dataIndex="fq"
+                  key="lastName"
+                  width={130}
+                />
                 <Column title="金额(元)" dataIndex="fm" key="lastName" />
               </ColumnGroup>
               <ColumnGroup title="峰">
@@ -420,7 +468,7 @@ const RatePage = () => {
                   title="单价（元/kW.h)"
                   dataIndex="sq"
                   key="lastName"
-                  width={120}
+                  width={130}
                 />
                 <Column title="金额(元)" dataIndex="sm" key="lastName" />
               </ColumnGroup>
@@ -430,7 +478,7 @@ const RatePage = () => {
                   title="单价（元/kW.h)"
                   dataIndex="tq"
                   key="lastName"
-                  width={120}
+                  width={130}
                 />
                 <Column title="金额(元)" dataIndex="tm" key="lastName" />
               </ColumnGroup>
@@ -440,13 +488,23 @@ const RatePage = () => {
                   title="单价（元/kW.h)"
                   dataIndex="foq"
                   key="lastName"
-                  width={120}
+                  width={130}
                 />
                 <Column title="金额(元)" dataIndex="fom" key="lastName" />
               </ColumnGroup>
               <ColumnGroup title="合计">
-                <Column title="电量" dataIndex="tod" key="firstName" />
-                <Column title="电费" dataIndex="tom" key="lastName" />
+                <Column
+                  title="电量"
+                  dataIndex="tod"
+                  key="firstName"
+                  fixed="right"
+                />
+                <Column
+                  title="电费"
+                  dataIndex="tom"
+                  key="lastName"
+                  fixed="right"
+                />
               </ColumnGroup>
             </Table>
           </RateBodyRightBottomContainer>

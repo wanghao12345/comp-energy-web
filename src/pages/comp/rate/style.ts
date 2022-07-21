@@ -46,7 +46,7 @@ export const RateBodyLeftContainer = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   padding: 30px;
-  min-width: 300px;
+  min-width: 350px;
   .rate-item-box {
     width: 100%;
     height: 50%;
@@ -69,6 +69,10 @@ export const RateBodyRightContainer = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  min-width: 700px;
+  height: calc(100vh - 180px);
+  padding-right: 16px;
+  overflow: auto;
 `;
 
 export const RateBodyRightTopContainer = styled.div`
