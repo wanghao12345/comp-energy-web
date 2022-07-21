@@ -17,6 +17,18 @@ body ::-webkit-scrollbar-thumb {
   background: #4781bb;
   border-radius: 3px;
 }
+html ::-webkit-scrollbar {
+  width: 4px;
+  height: 8px;
+}
+html ::-webkit-scrollbar-track{
+  background: #163361;
+  border-radius: 3px;
+}
+html ::-webkit-scrollbar-thumb {
+  background: #4781bb;
+  border-radius: 3px;
+}
 /* layout */
 .ant-layout-sider {
   background-color: #213464 !important;
