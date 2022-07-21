@@ -16,6 +16,7 @@ export default () => {
   const onChangeOption = (option: string) => {
     setOptionValue(parseInt(option));
   };
+  const [loading, setLoading] = useState(true);
   const [rangePickerValue, setrangePickerValue] = useState<any>([
     moment(),
     moment(),
@@ -72,7 +73,7 @@ export default () => {
         formatTableData(data);
         formatTableDataSecond(data);
         setTableData(data);
-        console.log(data);
+        setLoading(false);
       }
     });
   };
@@ -116,8 +117,8 @@ export default () => {
         pagination={false}
         columns={columns}
         dataSource={tableData}
-        scroll={{ y: window.screen.height - 440, x: 500 }}
-        // rowSelection={{ ...rowSelection }}
+        loading={loading}
+        scroll={{ y: window.screen.height - 390, x: 500 }}
       />
     </Page>
   );
