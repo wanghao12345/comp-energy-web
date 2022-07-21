@@ -107,7 +107,7 @@ export const getColumns = (type: string, unit: string) => {
         key: 'C',
       },
       {
-        title: `本期能耗${unit}）`,
+        title: `能耗${unit}）`,
         dataIndex: 'D',
         key: 'D',
       },

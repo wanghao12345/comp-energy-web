@@ -30,7 +30,7 @@ export interface ITypeList {
 }
 
 export const EnergyTypeList: ITypeList[] = [
-  { name: '电', value: EnergyType.Electric, unit: 'kw.h' },
+  { name: '电', value: EnergyType.Electric, unit: 'kW.h' },
   { name: '水', value: EnergyType.Water, unit: 't' },
   { name: '蒸汽', value: EnergyType.Steam, unit: 't' },
   { name: '天然气', value: EnergyType.NaturalGas, unit: 'Nm3' },

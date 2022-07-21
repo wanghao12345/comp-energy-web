@@ -237,19 +237,9 @@ const RealBodyOption = () => {
           },
         },
         tooltip: {
-          trigger: 'item',
-          formatter: function (data: any) {
-            // console.log(data.marker)
-            const dataMarker1 =
-              '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#72D5DF;"></span>';
-            const dataMarker2 =
-              '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#3B83EE;"></span>';
-            var text = data.name + '<br/>';
-            text +=
-              dataMarker1 + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
-            text +=
-              dataMarker2 + '环比能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
-            return text;
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
           },
         },
         xAxis: {
@@ -304,20 +294,15 @@ const RealBodyOption = () => {
           data: ['本期能耗', '同比能耗'],
         },
         tooltip: {
-          trigger: 'item',
-          // formatter: function (data: any) {
-          //   console.log(data)
-          //   const dataMarker = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#192c49;"></span>';
-          //   var text = data.name + '<br/>';
-          //   text += dataMarker + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
-          //   text += dataMarker + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
-          //   return text;
-          // },
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
         },
         xAxis: {
           type: 'category',
+          name: '月',
           data: xAxisData,
-          axisTick: { show: false },
         },
         yAxis: {
           type: 'value',
@@ -328,6 +313,7 @@ const RealBodyOption = () => {
             name: '本期能耗',
             type: 'bar',
             data: seriesData[0],
+            label: { formatter: '{c}  {name|{a}}' },
             itemStyle: {
               color: '#72D5DF',
             },
@@ -336,6 +322,7 @@ const RealBodyOption = () => {
           {
             name: '同比能耗',
             type: 'bar',
+            label: { formatter: '{c}  {name|{a}}' },
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',
@@ -378,15 +365,10 @@ const RealBodyOption = () => {
           data: legends,
         },
         tooltip: {
-          trigger: 'item',
-          // formatter: function (data: any) {
-          //   console.log(data)
-          //   const dataMarker = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#192c49;"></span>';
-          //   var text = data.name + '<br/>';
-          //   text += dataMarker + '本期能耗:  ' + (seriesData[0][0] || 0) + '<br/>';
-          //   text += dataMarker + '上期能耗:  ' + (seriesData[1][0] || 0) + '<br/>';
-          //   return text;
-          // },
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
         },
         xAxis: {
           type: 'category',
@@ -477,55 +459,68 @@ const RealBodyOption = () => {
     const xAxisData: string[] = [];
     const seriesData: number[][] = [[], []];
     const columns: any = [];
-    if (
-      currentTabStatus === ITabStatus.monthOnmonth ||
-      currentTabStatus === ITabStatus.yearOnyear
-    ) {
+    if (currentTabStatus === ITabStatus.yearOnyear) {
       let column: any = {};
       data.map((item: any, index: number) => {
         const current = formatNumer(item.flow, 5);
         const last = formatNumer(item.flowUpper, 5);
         column = {
           Key: index,
-          A: item.statisticsDate,
+          A: (item.statisticsDate?.split('-')[1] || 1) * 1 + '月',
           B: item.regionName,
           C: current,
-          D: item.statisticsDateStartUpper || item.statisticsDateUpper,
+          D: '去年' + (item.statisticsDateUpper?.split('-')[1] || 1) * 1 + '月',
           E: last,
           F: formatNumer(current - last),
           G: item.flow - item.flowUpper > 0 ? '上升' : '下降',
         };
-        xAxisData.push(item.statisticsDate);
+        xAxisData.push(item.statisticsDate?.split('-')[1]);
         seriesData[0].push(current);
         seriesData[1].push(last);
         columns.push(column);
       });
     }
 
-    // if (currentTabStatus === ITabStatus.yearOnyear) {
-    //   let column: any = {};
-    //   data[0].map((item: any, index: number) => {
-    //     column = {
-    //       Key: index,
-    //       D: item.statisticsDate,
-    //       B: item.regionName,
-    //       E: formatNumer(item.flow, 5),
-    //     };
-    //     column.A = data[1][index]?.statisticsDate;
-    //     column.C = formatNumer(data[1][index]?.flow, 5);
-    //     column.F = formatNumer(data[1][index]?.flow || 0 - column.E, 5);
-    //     column.G =
-    //       formatNumer(data[1][index]?.flow || 0 - column.E, 5) < 0
-    //         ? '下降'
-    //         : '上升';
-    //     columns.push(column);
-    //     seriesData[0].push(item.flow);
-    //     xAxisData.push(item.statisticsDate?.split('-')[1]);
-    //   });
-    //   data[1].map((item: any) => {
-    //     seriesData[1].push(item.flow);
-    //   });
-    // }
+    if (currentTabStatus === ITabStatus.monthOnmonth) {
+      let column: any = {};
+      data.map((item: any, index: number) => {
+        const current = formatNumer(item.flow, 5);
+        const last = formatNumer(item.flowUpper, 5);
+        let currentTime = item.statisticsDate;
+        let lastTime = item.statisticsDateStartUpper;
+        if (form.dateType === TimeType.Week) {
+          currentTime = moment(currentTime).format('YYYY-W') + '周';
+          lastTime = moment(lastTime).format('YYYY-W') + '周';
+        }
+        if (form.dateType === TimeType.Month) {
+          currentTime = moment(currentTime).format('YYYY-M') + '月';
+          lastTime = moment(lastTime).format('YYYY-M') + '月';
+        }
+        if (form.dateType === TimeType.Quarter) {
+          currentTime = moment(currentTime).format('YYYY-Q') + '季度';
+          lastTime = moment(lastTime).format('YYYY-Q') + '季度';
+        }
+        if (form.dateType === TimeType.Year) {
+          currentTime = moment(currentTime).format('YYYY') + '年';
+          lastTime = moment(lastTime).format('YYYY') + '年';
+        }
+
+        column = {
+          Key: index,
+          A: currentTime,
+          B: item.regionName,
+          C: current,
+          D: lastTime,
+          E: last,
+          F: formatNumer(current - last),
+          G: item.flow - item.flowUpper > 0 ? '上升' : '下降',
+        };
+        xAxisData.push(item.statisticsDate?.split('-')[1]);
+        seriesData[0].push(current);
+        seriesData[1].push(last);
+        columns.push(column);
+      });
+    }
 
     if (currentTabStatus === ITabStatus.normal) {
       const getRegionName = (ids: number[]) => {
