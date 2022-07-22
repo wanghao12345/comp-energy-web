@@ -161,7 +161,7 @@ export default () => {
         columns={columns}
         dataSource={tableData}
         scroll={{
-          y: window.screen.availHeight - 375,
+          y: Math.min(window.screen.availHeight - 375, 500),
           x: 500,
         }}
         onChange={onTableChange}

@@ -16,7 +16,7 @@ import {
   tbEarlyWarningSelectList,
 } from '@/apis/event';
 export default () => {
-  const columns = [
+  const columns: any = [
     {
       title: '节点名称',
       dataIndex: 'regionName',
@@ -182,8 +182,8 @@ export default () => {
         }}
         loading={loading}
         scroll={{
-          y: window.screen.availHeight - 385,
-          x: window.screen.availWidth - 250,
+          y: Math.min(window.screen.availHeight - 385 || 500),
+          x: Math.min(window.screen.availWidth - 250 || 1000),
         }}
         onChange={onTableChange}
         rowKey="createDate"

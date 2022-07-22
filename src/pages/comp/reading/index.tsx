@@ -195,7 +195,7 @@ const RealBodyOption = () => {
             defaultPageSize: pagination.size,
             total: pagination.total,
           }}
-          scroll={{ y: screen.height - 460 }}
+          scroll={{ y: Math.min(screen.height - 460, 500) }}
         />
       </div>
     </RealBodyContainer>
