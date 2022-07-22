@@ -275,6 +275,9 @@ export const ilineChartOption = {
   },
   tooltip: {
     trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
   },
   legend: {
     top: 30,
@@ -349,6 +352,11 @@ export const ilineChartOption = {
         100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300,
         100, 200, 300, 500, 400, 350, 300, 350, 150, 450,
       ],
+      emphasis: {
+        lineStyle: {
+          width: 3,
+        },
+      },
     },
   ],
 };

@@ -126,6 +126,9 @@ export const chartOption = {
   },
   tooltip: {
     trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
   },
   color: LineColors,
   legend: {
@@ -210,6 +213,11 @@ export const chartOption = {
         100, 200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300,
         100, 200, 300, 500, 400, 350, 300, 350, 150, 450,
       ],
+      emphasis: {
+        lineStyle: {
+          width: 3,
+        },
+      },
     },
     {
       name: 'lb',
@@ -231,6 +239,11 @@ export const chartOption = {
         200, 300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300, 100,
         200, 300, 500, 400, 350, 300, 350, 150, 450, 200,
       ],
+      emphasis: {
+        lineStyle: {
+          width: 3,
+        },
+      },
     },
     {
       name: 'lc',
@@ -252,6 +265,11 @@ export const chartOption = {
         300, 500, 400, 350, 300, 100, 200, 300, 500, 400, 350, 300, 100, 200,
         300, 500, 400, 350, 300, 350, 150, 450, 200, 100,
       ],
+      emphasis: {
+        lineStyle: {
+          width: 3,
+        },
+      },
     },
   ],
 };

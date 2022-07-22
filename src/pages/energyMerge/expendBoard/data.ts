@@ -3,6 +3,12 @@ export const barCartDataOptions = {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
+  },
   yAxis: {
     type: 'value',
     name: 'kW.h',

@@ -7,7 +7,7 @@ export const lineCartDataOptions = {
   tooltip: {
     trigger: 'axis',
     axisPointer: {
-      type: 'cross',
+      type: 'shadow',
     },
   },
   yAxis: {
@@ -53,16 +53,23 @@ export const lineCartDataOptions = {
   ],
 };
 export const barCartDataOptions = {
+  grid: {
+    left: 10,
+    right: 20,
+  },
   xAxis: {
     type: 'category',
     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    axisLabel: {
-      rotate: 50,
-    },
   },
   yAxis: {
     type: 'value',
     name: 'kW.h',
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
   },
   // dataZoom: [
   //   {

@@ -29,7 +29,13 @@ export const RealBodyContainer = styled.div`
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
   box-sizing: border-box;
+  overflow: auto;
+  position: relative;
   .options-box {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    background: #142655;
     .tab-box {
       padding: 24px;
       padding-bottom: 0;
@@ -59,15 +65,6 @@ export const RealBodyContainer = styled.div`
   }
   .table-box {
     box-sizing: border-box;
-    width: calc(100vw - 664px);
-    height: calc(100vh - 220px);
-    @media (max-width: 1440px) {
-      width: calc(100vw - 564px);
-    }
-    @media (max-width: 1000px) {
-      width: calc(100vw - 410px);
-    }
-    overflow: auto;
   }
   .columnWidth {
     min-width: 150px;

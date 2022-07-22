@@ -59,8 +59,8 @@ const RealBodyOption = () => {
         formatTableData(dataSource);
         const columns = formatTableColumns(res?.data[0]?.queryDataList);
         setForm((p) => {
-          p.dataSource = dataSource;
-          p.columns = columns as any;
+          p.dataSource = [...dataSource] as any;
+          p.columns = [...columns] as any;
         });
       }
     });
@@ -155,16 +155,14 @@ const RealBodyOption = () => {
         </div>
       </div>
       <div className="tabWrapper">
-        <div className="table-box">
-          <Table
-            size="middle"
-            rowKey="id"
-            key="id"
-            pagination={false}
-            dataSource={form.dataSource}
-            columns={form.columns}
-          />
-        </div>
+        <Table
+          size="middle"
+          rowKey="id"
+          key="id"
+          pagination={false}
+          dataSource={form.dataSource}
+          columns={form.columns}
+        />
       </div>
     </RealBodyContainer>
   );

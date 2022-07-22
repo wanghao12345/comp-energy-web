@@ -183,6 +183,11 @@ const RealBodyOption = () => {
               color: '#FFEF6C',
             },
             data: series[0],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Ib',
@@ -201,6 +206,11 @@ const RealBodyOption = () => {
               color: '#FD264E',
             },
             data: series[1],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Ic',
@@ -219,6 +229,11 @@ const RealBodyOption = () => {
               color: '#2DFCC0',
             },
             data: series[2],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
         ];
         chartOption.yAxis.name = 'A';
@@ -281,6 +296,11 @@ const RealBodyOption = () => {
               color: '#FFEF6C',
             },
             data: series[0],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Ub',
@@ -299,6 +319,11 @@ const RealBodyOption = () => {
               color: '#FD264E',
             },
             data: series[1],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Uc',
@@ -317,6 +342,11 @@ const RealBodyOption = () => {
               color: '#2DFCC0',
             },
             data: series[2],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
         ];
         chartOption.series = originSeries;
@@ -385,6 +415,11 @@ const RealBodyOption = () => {
               color: '#FFEF6C',
             },
             data: series[0],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Pfb',
@@ -403,6 +438,11 @@ const RealBodyOption = () => {
               color: '#FD264E',
             },
             data: series[1],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Pfc',
@@ -421,6 +461,11 @@ const RealBodyOption = () => {
               color: '#2DFCC0',
             },
             data: series[2],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Pf',
@@ -439,6 +484,11 @@ const RealBodyOption = () => {
               color: '#381ae0',
             },
             data: series[3],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
         ];
         chartOption.series = originSeries;
@@ -508,6 +558,11 @@ const RealBodyOption = () => {
               color: '#FFEF6C',
             },
             data: series[0],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Pb',
@@ -526,6 +581,11 @@ const RealBodyOption = () => {
               color: '#FD264E',
             },
             data: series[1],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'Pc',
@@ -544,6 +604,11 @@ const RealBodyOption = () => {
               color: '#2DFCC0',
             },
             data: series[2],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
           {
             name: 'P',
@@ -562,6 +627,11 @@ const RealBodyOption = () => {
               color: '#381ae0',
             },
             data: series[3],
+            emphasis: {
+              lineStyle: {
+                width: 4,
+              },
+            },
           },
         ];
         chartOption.series = originSeries;

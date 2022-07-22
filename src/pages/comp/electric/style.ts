@@ -13,11 +13,16 @@ export const RealBodyContainer = styled.div`
   border-radius: 4px;
   box-sizing: border-box;
   padding: 24px 16px 0 16px;
+  position: relative;
   overflow: auto;
   .options-box {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: #142655;
+    z-index: 9;
     .tab-box {
       margin-right: 44px;
       .ant-tabs-nav {
