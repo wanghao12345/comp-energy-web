@@ -1,10 +1,10 @@
 export enum EnergyType {
   Electric = 1,
   Water = 2,
-  Steam = 3,
-  NaturalGas = 4,
-  Nitrogen = 5,
-  Air = 6,
+  Steam = 6,
+  NaturalGas = 5,
+  Nitrogen = 4,
+  Air = 3,
 }
 
 export enum TimeType {
@@ -20,8 +20,8 @@ export enum TimeType {
 export enum MeterParameters {
   jian = '2',
   feng = '1',
-  ping = '4',
   gu = '3',
+  ping = '4',
 }
 export interface ITypeList {
   name: string;

@@ -58,14 +58,14 @@ export const circleChart = {
         },
         {
           value: 735,
-          name: '平',
+          name: '谷',
           itemStyle: {
             color: '#1B81FB',
           },
         },
         {
           value: 1048,
-          name: '谷',
+          name: '平',
           itemStyle: {
             color: '#3B57A2',
           },
@@ -227,7 +227,7 @@ export const barStaticChartData = {
       itemStyle: {
         color: '#D65050',
       },
-      data: [1],
+      data: [],
     },
     {
       name: '峰',
@@ -237,17 +237,7 @@ export const barStaticChartData = {
       lineStyle: {
         color: '#E7804A',
       },
-      data: [1],
-    },
-    {
-      name: '平',
-      type: 'bar',
-      stack: 'total',
-      smooth: true,
-      lineStyle: {
-        color: '#1B81FB',
-      },
-      data: [1],
+      data: [],
     },
     {
       name: '谷',
@@ -255,9 +245,19 @@ export const barStaticChartData = {
       stack: 'total',
       smooth: true,
       lineStyle: {
+        color: '#1B81FB',
+      },
+      data: [],
+    },
+    {
+      name: '平',
+      type: 'bar',
+      stack: 'total',
+      smooth: true,
+      lineStyle: {
         color: '#3B57A2',
       },
-      data: [1],
+      data: [],
     },
   ],
 };

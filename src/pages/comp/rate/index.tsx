@@ -22,6 +22,7 @@ import { useImmer } from 'use-immer';
 import { getRegionTreeList } from '@/apis';
 import { formatNumer, formatTime } from '@/utils/common';
 
+const colors = ['#D65050', '#E7804A', '#1B81FB', '#3B57A2'];
 const { Option } = Select;
 const { Column, ColumnGroup } = Table;
 const RatePage = () => {
@@ -96,28 +97,28 @@ const RatePage = () => {
         value: mySeries.jian,
         name: '尖',
         itemStyle: {
-          color: '#D65050',
+          color: colors[0],
         },
       },
       {
         value: mySeries.feng,
         name: '峰',
         itemStyle: {
-          color: '#E7804A',
+          color: colors[1],
         },
       },
       {
         value: mySeries.ping,
-        name: '平',
+        name: '谷',
         itemStyle: {
-          color: '#1B81FB',
+          color: colors[2],
         },
       },
       {
         value: mySeries.gu,
-        name: '谷',
+        name: '平',
         itemStyle: {
-          color: '#3B57A2',
+          color: colors[3],
         },
       },
     ];
@@ -127,28 +128,28 @@ const RatePage = () => {
         value: mySeries.jianCost,
         name: '尖',
         itemStyle: {
-          color: '#D65050',
+          color: colors[0],
         },
       },
       {
         value: mySeries.fengCost,
         name: '峰',
         itemStyle: {
-          color: '#E7804A',
+          color: colors[1],
         },
       },
       {
         value: mySeries.pingCost,
-        name: '平',
+        name: '谷',
         itemStyle: {
-          color: '#1B81FB',
+          color: colors[2],
         },
       },
       {
         value: mySeries.guCost,
-        name: '谷',
+        name: '平',
         itemStyle: {
-          color: '#3B57A2',
+          color: colors[3],
         },
       },
     ];
@@ -162,12 +163,14 @@ const RatePage = () => {
   const formatResponseDataList = (data: any) => {
     const columnData: any[] = [[], [], [], []];
     const xAxisData: any[] = [];
+    const series: any = {};
     const keys = Object.keys(data);
     if (!keys.length) {
       return;
     }
+
     keys.map((item, index) => {
-      const dataList: any[] = [];
+      const dataList: any = [];
       data[item].map((list: any) => {
         let dateFormat = list?.statisticsDate;
         let columnTime = '';
@@ -193,67 +196,94 @@ const RatePage = () => {
           fm: electricCost,
           fq: formatNumer(list?.electricCost / list?.activeElectricalEnergy, 5),
         };
-        columnData[index].push(column);
+        if (item === MeterParameters.jian) {
+          columnData[0].push(column);
+        }
+        if (item === MeterParameters.feng) {
+          columnData[1].push(column);
+        }
+        if (item === MeterParameters.gu) {
+          columnData[2].push(column);
+        }
+        if (item === MeterParameters.ping) {
+          columnData[3].push(column);
+        }
         xAxisData.push(dateFormat);
       });
-      //按照尖峰平谷的顺序
+      //按照尖峰谷平的顺序
       if (item === MeterParameters.jian) {
-        barStaticChartData.series[0].data = dataList;
-        if (
-          form.dateType === TimeType.Week ||
-          form.dateType === TimeType.Month
-        ) {
-          barStaticChartData.xAxis.name = '日';
-        } else {
-          barStaticChartData.xAxis.name = '月';
-        }
+        const sery = {
+          name: '尖',
+          type: 'bar',
+          stack: 'total',
+          smooth: true,
+          barWidth: 40,
+          itemStyle: {
+            color: colors[0],
+          },
+          data: dataList,
+        };
+        series['1'] = sery;
       }
       if (item === MeterParameters.feng) {
-        barStaticChartData.series[1].data = dataList;
-        if (
-          form.dateType === TimeType.Week ||
-          form.dateType === TimeType.Month
-        ) {
-          barStaticChartData.xAxis.name = '日';
-        } else {
-          barStaticChartData.xAxis.name = '月';
-        }
-      }
-      if (item === MeterParameters.ping) {
-        barStaticChartData.series[2].data = dataList;
-        if (
-          form.dateType === TimeType.Week ||
-          form.dateType === TimeType.Month
-        ) {
-          barStaticChartData.xAxis.name = '日';
-        } else {
-          barStaticChartData.xAxis.name = '月';
-        }
+        const sery = {
+          name: '峰',
+          type: 'bar',
+          stack: 'total',
+          smooth: true,
+          itemStyle: {
+            color: colors[1],
+          },
+          data: dataList,
+        };
+        series['2'] = sery;
       }
       if (item === MeterParameters.gu) {
-        barStaticChartData.series[3].data = dataList;
-        if (
-          form.dateType === TimeType.Week ||
-          form.dateType === TimeType.Month
-        ) {
-          barStaticChartData.xAxis.name = '日';
-        } else {
-          barStaticChartData.xAxis.name = '月';
-        }
+        const sery = {
+          name: '谷',
+          type: 'bar',
+          stack: 'total',
+          smooth: true,
+          itemStyle: {
+            color: colors[2],
+          },
+          data: dataList,
+        };
+        series['3'] = sery;
       }
-      if (dataList.length > 10) {
-        barStaticChartData.series[0]['barWidth'] = undefined;
+      if (item === MeterParameters.ping) {
+        const sery = {
+          name: '平',
+          type: 'bar',
+          stack: 'total',
+          smooth: true,
+          itemStyle: {
+            color: colors[3],
+          },
+          data: dataList,
+        };
+        series['4'] = sery;
+      }
+      if (form.dateType === TimeType.Week || form.dateType === TimeType.Month) {
+        barStaticChartData.xAxis.name = '日';
       } else {
-        barStaticChartData.series[0]['barWidth'] = 40;
+        barStaticChartData.xAxis.name = '月';
       }
     });
-    barStaticChartData.xAxis.data = [...new Set(xAxisData)];
+    const cSeries = [series['1'], series['2'], series['3'], series['4']];
+    const newXaix = [...new Set(xAxisData)];
+    barStaticChartData.series = cSeries;
+    barStaticChartData.xAxis.data = newXaix;
     setBarchartData(Object.assign({}, barStaticChartData));
     const tempDataSource: any[] = [];
-    columnData[0].map((item: any, index: number) => {
+    newXaix.map((item: any, index: number) => {
       const column = {
         key: index,
-        time: columnData[0][index].time,
+        time:
+          columnData[0][index]?.time ||
+          columnData[1][index]?.time ||
+          columnData[2][index]?.time ||
+          columnData[3][index]?.time,
         fd: columnData[0][index]?.fd || 0,
         fm: columnData[0][index]?.fm || 0,
         fq: columnData[0][index]?.fq || 0,
