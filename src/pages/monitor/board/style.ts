@@ -48,6 +48,7 @@ export const BoardBottomContainer = styled.div`
   width: 100%;
   height: 60%;
   display: flex;
+  padding-bottom: 24px;
 `;
 
 export const BoardBottomLeftContainer = styled.div`

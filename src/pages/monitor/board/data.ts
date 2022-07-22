@@ -11,6 +11,12 @@ export const barChartOption1 = {
       color: '#FFFFFF',
     },
   },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
+  },
   // dataZoom: [
   //   {
   //     type: 'slider',
@@ -55,7 +61,7 @@ export const barChartOption1 = {
     {
       type: 'bar',
       name: '2021',
-
+      barGap: 0,
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -93,6 +99,12 @@ export const barChartOption2 = {
       color: '#FFFFFF',
     },
   },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
+  },
   // dataZoom: [
   //   {
   //     type: 'slider',
@@ -137,7 +149,7 @@ export const barChartOption2 = {
     {
       type: 'bar',
       name: '2021',
-
+      barGap: 0,
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -150,7 +162,6 @@ export const barChartOption2 = {
     {
       type: 'bar',
       name: '2022',
-
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
@@ -176,6 +187,15 @@ export const barChartOption3 = {
       color: '#FFFFFF',
     },
   },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
+  },
+  axisPointer: {
+    type: 'shadow',
+  },
   // dataZoom: [
   //   {
   //     type: 'slider',
@@ -220,7 +240,7 @@ export const barChartOption3 = {
     {
       type: 'bar',
       name: '2021',
-
+      barGap: 0,
       showBackground: true,
       backgroundStyle: {
         color: 'rgba(180, 180, 180, 0)',
