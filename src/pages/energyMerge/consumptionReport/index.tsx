@@ -4,7 +4,7 @@ import { RealBodyContainer } from './style';
 const { Option } = Select;
 import { useContext, useEffect } from 'react';
 import { boardDayList, EnergyTypeList, TimeType } from '@/commonInterface';
-import { formatDate, formatTime, getWeek } from '@/utils/common';
+import { formatTime } from '@/utils/common';
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { energyElectricselectList } from '@/apis/energyMerge';
@@ -121,7 +121,9 @@ const RealBodyOption = () => {
   };
 
   useEffect(() => {
-    getDatasource();
+    if (templateProps.energyType) {
+      getDatasource();
+    }
   }, [templateProps.energyType, templateProps.area]);
   return (
     <RealBodyContainer>

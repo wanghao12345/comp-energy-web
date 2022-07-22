@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Button, Select, Switch, message } from 'antd';
 import { history } from 'umi';
 const { Option } = Select;
-import { FromButtonItem } from './style';
+import { CreateOrLookComp, FromButtonItem } from './style';
 import {
   tbEarlyWarningAdd,
   tbEarlyWarningselectById,
   tbEarlyWarningupdateById,
 } from '@/apis/event';
 import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
+import { PageLoading } from '@ant-design/pro-layout';
 
 const layout = {
   labelCol: { span: 8 },
@@ -18,7 +19,7 @@ export default () => {
   const [form] = Form.useForm();
   const [optionObj, setOptionObj] = useState<any>();
   const [lianDongOption, SetLdOption] = useState<any>();
-
+  const [loading, setLoading] = useState(true);
   const regionList = useRef<any>();
   const onFinish = (values: any) => {
     const hide = message.loading('正在新增规则...', 50);
@@ -75,9 +76,12 @@ export default () => {
               onChangeEnergy(data.equipmentTypeName, obj);
             }
             form.setFieldsValue(field);
+            setLoading(false);
           });
         }
       });
+    } else {
+      setLoading(false);
     }
   };
 
@@ -168,127 +172,135 @@ export default () => {
   };
 
   return (
-    <Form {...layout} form={form} name="control-ref" onFinish={onFinish}>
-      <Form.Item
-        name="eventType"
-        label="事件类型"
-        rules={[{ required: true, message: '请选择事件类型' }]}
+    <CreateOrLookComp>
+      {loading ? <PageLoading></PageLoading> : null}
+      <Form
+        {...layout}
+        form={form}
+        name="control-ref"
+        onFinish={onFinish}
+        style={{ display: loading ? 'none' : 'block' }}
       >
-        <Select placeholder="请选择" allowClear>
-          {optionObj
-            ? optionObj.event_type.map((item: any) => {
-                return (
-                  <Option value={parseInt(item.value)} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="regionId"
-        label="区域位置"
-        rules={[{ required: true, message: '请选择区域位置' }]}
-      >
-        <Select placeholder="请选择" allowClear>
-          {optionObj
-            ? optionObj.regionList.map((item: any) => {
-                return (
-                  <Option value={item.value} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="name"
-        label="仪表名称"
-        rules={[{ required: true, message: '请输入' }]}
-      >
-        <Input type={'text'} placeholder={'请输入名称'}></Input>
-      </Form.Item>
-      <Form.Item
-        name="equipmentType"
-        label="能源类型"
-        rules={[{ required: true, message: '请选择能源类型' }]}
-      >
-        <Select
-          placeholder="请选择"
-          allowClear
-          onChange={(value, option) => onChangeEnergy(option, optionObj)}
+        <Form.Item
+          name="eventType"
+          label="事件类型"
+          rules={[{ required: true, message: '请选择事件类型' }]}
         >
-          {optionObj
-            ? optionObj.energy_type.map((item: any) => {
-                return (
-                  <Option value={item.value} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="energyParameter"
-        label="参数"
-        rules={[{ required: true, message: '请选择能源参数' }]}
-      >
-        <Select placeholder="请选择" allowClear>
-          {lianDongOption
-            ? lianDongOption.map((item: any) => {
-                return (
-                  <Option value={parseInt(item.value)} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="condition1"
-        label="条件"
-        rules={[{ required: true, message: '请选择条件' }]}
-      >
-        <Select placeholder="请选择" allowClear>
-          {optionObj
-            ? optionObj.event_condition.map((item: any) => {
-                return (
-                  <Option value={parseInt(item.value)} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        name="threshold1"
-        label="阀值"
-        rules={[{ required: true, message: '请输入阀值' }]}
-      >
-        <Input type="number" placeholder="请输入" />
-      </Form.Item>
-      <Form.Item name="condition2" label="条件2">
-        <Select placeholder="请选择" allowClear>
-          {optionObj
-            ? optionObj.event_condition.map((item: any) => {
-                return (
-                  <Option value={parseInt(item.value)} key={item.value}>
-                    {item.key}
-                  </Option>
-                );
-              })
-            : null}
-        </Select>
-      </Form.Item>
-      <Form.Item name="threshold2" label="阀值2">
-        <Input type="number" placeholder="请输入" />
-      </Form.Item>
-      {/* <Form.Item
+          <Select placeholder="请选择" allowClear>
+            {optionObj
+              ? optionObj.event_type.map((item: any) => {
+                  return (
+                    <Option value={parseInt(item.value)} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="regionId"
+          label="区域位置"
+          rules={[{ required: true, message: '请选择区域位置' }]}
+        >
+          <Select placeholder="请选择" allowClear>
+            {optionObj
+              ? optionObj.regionList.map((item: any) => {
+                  return (
+                    <Option value={item.value} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="name"
+          label="仪表名称"
+          rules={[{ required: true, message: '请输入' }]}
+        >
+          <Input type={'text'} placeholder={'请输入名称'}></Input>
+        </Form.Item>
+        <Form.Item
+          name="equipmentType"
+          label="能源类型"
+          rules={[{ required: true, message: '请选择能源类型' }]}
+        >
+          <Select
+            placeholder="请选择"
+            allowClear
+            onChange={(value, option) => onChangeEnergy(option, optionObj)}
+          >
+            {optionObj
+              ? optionObj.energy_type.map((item: any) => {
+                  return (
+                    <Option value={item.value} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="energyParameter"
+          label="参数"
+          rules={[{ required: true, message: '请选择能源参数' }]}
+        >
+          <Select placeholder="请选择" allowClear>
+            {lianDongOption
+              ? lianDongOption.map((item: any) => {
+                  return (
+                    <Option value={parseInt(item.value)} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="condition1"
+          label="条件"
+          rules={[{ required: true, message: '请选择条件' }]}
+        >
+          <Select placeholder="请选择" allowClear>
+            {optionObj
+              ? optionObj.event_condition.map((item: any) => {
+                  return (
+                    <Option value={parseInt(item.value)} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="threshold1"
+          label="阀值"
+          rules={[{ required: true, message: '请输入阀值' }]}
+        >
+          <Input type="number" placeholder="请输入" />
+        </Form.Item>
+        <Form.Item name="condition2" label="条件2">
+          <Select placeholder="请选择" allowClear>
+            {optionObj
+              ? optionObj.event_condition.map((item: any) => {
+                  return (
+                    <Option value={parseInt(item.value)} key={item.value}>
+                      {item.key}
+                    </Option>
+                  );
+                })
+              : null}
+          </Select>
+        </Form.Item>
+        <Form.Item name="threshold2" label="阀值2">
+          <Input type="number" placeholder="请输入" />
+        </Form.Item>
+        {/* <Form.Item
         name="priority"
         label="报警优先级"
         rules={[{ required: true, message: '请选择报警优先级' }]}
@@ -299,25 +311,26 @@ export default () => {
           <Option value={3}>高</Option>
         </Select>
       </Form.Item> */}
-      <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
-        <Switch />
-      </Form.Item>
-      <Form.Item name="remark" label="备注">
-        <Input.TextArea
-          allowClear
-          maxLength={500}
-          autoSize={{ minRows: 3, maxRows: 6 }}
-          placeholder="请输入备注"
-        />
-      </Form.Item>
-      <FromButtonItem>
-        <Button htmlType="button" onClick={onCancel}>
-          取消
-        </Button>
-        <Button type="primary" htmlType="submit">
-          确认
-        </Button>
-      </FromButtonItem>
-    </Form>
+        <Form.Item name="isEnable" label="是否启用" valuePropName="checked">
+          <Switch />
+        </Form.Item>
+        <Form.Item name="remark" label="备注">
+          <Input.TextArea
+            allowClear
+            maxLength={500}
+            autoSize={{ minRows: 3, maxRows: 6 }}
+            placeholder="请输入备注"
+          />
+        </Form.Item>
+        <FromButtonItem>
+          <Button htmlType="button" onClick={onCancel}>
+            取消
+          </Button>
+          <Button type="primary" htmlType="submit">
+            确认
+          </Button>
+        </FromButtonItem>
+      </Form>
+    </CreateOrLookComp>
   );
 };
