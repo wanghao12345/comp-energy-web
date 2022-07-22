@@ -47,20 +47,15 @@ export const RateBodyLeftContainer = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   padding: 30px;
-  min-width: 350px;
+  overflow: auto;
+  h4 {
+    color: rgba(255, 255, 255);
+    font-size: 18px;
+  }
   .rate-item-box {
     width: 100%;
     height: 50%;
-    display: flex;
-    flex-direction: column;
-    h4 {
-      color: rgba(255, 255, 255);
-      font-size: 18px;
-    }
-    .rate-chart-box {
-      flex: 1;
-      height: 100%;
-    }
+    min-height: 280px;
   }
 `;
 

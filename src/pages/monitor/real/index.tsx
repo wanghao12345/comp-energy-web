@@ -988,6 +988,7 @@ const RealBodyOption = () => {
           dataSource={dataSource}
           columns={columns}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: 500, y: 500 }}
         />
       </div>
     </RealBodyContainer>

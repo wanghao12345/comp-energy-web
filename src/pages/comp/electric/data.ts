@@ -1,11 +1,15 @@
-export const columns = [
+export const columns: any = [
   {
     title: '时间',
     dataIndex: 'createDate',
+    fixed: 'left',
+    width: 160,
   },
   {
     title: '节点名称',
     dataIndex: 'regionId',
+    fixed: 'left',
+    width: 120,
   },
   {
     title: 'Ps',

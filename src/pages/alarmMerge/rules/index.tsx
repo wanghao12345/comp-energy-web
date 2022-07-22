@@ -182,8 +182,8 @@ export default () => {
         }}
         loading={loading}
         scroll={{
-          y: Math.min(window.screen.availHeight - 385 || 500),
-          x: Math.min(window.screen.availWidth - 250 || 1000),
+          y: Math.max(window.screen.availHeight - 385 || 600),
+          x: Math.max(window.screen.availWidth - 300 || 1000),
         }}
         onChange={onTableChange}
         rowKey="createDate"

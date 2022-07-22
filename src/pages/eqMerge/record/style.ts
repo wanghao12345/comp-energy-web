@@ -4,6 +4,7 @@ export const Page = styled.div`
     display: flex;
     justify-content: space-between;
     padding-bottom: 24px;
+    overflow: auto;
   }
   .filterBox {
     display: flex;

@@ -433,8 +433,8 @@ export default () => {
           total: params.total,
         }}
         scroll={{
-          y: window.screen.availHeight - 375,
-          x: 800,
+          y: Math.max(window.screen.availHeight - 385 || 600),
+          x: Math.max(window.screen.availWidth - 300 || 1200),
         }}
       />
     </Page>

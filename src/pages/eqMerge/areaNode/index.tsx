@@ -18,6 +18,8 @@ export default () => {
     {
       title: '节点名称',
       dataIndex: 'name',
+      fixed: 'left',
+      width: 200,
     },
     {
       title: '创建人',
@@ -37,6 +39,7 @@ export default () => {
     {
       title: '操作',
       width: 240,
+      fix: 'right',
       render: (text: any, record: any, index: any) => {
         return (
           <Space size="middle">
@@ -161,8 +164,8 @@ export default () => {
         columns={columns}
         dataSource={tableData}
         scroll={{
-          y: Math.min(window.screen.availHeight - 375, 500),
-          x: 500,
+          y: Math.max(window.screen.availHeight - 375, 500),
+          x: 700,
         }}
         onChange={onTableChange}
         loading={loading}

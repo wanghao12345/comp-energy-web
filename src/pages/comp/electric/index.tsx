@@ -11,6 +11,7 @@ import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
 import { columns, columnsOther } from './data';
+import { EnergyType } from '@/commonInterface';
 const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
@@ -140,7 +141,10 @@ const RealBodyOption = () => {
             defaultPageSize: pagination.size,
             total: pagination.total,
           }}
-          scroll={{ y: Math.min(screen.height - 440 || 500), x: 1000 }}
+          scroll={{
+            y: Math.max(screen.availHeight - 460, 500),
+            x: templateProps.energyType === EnergyType.Electric ? 1500 : 700,
+          }}
         />
       </div>
     </RealBodyContainer>

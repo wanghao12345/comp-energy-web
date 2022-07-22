@@ -217,7 +217,6 @@ const RatePage = () => {
           type: 'bar',
           stack: 'total',
           smooth: true,
-          barWidth: 40,
           itemStyle: {
             color: colors[0],
           },
@@ -439,16 +438,16 @@ const RatePage = () => {
       </RateOptionsContainer>
       <RateBodyContainer>
         <RateBodyLeftContainer>
+          <h4>用电量</h4>
           <div className="rate-item-box">
-            <h4>用电量</h4>
             <MyChartBox
               id="rate-chart-box1"
               options={pieChartData.electricity}
               loading={form.dPieLoading}
             ></MyChartBox>
           </div>
+          <h4>用电金额</h4>
           <div className="rate-item-box">
-            <h4>用电金额</h4>
             <MyChartBox
               id="rate-chart-box2"
               options={pieChartData.money}
@@ -473,7 +472,7 @@ const RatePage = () => {
               size="small"
               className="table"
               pagination={{ pageSize: 10 }}
-              scroll={{ x: 1400 }}
+              scroll={{ x: 1400, y: 500 }}
             >
               <Column
                 title="时间"

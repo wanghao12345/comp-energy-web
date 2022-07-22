@@ -61,7 +61,11 @@ const RealBodyOption = () => {
     }).then((res: any) => {
       setLoading(false);
       if (res?.meta?.code === 200) {
-        res?.data?.list.map((item: any) => {
+        const list = res?.data?.list;
+        if (!list.length) {
+          setDataSource([]);
+        }
+        list.map((item: any) => {
           item.regionId = getRegionName(parseInt(item.regionId || '1'));
           item.activeElectricalEnergyCurrent = formatNumer(
             item.activeElectricalEnergyCurrent,
@@ -69,19 +73,26 @@ const RealBodyOption = () => {
           item.activeElectricalEnergy = formatNumer(
             item.activeElectricalEnergy,
           );
-          item.dstart =
-            item.activeElectricalEnergyCurrent - item.activeElectricalEnergy;
-          item.start = item.flowCurrent - item.flow;
+          item.flowCurrent = formatNumer(item.flowCurrent);
+          item.flow = formatNumer(item.flow);
+          item.dstart = formatNumer(
+            item.activeElectricalEnergyCurrent - item.activeElectricalEnergy,
+          );
+          item.start = formatNumer(item.flowCurrent - item.flow);
         });
         if (templateProps.energyType === EnergyType.Electric) {
           const tcolumns = [
             {
               title: '抄表时间',
               dataIndex: 'createDate',
+              fixed: 'left',
+              width: 160,
             },
             {
               title: '节点名称',
               dataIndex: 'regionId',
+              fixed: 'left',
+              width: 120,
             },
             {
               title: '起始抄表值',
@@ -102,10 +113,14 @@ const RealBodyOption = () => {
             {
               title: '抄表时间',
               dataIndex: 'createDate',
+              fixed: 'left',
+              width: 160,
             },
             {
               title: '节点名称',
               dataIndex: 'regionId',
+              fixed: 'left',
+              width: 120,
             },
             {
               title: '起始抄表值',
@@ -123,7 +138,8 @@ const RealBodyOption = () => {
           setColumns(tcolumns);
         }
 
-        setDataSource(res?.data?.list);
+        setDataSource([...list]);
+
         setPagintion({
           ...pagination,
           total: res?.data?.count,
@@ -195,7 +211,10 @@ const RealBodyOption = () => {
             defaultPageSize: pagination.size,
             total: pagination.total,
           }}
-          scroll={{ y: Math.min(screen.height - 460, 500) }}
+          scroll={{
+            y: Math.max(screen.availHeight - 460, 500),
+            x: 700,
+          }}
         />
       </div>
     </RealBodyContainer>
