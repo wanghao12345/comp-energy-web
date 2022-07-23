@@ -82,13 +82,13 @@ const RatePage = () => {
         mySeries.feng = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.fengCost = formatNumer(data[item]?.electricCost || 0);
       }
-      if (item === MeterParameters.ping) {
-        mySeries.ping = formatNumer(data[item]?.activeElectricalEnergy || 0);
-        mySeries.pingCost = formatNumer(data[item]?.electricCost || 0);
-      }
       if (item === MeterParameters.gu) {
         mySeries.gu = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.guCost = formatNumer(data[item]?.electricCost || 0);
+      }
+      if (item === MeterParameters.ping) {
+        mySeries.ping = formatNumer(data[item]?.activeElectricalEnergy || 0);
+        mySeries.pingCost = formatNumer(data[item]?.electricCost || 0);
       }
     });
 
@@ -108,14 +108,14 @@ const RatePage = () => {
         },
       },
       {
-        value: mySeries.ping,
+        value: mySeries.gu,
         name: '谷',
         itemStyle: {
           color: colors[2],
         },
       },
       {
-        value: mySeries.gu,
+        value: mySeries.ping,
         name: '平',
         itemStyle: {
           color: colors[3],
@@ -139,14 +139,14 @@ const RatePage = () => {
         },
       },
       {
-        value: mySeries.pingCost,
+        value: mySeries.guCost,
         name: '谷',
         itemStyle: {
           color: colors[2],
         },
       },
       {
-        value: mySeries.guCost,
+        value: mySeries.pingCost,
         name: '平',
         itemStyle: {
           color: colors[3],
