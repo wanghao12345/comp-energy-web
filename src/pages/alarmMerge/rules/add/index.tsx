@@ -120,17 +120,14 @@ export default () => {
 
   const formatSelectOption = (data: []) => {
     data.map((item: any) => {
+      const key = item?.name;
+      const value = item?.id;
+      regionList.current.push({
+        key,
+        value,
+      });
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
-        regionList.current.push({
-          key: item?.name,
-          value: item?.id,
-        });
-      } else {
-        regionList.current.push({
-          key: item?.name,
-          value: item?.id,
-        });
       }
     });
   };

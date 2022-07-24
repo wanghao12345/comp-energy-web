@@ -93,7 +93,16 @@ const RealBodyOption = () => {
 
     if (currentTab === ITabStatus.monthOnmonth) {
       const { queryStartDate } = formatTime(form.queryStartDate, form.dateType);
-      const qsd = queryStartDate.split(' ')[0];
+      let qsd = queryStartDate.split(' ')[0];
+      if (form.dateType === TimeType.Week) {
+        const lastWeek = form.cateGory.week() - 1;
+        const newDate = moment().week(lastWeek).startOf('week').toDate();
+        const { queryStartDate, queryEndDate } = formatTime(
+          newDate,
+          form.dateType,
+        );
+        qsd = queryStartDate.split(' ')[0];
+      }
       selectTrendAnalysisQOQByRegionIds({
         energyType: templateProps.energyType,
         dateType: form.dateType,
@@ -119,8 +128,19 @@ const RealBodyOption = () => {
         form.queryStartDate,
         form.dateType,
       );
-      const qsd = queryStartDate.split(' ')[0];
-      const qed = queryEndDate.split(' ')[0];
+      let qsd = queryStartDate.split(' ')[0];
+      let qed = queryEndDate.split(' ')[0];
+
+      if (form.dateType === TimeType.Week) {
+        const lastWeek = form.cateGory.week() - 1;
+        const newDate = moment().week(lastWeek).startOf('week').toDate();
+        const { queryStartDate, queryEndDate } = formatTime(
+          newDate,
+          form.dateType,
+        );
+        qsd = queryStartDate.split(' ')[0];
+        qed = queryEndDate.split(' ')[0];
+      }
 
       let lastqsd = queryStartDate.split(' ')[0];
       let lastqed = queryEndDate.split(' ')[0];
@@ -136,7 +156,7 @@ const RealBodyOption = () => {
       }
 
       if (form.dateType === TimeType.Week) {
-        const lastWeek = form.cateGory.week() - 1;
+        const lastWeek = form.cateGory.week() - 2;
         const newDate = moment().week(lastWeek).startOf('week').toDate();
         const { queryStartDate, queryEndDate } = formatTime(
           newDate,
@@ -312,6 +332,7 @@ const RealBodyOption = () => {
           {
             name: '本期能耗',
             type: 'bar',
+            barWidth: seriesData[0].length > 8 ? undefined : 50,
             data: seriesData[0],
             label: { formatter: '{c}  {name|{a}}' },
             itemStyle: {
@@ -323,6 +344,7 @@ const RealBodyOption = () => {
             name: '同比能耗',
             type: 'bar',
             label: { formatter: '{c}  {name|{a}}' },
+            barWidth: seriesData[0].length > 8 ? undefined : 50,
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',
@@ -383,6 +405,7 @@ const RealBodyOption = () => {
           {
             name: legends[0],
             type: 'bar',
+            barWidth: seriesData[0].length > 8 ? undefined : 50,
             data: seriesData[0],
             itemStyle: {
               color: '#72D5DF',
@@ -392,6 +415,7 @@ const RealBodyOption = () => {
           {
             name: legends[1],
             type: 'bar',
+            barWidth: seriesData[0].length > 8 ? undefined : 50,
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',

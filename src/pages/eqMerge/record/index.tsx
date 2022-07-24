@@ -155,17 +155,12 @@ export default () => {
 
   const formatSelectOption = (data: []) => {
     data.map((item: any) => {
+      selectNodeData.options.push({
+        label: item?.name,
+        value: parseInt(item?.id || '1'),
+      });
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
-        selectNodeData.options.push({
-          label: item?.name,
-          value: parseInt(item?.id || '1'),
-        });
-      } else {
-        selectNodeData.options.push({
-          label: item?.name,
-          value: parseInt(item?.id || '1'),
-        });
       }
     });
   };

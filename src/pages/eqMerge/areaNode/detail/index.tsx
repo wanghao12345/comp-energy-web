@@ -47,17 +47,12 @@ export default () => {
 
   const formatSelectOption = (data: []) => {
     data.map((item: any) => {
+      regionList.push({
+        key: item?.name,
+        value: item?.id,
+      });
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
-        regionList.push({
-          key: item?.name,
-          value: item?.id,
-        });
-      } else {
-        regionList.push({
-          key: item?.name,
-          value: item?.id,
-        });
       }
     });
   };

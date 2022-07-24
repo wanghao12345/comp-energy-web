@@ -166,13 +166,12 @@ export default () => {
 
   const formatSelectOption = (data: []) => {
     data.map((item: any) => {
+      selectData.options.push({
+        label: item?.name,
+        value: parseInt(item?.id || '1'),
+      });
       if (item?.children && item?.children.length) {
         formatSelectOption(item?.children);
-      } else {
-        selectData.options.push({
-          label: item?.name,
-          value: parseInt(item?.id || '1'),
-        });
       }
     });
   };

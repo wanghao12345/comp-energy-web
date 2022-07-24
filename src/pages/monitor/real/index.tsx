@@ -1,5 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import { Select, Input, Tabs, DatePicker, Button, Table, Form } from 'antd';
+import {
+  Select,
+  Input,
+  Tabs,
+  DatePicker,
+  Button,
+  Table,
+  Form,
+  TablePaginationConfig,
+} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { RealBodyContainer } from './style';
 import {
@@ -38,7 +47,20 @@ const RealBodyOption = () => {
   const [dataSource, setDataSource] = useState<any>([]);
   //表头
   const [columns, setColumns] = useState<any>([]);
+  // 表页
+  const [pagination, setPagination] = useState({
+    current: 1,
+    size: 10,
+    total: 0,
+  });
 
+  const onPaginationChange = (pagin: TablePaginationConfig) => {
+    setPagination({
+      current: pagin.current || 1,
+      size: pagin.pageSize || 10,
+      total: pagin.total || 1,
+    });
+  };
   const onTabChange = (key: string) => {
     const tab = key as tabStatus;
     setTab(tab);
@@ -811,6 +833,10 @@ const RealBodyOption = () => {
     setColumns([...columns]);
     setTimeout(() => {
       setDataSource([...columnDataSource]);
+      setPagination({
+        ...pagination,
+        size: columnDataSource.length,
+      });
     }, 200);
     if (!data?.list?.length) {
       setChartData(undefined);
@@ -987,8 +1013,10 @@ const RealBodyOption = () => {
           key={'key'}
           dataSource={dataSource}
           columns={columns}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 500, y: 500 }}
+          // pagination={{ pageSize: pagination.size}}
+          pagination={false}
+          scroll={{ x: 500, y: 600 }}
+          onChange={onPaginationChange}
         />
       </div>
     </RealBodyContainer>

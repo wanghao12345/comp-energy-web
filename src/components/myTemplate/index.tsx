@@ -80,17 +80,14 @@ const MyTemplate: FC<IProps> = memo(({ children, isShowCheckBox }) => {
 
   const formatRegionList = (data: any) => {
     data.map((item: any) => {
+      const name = item?.name;
+      const id = parseInt(item?.id || '1');
+      regionList.current.push({
+        name,
+        id,
+      });
       if (item?.children && item?.children.length) {
         formatRegionList(item?.children);
-        regionList.current.push({
-          name: item?.name,
-          id: parseInt(item?.id || '1'),
-        });
-      } else {
-        regionList.current.push({
-          name: item?.name,
-          id: parseInt(item?.id || '1'),
-        });
       }
     });
   };
@@ -171,7 +168,7 @@ export const RealOption: FC<RealOptionProps> = memo(
       if (!value) return;
       allKeys.obj.map((item: any) => {
         if (item.title.includes(value)) {
-          setExpandedKeys([item.key].concat(expandedKeys));
+          setExpandedKeys([item.key].concat([...expandedKeys]));
         }
       });
     };
@@ -197,8 +194,9 @@ export const RealOption: FC<RealOptionProps> = memo(
     const onCheckboxShift = (all: boolean) => {
       setSelectAll(all);
       if (all) {
-        setCheckedKeys(allKeys.arr);
-        setExpandedKeys(allKeys.arr);
+        setCheckedKeys([...allKeys.arr]);
+        setExpandedKeys([...allKeys.arr]);
+        onSelectAreaChange([...allKeys.arr], 'all');
       } else {
         // setCheckedKeys([]);
       }
