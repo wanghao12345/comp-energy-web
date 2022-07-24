@@ -207,12 +207,12 @@ export const getQuar = (date: Date) => {
     quarEnd = `${y}-06-${d} 23:59:59`;
   }
   if (m > 6 && m <= 9) {
-    quarStart = `${y}-06-01 00:00:00`;
+    quarStart = `${y}-07-01 00:00:00`;
     d = new Date(y, 9, 0).getDate();
     quarEnd = `${y}-09-${d} 23:59:59`;
   }
   if (m > 9) {
-    quarStart = `${y}-09-01 00:00:00`;
+    quarStart = `${y}-010-01 00:00:00`;
     d = new Date(y, 12, 0).getDate();
     quarEnd = `${y}-12-${d} 23:59:59`;
   }

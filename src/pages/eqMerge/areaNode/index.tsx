@@ -13,8 +13,9 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
 import { history, Link } from 'umi';
 import { getRegionList, getRegionTreeList } from '@/apis';
+import { updateRegionById } from '@/apis/areaMerge';
 export default () => {
-  const columns = [
+  const columns: any = [
     {
       title: '节点名称',
       dataIndex: 'name',
@@ -23,17 +24,19 @@ export default () => {
     },
     {
       title: '创建人',
-      dataIndex: 'address',
+      dataIndex: 'creatorId',
     },
     {
       title: '创建时间',
-      dataIndex: 'updateDate',
+      dataIndex: 'createDate',
     },
     {
       title: '是否启用',
       dataIndex: 'isEnable',
-      render: (isEnable: any) => {
-        return <Switch checked={isEnable} />;
+      render: (isEnable: any, record: any) => {
+        return (
+          <Switch checked={isEnable} onChange={() => shiftIsEnable(record)} />
+        );
       },
     },
     {
@@ -74,6 +77,11 @@ export default () => {
       current: pconfig.current || 1,
     });
     getSearchNode(pconfig.current);
+  };
+
+  const shiftIsEnable = async (record: any) => {
+    // updateRegionById
+    console.log(record);
   };
 
   const getAreaNodes = () => {

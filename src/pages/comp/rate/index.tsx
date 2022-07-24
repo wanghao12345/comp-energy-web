@@ -63,6 +63,8 @@ const RatePage = () => {
 
   const formatResponseDataTotal = (data: any) => {
     const keys = Object.keys(data);
+    const seriesdata1: any = {};
+    const seriesdata2: any = {};
     const mySeries = {
       jian: 0,
       feng: 0,
@@ -77,82 +79,66 @@ const RatePage = () => {
       if (item === MeterParameters.jian) {
         mySeries.jian = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.jianCost = formatNumer(data[item]?.electricCost || 0);
+        const cdata = {
+          value: mySeries.jian,
+          name: '尖',
+          itemStyle: {
+            color: colors[0],
+          },
+        };
+        seriesdata1['1'] = cdata;
+        seriesdata2['1'] = { ...cdata, value: mySeries.jianCost };
       }
       if (item === MeterParameters.feng) {
         mySeries.feng = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.fengCost = formatNumer(data[item]?.electricCost || 0);
+        const cdata = {
+          value: mySeries.feng,
+          name: '峰',
+          itemStyle: {
+            color: colors[1],
+          },
+        };
+        seriesdata1['2'] = cdata;
+        seriesdata2['2'] = { ...cdata, value: mySeries.fengCost };
       }
       if (item === MeterParameters.gu) {
         mySeries.gu = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.guCost = formatNumer(data[item]?.electricCost || 0);
+        const cdata = {
+          value: mySeries.gu,
+          name: '谷',
+          itemStyle: {
+            color: colors[2],
+          },
+        };
+        seriesdata1['3'] = cdata;
+        seriesdata2['3'] = { ...cdata, value: mySeries.guCost };
       }
       if (item === MeterParameters.ping) {
         mySeries.ping = formatNumer(data[item]?.activeElectricalEnergy || 0);
         mySeries.pingCost = formatNumer(data[item]?.electricCost || 0);
+        const cdata = {
+          value: mySeries.ping,
+          name: '平',
+          itemStyle: {
+            color: colors[3],
+          },
+        };
+        seriesdata1['4'] = cdata;
+        seriesdata2['4'] = { ...cdata, value: mySeries.pingCost };
       }
     });
+    const ckeys = Object.keys(seriesdata1);
+    const circleChartData1: any = [];
+    const circleChartData2: any = [];
 
-    circleChart.series[0].data = [
-      {
-        value: mySeries.jian,
-        name: '尖',
-        itemStyle: {
-          color: colors[0],
-        },
-      },
-      {
-        value: mySeries.feng,
-        name: '峰',
-        itemStyle: {
-          color: colors[1],
-        },
-      },
-      {
-        value: mySeries.gu,
-        name: '谷',
-        itemStyle: {
-          color: colors[2],
-        },
-      },
-      {
-        value: mySeries.ping,
-        name: '平',
-        itemStyle: {
-          color: colors[3],
-        },
-      },
-    ];
-
-    circleChart1.series[0].data = [
-      {
-        value: mySeries.jianCost,
-        name: '尖',
-        itemStyle: {
-          color: colors[0],
-        },
-      },
-      {
-        value: mySeries.fengCost,
-        name: '峰',
-        itemStyle: {
-          color: colors[1],
-        },
-      },
-      {
-        value: mySeries.guCost,
-        name: '谷',
-        itemStyle: {
-          color: colors[2],
-        },
-      },
-      {
-        value: mySeries.pingCost,
-        name: '平',
-        itemStyle: {
-          color: colors[3],
-        },
-      },
-    ];
+    ckeys.map((item) => {
+      circleChartData1.push(seriesdata1[item]);
+      circleChartData2.push(seriesdata2[item]);
+    });
+    circleChart.series[0].data = circleChartData1;
+    circleChart1.series[0].data = circleChartData2;
 
     setPieChartData({
       electricity: Object.assign({}, circleChart),
@@ -217,6 +203,7 @@ const RatePage = () => {
           type: 'bar',
           stack: 'total',
           smooth: true,
+          barWidth: undefined,
           itemStyle: {
             color: colors[0],
           },
@@ -230,6 +217,7 @@ const RatePage = () => {
           type: 'bar',
           stack: 'total',
           smooth: true,
+          barWidth: undefined,
           itemStyle: {
             color: colors[1],
           },
@@ -243,6 +231,7 @@ const RatePage = () => {
           type: 'bar',
           stack: 'total',
           smooth: true,
+          barWidth: undefined,
           itemStyle: {
             color: colors[2],
           },
@@ -256,6 +245,7 @@ const RatePage = () => {
           type: 'bar',
           stack: 'total',
           smooth: true,
+          barWidth: undefined,
           itemStyle: {
             color: colors[3],
           },
@@ -269,8 +259,21 @@ const RatePage = () => {
         barStaticChartData.xAxis.name = '月';
       }
     });
-    const cSeries = [series['1'], series['2'], series['3'], series['4']];
     const newXaix = [...new Set(xAxisData)];
+    const ckeys = Object.keys(series);
+    const cSeries: any = [];
+
+    ckeys.map((item) => {
+      let newSery = series[item];
+      if (series[item].data.length < 10) {
+        newSery = { ...series[item], barWidth: 30 };
+      }
+      if (series[item].data.length < 5) {
+        newSery = { ...series[item], barWidth: 50 };
+      }
+      cSeries.push(newSery);
+    });
+
     barStaticChartData.series = cSeries;
     barStaticChartData.xAxis.data = newXaix;
     setBarchartData(Object.assign({}, barStaticChartData));

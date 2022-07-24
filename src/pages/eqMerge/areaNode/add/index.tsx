@@ -17,19 +17,7 @@ export default () => {
   });
   const [loading, setLoading] = useState(true);
   const formRef = useRef<any>();
-  useEffect(() => {
-    const id = (history.location?.query?.parentId as any) || 1;
-    if (id) {
-      findById({ id }).then((res) => {
-        setParentData((data) => {
-          data.parentId = res.data.id;
-          data.parentName = res.data.name;
-        });
-        formRef?.current?.resetFields();
-        setLoading(false);
-      });
-    }
-  }, []);
+
   const onFinish = async (values: any) => {
     const res = await addTree({
       ...values,
@@ -44,6 +32,19 @@ export default () => {
   const onCancel = () => {
     history.go(-1);
   };
+  useEffect(() => {
+    const id = (history.location?.query?.parentId as any) || 1;
+    if (id) {
+      findById({ id }).then((res) => {
+        setParentData((data) => {
+          data.parentId = res.data.id;
+          data.parentName = res.data.name;
+        });
+        formRef?.current?.resetFields();
+        setLoading(false);
+      });
+    }
+  }, []);
   return (
     <CreateOrLookComp>
       {loading ? <PageLoading></PageLoading> : null}

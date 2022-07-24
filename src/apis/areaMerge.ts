@@ -19,6 +19,7 @@ export interface updateRegionProps {
   name: string;
   parentId: number;
   isEnable: number;
+  remark?: string;
 }
 
 // 详情
