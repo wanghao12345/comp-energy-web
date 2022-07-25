@@ -92,17 +92,7 @@ const RealBodyOption = () => {
     }
 
     if (currentTab === ITabStatus.monthOnmonth) {
-      const { queryStartDate } = formatTime(form.queryStartDate, form.dateType);
-      let qsd = queryStartDate.split(' ')[0];
-      if (form.dateType === TimeType.Week) {
-        const lastWeek = form.cateGory.week() - 1;
-        const newDate = moment().week(lastWeek).startOf('week').toDate();
-        const { queryStartDate, queryEndDate } = formatTime(
-          newDate,
-          form.dateType,
-        );
-        qsd = queryStartDate.split(' ')[0];
-      }
+      const qsd = form.cateGory.format('YYYY-MM-DD');
       selectTrendAnalysisQOQByRegionIds({
         energyType: templateProps.energyType,
         dateType: form.dateType,
@@ -122,7 +112,7 @@ const RealBodyOption = () => {
         }
       });
     }
-
+    //分析接口只需要传入开始日期，后端计算开始和结束日期，相当于queryEndDate没用，随意传
     if (currentTab === ITabStatus.normal) {
       const { queryStartDate, queryEndDate } = formatTime(
         form.queryStartDate,
@@ -130,17 +120,6 @@ const RealBodyOption = () => {
       );
       let qsd = queryStartDate.split(' ')[0];
       let qed = queryEndDate.split(' ')[0];
-
-      if (form.dateType === TimeType.Week) {
-        const lastWeek = form.cateGory.week() - 1;
-        const newDate = moment().week(lastWeek).startOf('week').toDate();
-        const { queryStartDate, queryEndDate } = formatTime(
-          newDate,
-          form.dateType,
-        );
-        qsd = queryStartDate.split(' ')[0];
-        qed = queryEndDate.split(' ')[0];
-      }
 
       let lastqsd = queryStartDate.split(' ')[0];
       let lastqed = queryEndDate.split(' ')[0];
@@ -156,14 +135,10 @@ const RealBodyOption = () => {
       }
 
       if (form.dateType === TimeType.Week) {
-        const lastWeek = form.cateGory.week() - 2;
-        const newDate = moment().week(lastWeek).startOf('week').toDate();
-        const { queryStartDate, queryEndDate } = formatTime(
-          newDate,
-          form.dateType,
+        lastqsd = formatDate(
+          new Date(form.queryStartDate.getTime() - 86400000 * 7),
         );
-        lastqsd = queryStartDate.split(' ')[0];
-        lastqed = queryEndDate.split(' ')[0];
+        lastqed = lastqsd;
       }
       if (form.dateType === TimeType.Month) {
         const lastMonth = form.cateGory.month() - 1;
@@ -332,7 +307,7 @@ const RealBodyOption = () => {
           {
             name: '本期能耗',
             type: 'bar',
-            barWidth: seriesData[0].length > 8 ? undefined : 50,
+            barWidth: seriesData[0].length > 3 ? undefined : 50,
             data: seriesData[0],
             label: { formatter: '{c}  {name|{a}}' },
             itemStyle: {
@@ -344,7 +319,7 @@ const RealBodyOption = () => {
             name: '同比能耗',
             type: 'bar',
             label: { formatter: '{c}  {name|{a}}' },
-            barWidth: seriesData[0].length > 8 ? undefined : 50,
+            barWidth: seriesData[0].length > 3 ? undefined : 50,
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',
@@ -405,7 +380,7 @@ const RealBodyOption = () => {
           {
             name: legends[0],
             type: 'bar',
-            barWidth: seriesData[0].length > 8 ? undefined : 50,
+            barWidth: seriesData[0].length > 3 ? undefined : 50,
             data: seriesData[0],
             itemStyle: {
               color: '#72D5DF',
@@ -415,7 +390,7 @@ const RealBodyOption = () => {
           {
             name: legends[1],
             type: 'bar',
-            barWidth: seriesData[0].length > 8 ? undefined : 50,
+            barWidth: seriesData[0].length > 3 ? undefined : 50,
             data: seriesData[1],
             itemStyle: {
               color: '#3B83EE',
