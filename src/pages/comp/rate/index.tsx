@@ -28,7 +28,7 @@ const { Column, ColumnGroup } = Table;
 const RatePage = () => {
   const [form, setForm] = useImmer({
     dateType: TimeType.Week,
-    queryStartDate: new Date(),
+    queryStartDate: moment(),
     dPieLoading: 1,
     mPieLoading: 1,
     dBarLoading: 1,
@@ -53,7 +53,7 @@ const RatePage = () => {
   const handleQueryStartDateChange = (val: any) => {
     const m = val as Moment;
     setForm((p) => {
-      p.queryStartDate = m.toDate();
+      p.queryStartDate = m;
     });
   };
 
@@ -335,13 +335,11 @@ const RatePage = () => {
       p.dPieLoading = 1;
       p.mPieLoading = 1;
     });
-    const { queryStartDate, queryEndDate } = formatTime(
-      form.queryStartDate,
-      form.dateType,
-    );
+    //后端计算时间范围，只要初始时间是对的就行
+    const queryStartDate = form.queryStartDate.format('YYYY-MM-DD');
     electricMultiRate({
-      queryStartDate: queryStartDate.split(' ')[0],
-      queryEndDate: queryEndDate.split(' ')[0],
+      queryStartDate: queryStartDate,
+      queryEndDate: queryStartDate,
       dateType: form.dateType,
       regionIdList: reginIdList || [selectData.value],
     }).then((res: any) => {
@@ -390,7 +388,7 @@ const RatePage = () => {
             value={selectData.value}
             onChange={onSelectChange}
             style={{
-              width: '280px',
+              width: '220px',
             }}
           >
             {selectData.options.map((item: any, index: number) => {
