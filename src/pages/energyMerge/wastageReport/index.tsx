@@ -118,6 +118,7 @@ export default () => {
         columns={columns}
         dataSource={tableData}
         loading={loading}
+        size="large"
         scroll={{ y: Math.max(window.screen.height - 390, 500), x: 500 }}
       />
     </Page>

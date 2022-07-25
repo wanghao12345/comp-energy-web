@@ -137,9 +137,7 @@ const RealBodyOption = () => {
           ];
           setColumns(tcolumns);
         }
-
         setDataSource([...list]);
-
         setPagintion({
           ...pagination,
           total: res?.data?.count,
@@ -162,12 +160,18 @@ const RealBodyOption = () => {
     setPagintion({
       ...pagination,
       current: pageConfig.current || 1,
+      size: pageConfig.pageSize || 15,
     });
   };
 
   useEffect(() => {
     getTableSourceData();
-  }, [templateProps.area, templateProps.energyType, pagination.current]);
+  }, [
+    templateProps.area,
+    templateProps.energyType,
+    pagination.current,
+    pagination.size,
+  ]);
   return (
     <RealBodyContainer>
       <div className="options-box">
@@ -199,7 +203,7 @@ const RealBodyOption = () => {
       </div>
       <div className="table-box">
         <Table
-          size="middle"
+          size="large"
           dataSource={dataSource}
           columns={columns}
           rowKey="activePower"
@@ -212,7 +216,7 @@ const RealBodyOption = () => {
             total: pagination.total,
           }}
           scroll={{
-            y: Math.max(screen.availHeight - 460, 500),
+            y: Math.max(screen.availHeight - 390, 500),
             x: 700,
           }}
         />

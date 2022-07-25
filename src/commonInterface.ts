@@ -1,10 +1,10 @@
 export enum EnergyType {
   Electric = 1,
   Water = 2,
-  Steam = 6,
-  NaturalGas = 5,
-  Nitrogen = 4,
   Air = 3,
+  Nitrogen = 4,
+  NaturalGas = 5,
+  Steam = 6,
 }
 
 export enum TimeType {
@@ -32,10 +32,10 @@ export interface ITypeList {
 export const EnergyTypeList: ITypeList[] = [
   { name: '电', value: EnergyType.Electric, unit: 'kW.h' },
   { name: '水', value: EnergyType.Water, unit: 't' },
-  { name: '蒸汽', value: EnergyType.Steam, unit: 't' },
-  { name: '天然气', value: EnergyType.NaturalGas, unit: 'Nm3' },
-  { name: '氮气', value: EnergyType.Nitrogen, unit: 'Nm3' },
   { name: '空气', value: EnergyType.Air, unit: 'Nm3' },
+  { name: '氮气', value: EnergyType.Nitrogen, unit: 'Nm3' },
+  { name: '天然气', value: EnergyType.NaturalGas, unit: 'Nm3' },
+  { name: '蒸汽', value: EnergyType.Steam, unit: 't' },
 ];
 
 export const dayTypeList = [

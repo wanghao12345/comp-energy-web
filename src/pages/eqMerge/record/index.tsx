@@ -422,6 +422,7 @@ export default () => {
         dataSource={tableData}
         onChange={paginationChange}
         loading={loading}
+        size="large"
         pagination={{
           pageSize: params.size,
           current: params.current,

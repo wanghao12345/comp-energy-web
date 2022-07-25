@@ -158,7 +158,7 @@ const RealBodyOption = () => {
       </div>
       <div className="tabWrapper">
         <Table
-          size="middle"
+          size="large"
           rowKey="id"
           key="id"
           pagination={false}

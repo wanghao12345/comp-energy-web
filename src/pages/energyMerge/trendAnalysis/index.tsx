@@ -563,14 +563,24 @@ const RealBodyOption = () => {
       allData.data.map((item: any, index: number) => {
         const y = formatNumer(item.y || 0, 3);
         const uppery = formatNumer(item.upperY || 0, 3);
+        let time = item.x;
+        if (
+          form.dateType === TimeType.Week ||
+          form.dateType === TimeType.Month
+        ) {
+          const timeArr = time.split('-');
+          if (timeArr[1] && timeArr[2]) {
+            time = timeArr[1] + '-' + timeArr[2];
+          }
+        }
         column = {
           Key: index,
-          A: item.x,
+          A: time,
           B: name,
           C: EnergyTypeList[templateProps.energyType - 1].name,
           D: y,
         };
-        xAxisData.push(item.x);
+        xAxisData.push(time);
         seriesData[0].push(y);
         seriesData[1].push(uppery);
         columns.push(column);
@@ -649,9 +659,9 @@ const RealBodyOption = () => {
       </div>
       <div className="table-box">
         <Table
-          size="middle"
+          size="large"
           dataSource={columnDataSource}
-          pagination={{ pageSize: 10 }}
+          pagination={false}
           columns={columns}
           rowKey="Key"
           key="Key"

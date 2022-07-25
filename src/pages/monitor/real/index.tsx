@@ -1008,7 +1008,7 @@ const RealBodyOption = () => {
       ) : null}
       <div className="table-box">
         <Table
-          size="small"
+          size="large"
           rowKey={'key'}
           key={'key'}
           dataSource={dataSource}

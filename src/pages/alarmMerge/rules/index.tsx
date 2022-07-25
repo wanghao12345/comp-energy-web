@@ -153,16 +153,18 @@ export default () => {
       setLoading(false);
       if (res?.meta?.code === 200) {
         setDataSource(res?.data?.list);
-        setPagination({
-          ...pagination,
-          total: res?.data?.count,
-        });
+        if (!pagination.total) {
+          setPagination({
+            ...pagination,
+            total: res?.data?.count,
+          });
+        }
       }
     });
   };
   useEffect(() => {
     getTableSource();
-  }, [pagination.current]);
+  }, [pagination.current, pagination.size]);
   return (
     <RulesPage>
       <div className="headerBox">
@@ -173,6 +175,8 @@ export default () => {
         </Link>
       </div>
       <Table
+        rowKey="createDate"
+        key="createDate"
         columns={columns}
         dataSource={dataSource}
         pagination={{
@@ -180,14 +184,13 @@ export default () => {
           total: pagination.total,
           current: pagination.current,
         }}
+        size="large"
         loading={loading}
         scroll={{
           y: Math.max(window.screen.availHeight - 385 || 600),
           x: Math.max(window.screen.availWidth - 300 || 1000),
         }}
         onChange={onTableChange}
-        rowKey="createDate"
-        key="createDate"
       />
     </RulesPage>
   );

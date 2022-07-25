@@ -473,9 +473,9 @@ const RatePage = () => {
               dataSource={dataSource}
               rowKey="key"
               key="key"
-              size="small"
+              size="large"
               className="table"
-              pagination={{ pageSize: 10 }}
+              pagination={false}
               scroll={{ x: 1400, y: 500 }}
             >
               <Column

@@ -97,6 +97,8 @@ export default () => {
             EnergyTypeList[form.energyType - 1].name;
           barCartDataOptions.yAxis.name =
             EnergyTypeList[form.energyType - 1].unit;
+          barCartDataOptions.series[0].barWidth =
+            seriesData.length > 5 ? (undefined as any) : 40;
           lineCartDataOptions.xAxis.data = xAxisData;
           lineCartDataOptions.series[0].data = seriesData;
           lineCartDataOptions.series[0].name =

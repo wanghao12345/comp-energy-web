@@ -126,6 +126,10 @@ export const getColumns = (type: string, unit: string) => {
   return column;
 };
 export const barCartDataOptions = {
+  grid: {
+    left: 10,
+    right: 20,
+  },
   legend: {
     textStyle: {
       color: '#fff',

@@ -65,9 +65,10 @@ export default () => {
   const [name, setName] = useState('');
   const [tableData, setTableData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
+  const [showPagination, setShowPagination] = useState(true);
   const [pagination, setPagination] = useState({
     current: 1,
-    size: 20,
+    size: 10,
     total: 0,
   });
 
@@ -75,8 +76,8 @@ export default () => {
     setPagination({
       ...pagination,
       current: pconfig.current || 1,
+      size: pconfig.pageSize || 10,
     });
-    getSearchNode(pconfig.current);
   };
 
   const shiftIsEnable = async (record: any) => {
@@ -96,10 +97,10 @@ export default () => {
     });
   };
 
-  const getSearchNode = (current?: number) => {
+  const getSearchNode = () => {
     setLoading(true);
     getRegionList({
-      current: current || pagination.current,
+      current: pagination.current,
       size: pagination.size,
       name: name,
     }).then((res: any) => {
@@ -108,12 +109,10 @@ export default () => {
         const data = res?.data?.list;
         formatTreeNode(data);
         setTableData(data);
-        if (!pagination.total) {
-          setPagination({
-            ...pagination,
-            total: res?.data?.count,
-          });
-        }
+        setPagination({
+          ...pagination,
+          total: res?.data?.count,
+        });
       }
     });
   };
@@ -135,13 +134,21 @@ export default () => {
   const onfinish = () => {
     if (name) {
       getSearchNode();
+      setShowPagination(true);
     } else {
       getAreaNodes();
+      setShowPagination(false);
     }
   };
   useEffect(() => {
     getAreaNodes();
   }, [history]);
+
+  useEffect(() => {
+    if (name) {
+      getSearchNode();
+    }
+  }, [pagination.current, pagination.size]);
 
   return (
     <Page>
@@ -175,13 +182,18 @@ export default () => {
           y: Math.max(window.screen.availHeight - 375, 500),
           x: 700,
         }}
+        size="large"
         onChange={onTableChange}
         loading={loading}
-        pagination={{
-          pageSize: pagination.size,
-          current: pagination.current,
-          total: pagination.total,
-        }}
+        pagination={
+          showPagination
+            ? {
+                pageSize: pagination.size,
+                current: pagination.current,
+                total: pagination.total,
+              }
+            : false
+        }
       />
     </Page>
   );
