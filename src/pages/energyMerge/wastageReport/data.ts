@@ -9,15 +9,15 @@ export const columns = [
   },
   {
     title: '当前支路能耗',
-    dataIndex: 'current',
+    dataIndex: 'lossValue',
   },
   {
     title: '下级支路能耗合计',
-    dataIndex: 'lowTotal',
+    dataIndex: 'lossValueChildren',
   },
   {
     title: '当前支路与下级支路能耗合计差值',
-    dataIndex: 'CZ',
+    dataIndex: 'lossValueDifference',
   },
   {
     title: '相差百分比',

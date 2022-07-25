@@ -165,7 +165,11 @@ const RealBodyOption = () => {
   };
 
   useEffect(() => {
-    getTableSourceData();
+    if (templateProps.area.length && templateProps.energyType) {
+      getTableSourceData();
+    } else {
+      setDataSource([]);
+    }
   }, [
     templateProps.area,
     templateProps.energyType,

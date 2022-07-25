@@ -20,7 +20,7 @@ import {
 import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { getRegionTreeList } from '@/apis';
-import { formatNumer, formatTime } from '@/utils/common';
+import { formatNumer } from '@/utils/common';
 
 const colors = ['#D65050', '#E7804A', '#1B81FB', '#3B57A2'];
 const { Option } = Select;

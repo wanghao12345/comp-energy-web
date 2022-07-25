@@ -3,7 +3,7 @@ export const columns: any = [
     title: '时间',
     dataIndex: 'createDate',
     fixed: 'left',
-    width: 160,
+    width: 180,
   },
   {
     title: '节点名称',

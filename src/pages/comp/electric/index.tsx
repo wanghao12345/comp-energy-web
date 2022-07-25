@@ -1,3 +1,5 @@
+//企业报表--参量采集
+
 import {
   DatePicker,
   Button,
@@ -12,6 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
 import { columns, columnsOther } from './data';
 import { EnergyType } from '@/commonInterface';
+import { formatNumer } from '@/utils/common';
 const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
@@ -69,6 +72,8 @@ const RealBodyOption = () => {
         res?.data?.list.map((item: any, index: number) => {
           item.regionId = getRegionName(parseInt(item.regionId || '1'));
           item.key = index;
+          // item.flowRate = formatNumer(item.flowRate, 3);
+          // item.flowAccumulate = formatNumer(item.flowAccumulate, 3);
         });
         setDataSource(res?.data?.list);
         setPagintion({
@@ -98,7 +103,11 @@ const RealBodyOption = () => {
   };
 
   useEffect(() => {
-    getTableSourceData();
+    if (templateProps.area.length) {
+      getTableSourceData();
+    } else {
+      setDataSource([]);
+    }
   }, [
     templateProps.area,
     templateProps.energyType,

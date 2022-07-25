@@ -121,8 +121,12 @@ const RealBodyOption = () => {
   };
 
   useEffect(() => {
-    if (templateProps.energyType && templateProps.regionList.length) {
+    if (templateProps.energyType && templateProps.area.length) {
       getDatasource();
+    } else {
+      setForm((p) => {
+        p.dataSource = [];
+      });
     }
   }, [templateProps.energyType, templateProps.area]);
   return (

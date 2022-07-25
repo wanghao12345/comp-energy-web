@@ -26,13 +26,14 @@ export default () => {
   };
   const formatTableData = (data: any) => {
     data.map((item: any) => {
-      item.lowTotal = 0;
+      if (item.lossValueChildren) {
+        item.Rate =
+          formatNumer(item.lossValueDifference / item.lossValue) * 100 + '%';
+      } else {
+        item.Rate = '-';
+      }
       if (item.children && item.children?.length) {
-        item.children.map((tt: any) => {
-          item.current += tt.current;
-          item.lowTotal += tt.current;
-          formatTableData(item.children);
-        });
+        formatTableData(item.children);
       } else {
         delete item.children;
       }
@@ -62,7 +63,6 @@ export default () => {
   const getResponseData = (optionValue: number, dataRange: any) => {
     const qs = formatDate(dataRange[0].toDate());
     const qe = formatDate(dataRange[1].toDate());
-    console.log(qs, qe);
     selectEnergyLossByRegion({
       energyType: optionValue,
       queryStartDate: qs,
@@ -70,8 +70,9 @@ export default () => {
     }).then((res) => {
       if (res.meta?.code === 200) {
         const data = res.data;
+
         formatTableData(data);
-        formatTableDataSecond(data);
+        // formatTableDataSecond(data);
         setTableData(data);
         setLoading(false);
       }

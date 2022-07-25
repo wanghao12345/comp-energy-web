@@ -124,6 +124,12 @@ type RealOptionProps = {
   isShowCheckBox?: boolean;
 };
 
+enum CheckBoxStatus {
+  Empty = 1,
+  All,
+  JL,
+}
+
 export const RealOption: FC<RealOptionProps> = memo(
   ({ onChange, onSelectAreaChange, templageData, isShowCheckBox }) => {
     const [tree, setTree] = useState<any>([]);
@@ -131,7 +137,9 @@ export const RealOption: FC<RealOptionProps> = memo(
     const [expandedKeys, setExpandedKeys] = useState<any>();
     const [checkedKeys, setCheckedKeys] = useState<any>();
     const [selectedKeys, setSelectedKeys] = useState<any>();
-    const [selectAll, setSelectAll] = useState(false);
+    const [selectAll, setSelectAll] = useState<CheckBoxStatus>(
+      CheckBoxStatus.JL,
+    );
     const [autoExpandParent, setAutoExpandParent] = useState(true);
     const [allKeys, _setAllKeys] = useState<any>({
       obj: [],
@@ -191,15 +199,27 @@ export const RealOption: FC<RealOptionProps> = memo(
       console.log(checked, 'check');
     };
 
-    const onCheckboxShift = (all: boolean) => {
-      setSelectAll(all);
-      if (all) {
-        setCheckedKeys([...allKeys.arr]);
-        setExpandedKeys([...allKeys.arr]);
-        onSelectAreaChange([...allKeys.arr], 'all');
-      } else {
-        // setCheckedKeys([]);
+    const onCheckboxShift = (thestatus: CheckBoxStatus) => {
+      let status = thestatus;
+      if (thestatus === CheckBoxStatus.All) {
+        if (selectAll === CheckBoxStatus.All) {
+          setExpandedKeys([...allKeys.arr]);
+          setCheckedKeys([]);
+          onSelectAreaChange([], 'clear');
+          status = CheckBoxStatus.Empty;
+        } else {
+          setCheckedKeys([...allKeys.arr]);
+          setExpandedKeys([...allKeys.arr]);
+          onSelectAreaChange([...allKeys.arr], 'all');
+        }
       }
+      if (thestatus === CheckBoxStatus.JL) {
+        if (selectAll === CheckBoxStatus.JL) {
+          status = CheckBoxStatus.Empty;
+        } else {
+        }
+      }
+      setSelectAll(status);
     };
 
     const onExpand = (newExpandedKeys: any[]) => {
@@ -278,17 +298,17 @@ export const RealOption: FC<RealOptionProps> = memo(
           <div className="radioGroup">
             <Checkbox
               onChange={() => {
-                onCheckboxShift(false);
+                onCheckboxShift(CheckBoxStatus.JL);
               }}
-              checked={!selectAll}
+              checked={CheckBoxStatus.JL === selectAll}
             >
               是否级联
             </Checkbox>
             <Checkbox
               onChange={() => {
-                onCheckboxShift(true);
+                onCheckboxShift(CheckBoxStatus.All);
               }}
-              checked={selectAll}
+              checked={CheckBoxStatus.All === selectAll}
             >
               全选
             </Checkbox>

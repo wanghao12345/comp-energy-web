@@ -101,7 +101,11 @@ const RealBodyOption = () => {
   };
 
   useEffect(() => {
-    getBoardData();
+    if (templateProps.energyType && templateProps.area.length) {
+      getBoardData();
+    } else {
+      setBarChartData(undefined);
+    }
   }, [templateProps.area, templateProps.energyType]);
   return (
     <RealBodyContainer>
