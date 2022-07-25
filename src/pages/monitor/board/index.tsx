@@ -283,7 +283,7 @@ const BoardBottomLeft = () => {
         </div>
         <div className="item-box">
           <span>月用气量</span>
-          <span>{eneryData?.dayGasNatural}</span>
+          <span>{eneryData?.mouthGasNatural}</span>
         </div>
         <div className="item-box">
           <span>年用气量</span>
