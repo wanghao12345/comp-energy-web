@@ -29,8 +29,8 @@ export default () => {
         ...values,
         id: id,
         isEnable: values.isEnable ? 1 : 0,
-        verificationDate: values.verificationDate.format('YYYY-MM-DD'),
-        manufactureDate: values.manufactureDate.format('YYYY-MM-DD'),
+        verificationDate: values.verificationDate.format('YYYY-MM-DD HH:mm:ss'),
+        manufactureDate: values.manufactureDate.format('YYYY-MM-DD HH:mm:ss'),
       }).then((res: any) => {
         hide();
         if (res?.meta?.code === 200) {
@@ -43,8 +43,8 @@ export default () => {
       tbEquipmentAdd({
         ...values,
         isEnable: values.isEnable ? 1 : 0,
-        verificationDate: values.verificationDate.format('YYYY-MM-DD'),
-        manufactureDate: values.manufactureDate.format('YYYY-MM-DD'),
+        verificationDate: values.verificationDate.format('YYYY-MM-DD HH:mm:ss'),
+        manufactureDate: values.manufactureDate.format('YYYY-MM-DD HH:mm:ss'),
       }).then((res: any) => {
         hide();
         if (res?.meta?.code === 200) {
@@ -135,9 +135,13 @@ export default () => {
         form={form}
         style={{ display: loading ? 'none' : 'block' }}
       >
-        <Form.Item name="equipmentCode" label="设备编号">
+        <Form.Item
+          name="equipmentCode"
+          label="仪表编号"
+          rules={[{ required: true, message: '请输入仪表编号' }, { max: 5 }]}
+        >
           {/* rules={[{ required: true, message: '请输入仪表地址' }]} */}
-          <Input placeholder="请输入" />
+          <Input placeholder="请输入" type="number" />
         </Form.Item>
         {/* <Form.Item
         name="model"
@@ -172,7 +176,11 @@ export default () => {
         >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item name="regionId" label="区域节点">
+        <Form.Item
+          name="regionId"
+          label="区域节点"
+          rules={[{ required: true, message: '请选择区域节点' }]}
+        >
           {/* rules={[{ required: true, message: '请输入节点名称' }]} */}
           <Select placeholder="请选择" allowClear>
             {optionObj
@@ -203,7 +211,7 @@ export default () => {
         <Form.Item
           name="verificationDate"
           label="检定日期"
-          rules={[{ required: true, message: '请输入检定日期' }]}
+          rules={[{ required: true, message: '请输入检定日期' }, { max: 4 }]}
         >
           <DatePicker style={{ width: '100%' }} />
         </Form.Item>

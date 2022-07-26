@@ -23,9 +23,13 @@ export default () => {
       fixed: 'left',
     },
     {
+      title: '仪表编号',
+      dataIndex: 'equipmentCode',
+      fixed: 'left',
+    },
+    {
       title: '仪表名称',
       dataIndex: 'name',
-      fixed: 'left',
     },
     {
       title: '仪表型号',
@@ -258,6 +262,12 @@ export default () => {
                   parseInt(item.regionId),
                   selectNodeData.options,
                 );
+                item.manufactureDate =
+                  item.manufactureDate?.split(' ')[0] || item.manufactureDate;
+                item.updateDate =
+                  item.updateDate?.split(' ')[0] || item.updateDate;
+                item.verificationDate =
+                  item.verificationDate?.split(' ')[0] || item.verificationDate;
               });
               setTableData(list);
             }
