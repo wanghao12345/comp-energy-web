@@ -23,6 +23,7 @@ import moment from 'moment';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 import { formatTime } from '@/utils/common';
 import { dayRealTime } from '@/apis/monitor';
+import { EnergyType } from '@/commonInterface';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -144,7 +145,7 @@ const RealBodyOption = () => {
       }
       return false;
     };
-    if (type === 1) {
+    if (type === EnergyType.Electric) {
       if (detailType === '电流') {
         columns = [
           {
@@ -717,7 +718,7 @@ const RealBodyOption = () => {
         chartOption.yAxis.name = 'KW.h';
       }
     }
-    if (type === 2) {
+    if (type === EnergyType.Water) {
       columns = [
         {
           title: '采集时间',
@@ -745,9 +746,10 @@ const RealBodyOption = () => {
       chartOption.series[0].name = 'qm';
       chartOption.series = [chartOption.series[0]];
       chartOption.yAxis.name = 't';
+      console.log(chartOption);
     }
 
-    if (type === 3) {
+    if (type === EnergyType.Steam) {
       columns = [
         {
           title: '采集时间',
@@ -789,7 +791,11 @@ const RealBodyOption = () => {
       chartOption.yAxis.name = 't';
     }
 
-    if (type === 4 || type === 5 || type === 6) {
+    if (
+      type === EnergyType.Air ||
+      type === EnergyType.NaturalGas ||
+      type === EnergyType.Nitrogen
+    ) {
       columns = [
         {
           title: '采集时间',
@@ -797,7 +803,7 @@ const RealBodyOption = () => {
           key: 'time',
         },
         {
-          title: 'qm（t） ',
+          title: 'qv（Nm3） ',
           dataIndex: 'A',
           key: 'A',
         },
@@ -847,7 +853,7 @@ const RealBodyOption = () => {
 
   useEffect(() => {
     if (options.length === 1) {
-      form.setFieldsValue({ option: '限时流量' });
+      form.setFieldsValue({ option: '瞬时流量' });
     } else {
       form.setFieldsValue({ option: options[0] });
     }

@@ -34,7 +34,9 @@ export default () => {
           keys.map((item) => {
             const field: any = {};
             field[item] = data[item];
-
+            if (item.includes('Date') && data[item]) {
+              field[item] = data[item].split(' ')[0];
+            }
             if (item === 'isEnable') {
               field[item] = data[item] ? true : false;
             }

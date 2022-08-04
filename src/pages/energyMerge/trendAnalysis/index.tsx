@@ -282,6 +282,10 @@ const RealBodyOption = () => {
         currentTabStatus,
       );
       const ibarChartData = {
+        grid: {
+          left: 10,
+          right: 30,
+        },
         legend: {
           textStyle: {
             color: '#fff',
@@ -298,6 +302,14 @@ const RealBodyOption = () => {
           type: 'category',
           name: '月',
           data: xAxisData,
+          axisLine: {
+            lineStyle: {
+              color: '#FFFFFF',
+            },
+          },
+          axisLabel: {
+            color: '#FFFFFF',
+          },
         },
         yAxis: {
           type: 'value',
@@ -327,6 +339,7 @@ const RealBodyOption = () => {
           },
         ],
       };
+      console.log(ibarChartData);
       setBarChartData(Object.assign({}, ibarChartData));
       const icolumns = getColumns(
         currentTabStatus,
