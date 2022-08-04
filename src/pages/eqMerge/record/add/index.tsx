@@ -138,7 +138,7 @@ export default () => {
         <Form.Item
           name="equipmentCode"
           label="仪表编号"
-          rules={[{ required: true, message: '请输入仪表编号' }, { max: 5 }]}
+          rules={[{ required: true, message: '请输入仪表编号' }]}
         >
           {/* rules={[{ required: true, message: '请输入仪表地址' }]} */}
           <Input placeholder="请输入" type="number" />
@@ -211,7 +211,7 @@ export default () => {
         <Form.Item
           name="verificationDate"
           label="检定日期"
-          rules={[{ required: true, message: '请输入检定日期' }, { max: 4 }]}
+          rules={[{ required: true, message: '请输入检定日期' }]}
         >
           <DatePicker style={{ width: '100%' }} />
         </Form.Item>
