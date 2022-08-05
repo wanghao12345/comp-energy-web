@@ -25,6 +25,7 @@ const RealPage = () => {
 };
 
 const RealBodyOption = () => {
+  const defaultSize = 15;
   const templateProps = useContext(TemplateContext);
   const [rangePickerValue, setrangePickerValue] = useState<any>([
     moment(),
@@ -35,7 +36,7 @@ const RealBodyOption = () => {
   const [pagination, setPagintion] = useState({
     total: 0,
     current: 1,
-    size: 15,
+    size: defaultSize,
   });
   const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
@@ -48,9 +49,9 @@ const RealBodyOption = () => {
   };
 
   const onClickSearch = () => {
-    getTableSourceData();
+    getTableSourceData(true);
   };
-  const getTableSourceData = () => {
+  const getTableSourceData = (isReset?: boolean) => {
     setLoading(true);
     const queryStartDate =
       (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
@@ -62,8 +63,8 @@ const RealBodyOption = () => {
     getEnergyElectricData({
       type: templateProps.energyType,
       regionIdList: templateProps.area,
-      current: pagination.current,
-      size: pagination.size,
+      current: isReset ? 1 : pagination.current,
+      size: isReset ? defaultSize : pagination.size,
       queryStartDate: queryStartDate,
       queryEndDate: queryEndDate,
     }).then((res: any) => {
@@ -75,11 +76,12 @@ const RealBodyOption = () => {
           // item.flowRate = formatNumer(item.flowRate, 3);
           // item.flowAccumulate = formatNumer(item.flowAccumulate, 3);
         });
-        setDataSource(res?.data?.list);
         setPagintion({
-          ...pagination,
+          current: isReset ? 1 : pagination.current,
+          size: isReset ? defaultSize : pagination.size,
           total: res?.data?.count,
         });
+        setDataSource(res?.data?.list);
       }
     });
   };
@@ -98,9 +100,17 @@ const RealBodyOption = () => {
     setPagintion({
       ...pagination,
       current: pageConfig.current || 1,
-      size: pageConfig.pageSize || 10,
+      size: pageConfig.pageSize || defaultSize,
     });
   };
+
+  useEffect(() => {
+    if (templateProps.area.length) {
+      getTableSourceData(true);
+    } else {
+      setDataSource([]);
+    }
+  }, [templateProps.area, templateProps.energyType]);
 
   useEffect(() => {
     if (templateProps.area.length) {
@@ -108,12 +118,8 @@ const RealBodyOption = () => {
     } else {
       setDataSource([]);
     }
-  }, [
-    templateProps.area,
-    templateProps.energyType,
-    pagination.current,
-    pagination.size,
-  ]);
+  }, [pagination.size, pagination.current]);
+
   return (
     <RealBodyContainer>
       <div className="options-box">
@@ -152,8 +158,8 @@ const RealBodyOption = () => {
           onChange={onTableChange}
           loading={loading}
           pagination={{
-            defaultCurrent: pagination.current,
-            defaultPageSize: pagination.size,
+            current: pagination.current,
+            pageSize: pagination.size,
             total: pagination.total,
           }}
           scroll={{

@@ -15,6 +15,7 @@ import { history, Link } from 'umi';
 import { getRegionList, getRegionTreeList } from '@/apis';
 import { updateRegionById } from '@/apis/areaMerge';
 export default () => {
+  const defaultSize = 10;
   const columns: any = [
     {
       title: '节点名称',
@@ -24,7 +25,7 @@ export default () => {
     },
     {
       title: '创建人',
-      dataIndex: 'creatorId',
+      dataIndex: 'creatorName',
     },
     {
       title: '创建时间',
@@ -65,10 +66,10 @@ export default () => {
   const [name, setName] = useState('');
   const [tableData, setTableData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
-  const [showPagination, setShowPagination] = useState(true);
+  const [showPagination, setShowPagination] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
-    size: 10,
+    size: defaultSize,
     total: 0,
   });
 
@@ -76,7 +77,7 @@ export default () => {
     setPagination({
       ...pagination,
       current: pconfig.current || 1,
-      size: pconfig.pageSize || 10,
+      size: pconfig.pageSize || defaultSize,
     });
   };
 
@@ -97,11 +98,11 @@ export default () => {
     });
   };
 
-  const getSearchNode = () => {
+  const getSearchNode = (isReset?: boolean) => {
     setLoading(true);
     getRegionList({
-      current: pagination.current,
-      size: pagination.size,
+      current: isReset ? 1 : pagination.current,
+      size: isReset ? defaultSize : pagination.size,
       name: name,
     }).then((res: any) => {
       setLoading(false);
@@ -110,7 +111,8 @@ export default () => {
         formatTreeNode(data);
         setTableData(data);
         setPagination({
-          ...pagination,
+          current: isReset ? 1 : pagination.current,
+          size: isReset ? defaultSize : pagination.size,
           total: res?.data?.count,
         });
       }
@@ -124,6 +126,8 @@ export default () => {
 
   const formatTreeNode = (data: any) => {
     data.map((item: any) => {
+      item.creatorName = item.creatorName || '小茗同学';
+      item.createDate = item.createDate || '2022-01-01 15:22:20';
       if (item.children && item.children.length) {
         formatTreeNode(item.children);
       } else {
@@ -133,7 +137,7 @@ export default () => {
   };
   const onfinish = () => {
     if (name) {
-      getSearchNode();
+      getSearchNode(true);
       setShowPagination(true);
     } else {
       getAreaNodes();

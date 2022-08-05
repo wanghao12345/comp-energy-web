@@ -21,13 +21,14 @@ const RealBodyOption = () => {
     moment(),
     moment(),
   ]);
+  const defaultSize = 15;
   const [timePicker, setTimePicker] = useState(moment());
   const [dataSource, setDataSource] = useState<any>([]);
   const [columns, setColumns] = useState<any>([]);
   const [pagination, setPagintion] = useState({
     total: 0,
     current: 1,
-    size: 15,
+    size: defaultSize,
   });
   const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
@@ -40,9 +41,9 @@ const RealBodyOption = () => {
   };
 
   const onClickSearch = () => {
-    getTableSourceData();
+    getTableSourceData(true);
   };
-  const getTableSourceData = () => {
+  const getTableSourceData = (isReset?: boolean) => {
     setLoading(true);
     const queryStartDate =
       (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
@@ -54,8 +55,8 @@ const RealBodyOption = () => {
     getEnergyElectricData({
       type: templateProps.energyType,
       regionIdList: templateProps.area,
-      current: pagination.current,
-      size: pagination.size,
+      current: isReset ? 1 : pagination.current,
+      size: isReset ? defaultSize : pagination.size,
       queryStartDate: queryStartDate,
       queryEndDate: queryEndDate,
     }).then((res: any) => {
@@ -139,7 +140,8 @@ const RealBodyOption = () => {
         }
         setDataSource([...list]);
         setPagintion({
-          ...pagination,
+          current: isReset ? 1 : pagination.current,
+          size: isReset ? defaultSize : pagination.size,
           total: res?.data?.count,
         });
       }
@@ -160,9 +162,17 @@ const RealBodyOption = () => {
     setPagintion({
       ...pagination,
       current: pageConfig.current || 1,
-      size: pageConfig.pageSize || 15,
+      size: pageConfig.pageSize || defaultSize,
     });
   };
+
+  useEffect(() => {
+    if (templateProps.area.length && templateProps.energyType) {
+      getTableSourceData(true);
+    } else {
+      setDataSource([]);
+    }
+  }, [templateProps.area, templateProps.energyType]);
 
   useEffect(() => {
     if (templateProps.area.length && templateProps.energyType) {
@@ -170,12 +180,8 @@ const RealBodyOption = () => {
     } else {
       setDataSource([]);
     }
-  }, [
-    templateProps.area,
-    templateProps.energyType,
-    pagination.current,
-    pagination.size,
-  ]);
+  }, [pagination.current, pagination.size]);
+
   return (
     <RealBodyContainer>
       <div className="options-box">
@@ -215,8 +221,8 @@ const RealBodyOption = () => {
           onChange={onTableChange}
           loading={loading}
           pagination={{
-            defaultCurrent: pagination.current,
-            defaultPageSize: pagination.size,
+            current: pagination.current,
+            pageSize: pagination.size,
             total: pagination.total,
           }}
           scroll={{

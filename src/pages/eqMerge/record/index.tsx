@@ -108,12 +108,13 @@ export default () => {
       },
     },
   ];
+  const defaultSize = 10;
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState(undefined);
   const [model, setModel] = useState(undefined);
   const [params, setParams] = useState({
     current: 1,
-    size: 10,
+    size: defaultSize,
     total: 0,
   });
 
@@ -211,21 +212,21 @@ export default () => {
 
   useEffect(() => {
     tbEquipmentList();
-  }, [params.current]);
+  }, [params.current, params.size]);
 
   const onClickSearch = () => {
-    tbEquipmentList();
+    tbEquipmentList(true);
   };
 
   const paginationChange = (pagination: TablePaginationConfig) => {
     setParams({ ...params, current: pagination.current || 1 });
   };
 
-  const tbEquipmentList = () => {
+  const tbEquipmentList = (isReset?: boolean) => {
     setLoading(true);
     getTbEquipmentList({
-      current: params.current,
-      size: params.size,
+      current: isReset ? 1 : params.current,
+      size: isReset ? 1 : params.size,
       name: name,
       type: selectTypeData?.value, //设备类型
       model: model, //仪表型号
@@ -236,7 +237,8 @@ export default () => {
       if (res.meta.code === 200) {
         const list = res?.data?.list;
         setParams({
-          ...params,
+          current: isReset ? 1 : params.current,
+          size: isReset ? defaultSize : params.size,
           total: res?.data?.count,
         });
         if (!list || !list.length) {

@@ -147,6 +147,7 @@ export const RealOption: FC<RealOptionProps> = memo(
     });
     const formatTreeData = (data: any) => {
       data.map((item: any) => {
+        //只监控开启的节点
         item.title = item.name;
         item.key = item.id;
         allKeys.obj.push({ key: item.id, title: item.name });
