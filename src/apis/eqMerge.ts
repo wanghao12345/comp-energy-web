@@ -10,6 +10,7 @@ export interface getEquipmentListProps {
   equipmentCode?: number; //设备的编号
   regionId?: string;
   isEnable?: number;
+  nodeName?: string;
 }
 // 接口：设备列表
 export const getTbEquipmentList = async (data: getEquipmentListProps) => {

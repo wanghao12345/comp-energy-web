@@ -1,15 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, Button, Select, Switch, DatePicker, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Switch } from 'antd';
 import { history } from 'umi';
-const { Option } = Select;
 import { CreateOrLookComp, FromButtonItem } from './style';
-import {
-  getTbEquipmentDetail,
-  tbEquipmentAdd,
-  updateTbEquipmentDetail,
-} from '@/apis/eqMerge';
+import { getTbEquipmentDetail } from '@/apis/eqMerge';
 import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
-import moment from 'moment';
 import { PageLoading } from '@ant-design/pro-layout';
 const layout = {
   labelCol: { span: 8 },

@@ -7,11 +7,16 @@ import {
   Select,
   TablePaginationConfig,
   Input,
+  message,
 } from 'antd';
 import { Page } from './style';
 import { Link } from 'umi';
 import { useState, useEffect } from 'react';
-import { getTbEquipmentList } from '@/apis/eqMerge';
+import {
+  getTbEquipmentDetail,
+  getTbEquipmentList,
+  updateTbEquipmentDetail,
+} from '@/apis/eqMerge';
 import { getDictionarySlectOptions, getRegionTreeList } from '@/apis';
 import { SearchOutlined } from '@ant-design/icons';
 const { Option } = Select;
@@ -68,8 +73,13 @@ export default () => {
       title: '是否启用',
       dataIndex: 'isEnable',
       width: 100,
-      render: (record: any) => {
-        return <Switch checked={record ? true : false} />;
+      render: (isEnable: any, record: any) => {
+        return (
+          <Switch
+            checked={isEnable}
+            onChange={(e) => shiftIsEnable(e, record)}
+          />
+        );
       },
     },
     {
@@ -111,18 +121,45 @@ export default () => {
   const defaultSize = 10;
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState(undefined);
+  const [nodeName, setNodeName] = useState(undefined);
   const [model, setModel] = useState(undefined);
   const [params, setParams] = useState({
     current: 1,
     size: defaultSize,
     total: 0,
   });
-
+  const shiftIsEnable = async (e: boolean, record: any) => {
+    const hide = message.loading(`正在${e ? '开启' : '关闭'}...`, 50);
+    getTbEquipmentDetail({ id: record.id }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        const data = res?.data;
+        updateTbEquipmentDetail({
+          ...data,
+          isEnable: e ? 1 : 0,
+        }).then((res: any) => {
+          hide();
+          if (res?.meta?.code === 200) {
+            message.success(`${e ? '开启' : '关闭'}成功！`);
+            tbEquipmentList();
+          }
+        });
+      }
+    });
+  };
   const [tableData, setTableData] = useState([]);
   const [selectNodeData, setSelectNodeData] = useState<any>({
     value: undefined,
     options: [],
   });
+
+  const onChangeNodeInput = (e: any) => {
+    const val = e?.target?.value;
+    if (val) {
+      setNodeName(val);
+    } else {
+      setNodeName(undefined);
+    }
+  };
 
   const onChangeNameInput = (e: any) => {
     const val = e?.target?.value;
@@ -226,11 +263,11 @@ export default () => {
     setLoading(true);
     getTbEquipmentList({
       current: isReset ? 1 : params.current,
-      size: isReset ? 1 : params.size,
+      size: isReset ? defaultSize : params.size,
       name: name,
       type: selectTypeData?.value, //设备类型
       model: model, //仪表型号
-      regionId: selectNodeData?.value, //节点
+      nodeName: nodeName, //节点
       isEnable: selectEnableData?.value, //是否禁用
     }).then((res) => {
       setLoading(false);
@@ -326,7 +363,7 @@ export default () => {
     <Page>
       <div className="headerBox">
         <div className="filterBox">
-          <Select
+          {/* <Select
             size="large"
             value={selectNodeData.value}
             placeholder="节点名称"
@@ -343,8 +380,17 @@ export default () => {
                 </Option>
               );
             })}
-          </Select>
+          </Select> */}
           <Input
+            style={{ width: '160px' }}
+            size="large"
+            placeholder="节点名称"
+            allowClear
+            value={nodeName}
+            onChange={onChangeNodeInput}
+            suffix={<SearchOutlined />}
+          />
+          {/* <Input
             type="text"
             size="large"
             placeholder="仪表名称"
@@ -353,7 +399,7 @@ export default () => {
               width: '180px',
             }}
             onChange={onChangeNameInput}
-          ></Input>
+          ></Input> */}
           <Input
             type="text"
             size="large"

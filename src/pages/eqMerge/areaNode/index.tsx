@@ -7,6 +7,7 @@ import {
   Input,
   Form,
   TablePaginationConfig,
+  message,
 } from 'antd';
 import { Page } from './style';
 import { SearchOutlined } from '@ant-design/icons';
@@ -36,7 +37,10 @@ export default () => {
       dataIndex: 'isEnable',
       render: (isEnable: any, record: any) => {
         return (
-          <Switch checked={isEnable} onChange={() => shiftIsEnable(record)} />
+          <Switch
+            checked={isEnable}
+            onChange={(e) => shiftIsEnable(e, record)}
+          />
         );
       },
     },
@@ -81,9 +85,15 @@ export default () => {
     });
   };
 
-  const shiftIsEnable = async (record: any) => {
-    // updateRegionById
-    console.log(record);
+  const shiftIsEnable = async (e: boolean, record: any) => {
+    const hide = message.loading(`正在${e ? '开启' : '关闭'}...`, 50);
+    updateRegionById({ ...record, isEnable: e ? 1 : 0 }).then((res: any) => {
+      hide();
+      if (res?.meta?.code === 200) {
+        message.success(`${e ? '开启' : '关闭'}成功！`);
+        onfinish();
+      }
+    });
   };
 
   const getAreaNodes = () => {
