@@ -13,7 +13,9 @@ import { Link } from 'umi';
 import { useEffect, useState } from 'react';
 import {
   tbEarlyWarningdeleteByIds,
+  tbEarlyWarningselectById,
   tbEarlyWarningSelectList,
+  tbEarlyWarningupdateById,
 } from '@/apis/event';
 export default () => {
   const columns: any = [
@@ -69,7 +71,16 @@ export default () => {
     // },
     {
       title: '是否启用',
-      dataIndex: 'enableName',
+      dataIndex: 'isEnable',
+      width: 100,
+      render: (isEnable: any, record: any) => {
+        return (
+          <Switch
+            checked={isEnable}
+            onChange={(e) => shiftIsEnable(e, record)}
+          />
+        );
+      },
     },
     {
       title: '创建时间',
@@ -90,6 +101,15 @@ export default () => {
       render: (text: any, record: any) => {
         return (
           <Space size="middle">
+            <Link
+              style={{ color: 'white' }}
+              to={`/alarm/rules/detail?id=${record?.id}`}
+            >
+              详情
+              {/* <Button size="large" type="primary">
+                编辑
+              </Button> */}
+            </Link>
             <Link
               style={{ color: 'white' }}
               to={`/alarm/rules/add?id=${record?.id}`}
@@ -165,6 +185,24 @@ export default () => {
   useEffect(() => {
     getTableSource();
   }, [pagination.current, pagination.size]);
+  const shiftIsEnable = async (e: boolean, record: any) => {
+    const hide = message.loading(`正在${e ? '开启' : '关闭'}...`, 50);
+    tbEarlyWarningselectById({ id: record.id }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        const data = res?.data;
+        tbEarlyWarningupdateById({
+          ...data,
+          isEnable: e ? 1 : 0,
+        }).then((res: any) => {
+          hide();
+          if (res?.meta?.code === 200) {
+            message.success(`${e ? '开启' : '关闭'}成功！`);
+            getTableSource();
+          }
+        });
+      }
+    });
+  };
   return (
     <RulesPage>
       <div className="headerBox">

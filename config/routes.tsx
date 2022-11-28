@@ -112,6 +112,12 @@ export default [
           },
           {
             hideInMenu: true,
+            path: '/alarm/rules/detail',
+            name: '报警规则详情',
+            component: '@/pages/alarmMerge/rules/detail',
+          },
+          {
+            hideInMenu: true,
             path: '/alarm/rules/add',
             name: '新增报警规则',
             component: '@/pages/alarmMerge/rules/add',
@@ -155,6 +161,12 @@ export default [
             path: '/eqMerge/areaNode/add',
             name: '新增区域节点',
             component: '@/pages/eqMerge/areaNode/add',
+          },
+          {
+            hideInMenu: true,
+            path: '/eqMerge/areaNode/addRoot',
+            name: '新增区域根节点',
+            component: '@/pages/eqMerge/areaNode/addRoot',
           },
           {
             hideInMenu: true,

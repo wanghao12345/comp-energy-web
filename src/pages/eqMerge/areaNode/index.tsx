@@ -182,9 +182,9 @@ export default () => {
             查询
           </Button>
         </Form>
-        {/* <Link to="/eqMerge/areaNode/add">
+        {/* <Link to="/eqMerge/areaNode/addRoot">
           <Button size="large" type="primary">
-            添加
+            添加根节点
           </Button>
         </Link> */}
       </div>

@@ -76,7 +76,7 @@ const RealBodyOption = () => {
   };
 
   const getRealTimeRes = (values?: any) => {
-    setChartLoading(0);
+    setChartLoading(1);
     if (tab === tabStatus.RealTime) {
       const searchDate = values?.date || form.getFieldValue('date');
       const { queryStartDate, queryEndDate } = formatTime(searchDate.toDate());

@@ -368,6 +368,7 @@ const BoardBottomRight = () => {
         const { xAxisData, seriesData } = formChartData(res.data);
         ilineChartOption.xAxis.data = xAxisData;
         ilineChartOption.series[0].data = seriesData;
+        ilineChartOption.series[0].name = EnergyTypeList[type - 1].name;
         ilineChartOption.yAxis.name = EnergyTypeList[type - 1].unit;
         setLineChartOption(Object.assign({}, ilineChartOption));
       }
