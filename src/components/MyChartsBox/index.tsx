@@ -1,5 +1,5 @@
 import * as echarts from 'echarts';
-import { memo, useEffect, FC, useRef } from 'react';
+import { memo, useEffect, FC, useRef, useState } from 'react';
 import { merge as _merge, cloneDeep as _cloneDeep } from 'lodash';
 import { MyChartBoxComp } from './style';
 
@@ -95,13 +95,12 @@ const noDate = {
         left: 'center',
         top: 'center',
         style: {
-          text: '无数据',
-          fontSize: 40,
-          fontWeight: 'bold',
+          text: '暂无数据',
+          fontSize: 24,
           lineDash: [0, 200],
           lineDashOffset: 0,
           fill: 'transparent',
-          stroke: '#f3efef',
+          stroke: '#f1d0d0',
           lineWidth: 1,
         },
         keyframeAnimation: {
@@ -138,6 +137,7 @@ const noDate = {
 
 const MyChartBox: FC<Iprops> = memo((props) => {
   const { id = 'chart', options, loading } = props;
+  const timer = useRef<any>();
   const myEchart = useRef<any>(null);
   const isLoaded = useRef<any>(null);
   const initializeAndMonitor = () => {
@@ -148,7 +148,10 @@ const MyChartBox: FC<Iprops> = memo((props) => {
       myEchart.current?.setOption(loadingOption);
     } else {
       if (typeof options !== 'object' || !options) {
-        myEchart.current?.setOption(noDate);
+        timer.current = setTimeout(() => {
+          myEchart.current?.setOption(noDate);
+          clearTimeout(timer.current);
+        }, 200);
       } else {
         myEchart.current?.setOption(_merge(_cloneDeep(baseOptions), options));
       }
@@ -166,7 +169,15 @@ const MyChartBox: FC<Iprops> = memo((props) => {
   };
 
   useEffect(() => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
     initializeAndMonitor();
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+    };
   }, [options, loading]);
 
   return (

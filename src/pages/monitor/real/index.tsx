@@ -712,6 +712,7 @@ const RealBodyOption = () => {
           }
           columnDataSource.push(column);
         });
+
         chartOption.series[0].data = series[0];
         chartOption.series[0].name = 'EPI';
         chartOption.series = [chartOption.series[0]];
@@ -850,7 +851,12 @@ const RealBodyOption = () => {
     }
     setChartData(Object.assign({}, chartOption));
   };
-
+  const export2Excel = () => {
+    var exportFileContent = document.getElementById('myTable')!.cloneNode(true);
+    console.log(XLSX);
+    var wb = XLSX.utils.table_to_book(exportFileContent, { sheet: 'sheet1' });
+    XLSX.writeFile(wb, 'name');
+  };
   useEffect(() => {
     if (options.length === 1) {
       form.setFieldsValue({ option: '瞬时流量' });
@@ -860,7 +866,9 @@ const RealBodyOption = () => {
     if (!form.getFieldValue('date')) {
       form.setFieldsValue({ date: moment() });
     }
-    getRealTimeRes();
+    if (options.length && tab && templateProps.area.length) {
+      getRealTimeRes();
+    }
   }, [options, tab, templateProps.area]);
 
   return (
@@ -875,7 +883,7 @@ const RealBodyOption = () => {
             onChange={onTabChange}
           >
             <TabPane tab={'实时数据'} key={tabStatus.RealTime}></TabPane>
-            <TabPane
+            {/* <TabPane
               tab={'报警信息（二期）'}
               key={tabStatus.Warnning}
               disabled
@@ -884,7 +892,7 @@ const RealBodyOption = () => {
               tab={'通讯状态（二期）'}
               key={tabStatus.Contact}
               disabled
-            ></TabPane>
+            ></TabPane> */}
           </Tabs>
         </div>
         <div className="search-box">
@@ -1007,13 +1015,14 @@ const RealBodyOption = () => {
               options={chartData}
             />
           </div>
-          <Button size="large" type="primary">
+          <Button size="large" type="primary" onClick={export2Excel}>
             导出
           </Button>
         </>
       ) : null}
       <div className="table-box">
         <Table
+          id="myTable"
           size="large"
           rowKey={'key'}
           key={'key'}

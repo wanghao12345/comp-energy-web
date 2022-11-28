@@ -31,7 +31,7 @@ export const RealBodyContainer = styled.div`
   border: 1px solid rgba(67, 140, 172, 100);
   border-radius: 4px;
   box-sizing: border-box;
-  padding: 24px;
+  padding: 0 24px 24px 24px;
   overflow: auto;
   position: relative;
   .options-box {
@@ -41,6 +41,7 @@ export const RealBodyContainer = styled.div`
     top: 0;
     background: rgb(20, 38, 85);
     z-index: 9;
+    padding-top: 24px;
     .tab-box {
       margin-right: 44px;
       @media (max-width: 1440px) {

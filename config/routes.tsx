@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   ControlOutlined,
   DashboardOutlined,
@@ -13,6 +12,12 @@ export default [
     path: '/',
     component: '@/layouts',
     routes: [
+      {
+        path: '/',
+        redirect: '/monitor/real',
+        name: '实时监控',
+        component: '@/pages/monitor/real',
+      },
       {
         path: '/dashboard',
         name: '企业看板',
@@ -71,11 +76,11 @@ export default [
             name: '损耗报表',
             component: '@/pages/energyMerge/wastageReport',
           },
-          {
-            path: '/energyMerge/flowCart',
-            name: '能源流向图（二期）',
-            component: '@/pages/energyMerge/flowCart',
-          },
+          // {
+          //   path: '/energyMerge/flowCart',
+          //   name: '能源流向图（二期）',
+          //   component: '@/pages/energyMerge/flowCart',
+          // },
         ],
       },
       {
@@ -122,11 +127,11 @@ export default [
             name: '新增报警规则',
             component: '@/pages/alarmMerge/rules/add',
           },
-          {
-            path: '/alarm/event',
-            name: '事件记录（产品未做）',
-            component: '@/pages/monitor/board',
-          },
+          // {
+          //   path: '/alarm/event',
+          //   name: '事件记录（产品未做）',
+          //   component: '@/pages/monitor/board',
+          // },
         ],
       },
       {
@@ -182,33 +187,33 @@ export default [
           },
         ],
       },
-      {
-        path: '/devops',
-        name: '运维管理（产品未做）',
-        icon: <DeploymentUnitOutlined />,
-        routes: [
-          {
-            path: '/devops/user',
-            name: '用户管理',
-            component: '@/pages/monitor/real',
-          },
-          {
-            path: '/devops/electricity',
-            name: '电价管理',
-            component: '@/pages/monitor/board',
-          },
-          {
-            path: '/devops/plan',
-            name: '巡检计划',
-            component: '@/pages/monitor/board',
-          },
-          {
-            path: '/devops/record',
-            name: '巡检记录',
-            component: '@/pages/monitor/board',
-          },
-        ],
-      },
+      // {
+      //   path: '/devops',
+      //   name: '运维管理（产品未做）',
+      //   icon: <DeploymentUnitOutlined />,
+      //   routes: [
+      //     {
+      //       path: '/devops/user',
+      //       name: '用户管理',
+      //       component: '@/pages/monitor/real',
+      //     },
+      //     {
+      //       path: '/devops/electricity',
+      //       name: '电价管理',
+      //       component: '@/pages/monitor/board',
+      //     },
+      //     {
+      //       path: '/devops/plan',
+      //       name: '巡检计划',
+      //       component: '@/pages/monitor/board',
+      //     },
+      //     {
+      //       path: '/devops/record',
+      //       name: '巡检记录',
+      //       component: '@/pages/monitor/board',
+      //     },
+      //   ],
+      // },
     ],
   },
 ];

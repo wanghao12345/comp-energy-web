@@ -254,28 +254,41 @@ export default () => {
   const onClickSearch = () => {
     tbEquipmentList(true);
   };
-
+  const onClickReset = () => {
+    setName(undefined);
+    setSelectTypeData({ ...selectTypeData, value: undefined });
+    setModel(undefined);
+    setSelectEnableData({
+      value: undefined,
+      options: [
+        { label: '禁用', value: 0 },
+        { label: '启用', value: 1 },
+      ],
+    });
+    setNodeName(undefined);
+    tbEquipmentList(true, true);
+  };
   const paginationChange = (pagination: TablePaginationConfig) => {
     setParams({ ...params, current: pagination.current || 1 });
   };
 
-  const tbEquipmentList = (isReset?: boolean) => {
+  const tbEquipmentList = (isPageReset?: boolean, isSearchReset?: boolean) => {
     setLoading(true);
     getTbEquipmentList({
-      current: isReset ? 1 : params.current,
-      size: isReset ? defaultSize : params.size,
-      name: name,
-      type: selectTypeData?.value, //设备类型
-      model: model, //仪表型号
-      nodeName: nodeName, //节点
-      isEnable: selectEnableData?.value, //是否禁用
+      current: isPageReset ? 1 : params.current,
+      size: isPageReset ? defaultSize : params.size,
+      name: isSearchReset ? undefined : name,
+      type: isSearchReset ? undefined : selectTypeData?.value, //设备类型
+      model: isSearchReset ? undefined : model, //仪表型号
+      nodeName: isSearchReset ? undefined : nodeName, //节点
+      isEnable: isSearchReset ? undefined : selectEnableData?.value, //是否禁用
     }).then((res) => {
       setLoading(false);
       if (res.meta.code === 200) {
         const list = res?.data?.list;
         setParams({
-          current: isReset ? 1 : params.current,
-          size: isReset ? defaultSize : params.size,
+          current: isPageReset ? 1 : params.current,
+          size: isPageReset ? defaultSize : params.size,
           total: res?.data?.count,
         });
         if (!list || !list.length) {
@@ -465,6 +478,9 @@ export default () => {
 
           <Button size="large" type="primary" onClick={onClickSearch}>
             查询
+          </Button>
+          <Button size="large" type="primary" onClick={onClickReset}>
+            重置
           </Button>
         </div>
         <Link to="/eqMerge/record/add">
