@@ -21,7 +21,7 @@ import moment, { Moment } from 'moment';
 import { useImmer } from 'use-immer';
 import { getRegionTreeList } from '@/apis';
 import { formatNumer } from '@/utils/common';
-
+import * as XLSX from 'xlsx';
 const colors = ['#D65050', '#E7804A', '#1B81FB', '#3B57A2'];
 const { Option } = Select;
 const { Column, ColumnGroup } = Table;
@@ -60,7 +60,13 @@ const RatePage = () => {
   const onClickSearch = () => {
     getElectricMultiRate();
   };
-
+  const export2Excel = () => {
+    var exportFileContent = document
+      .getElementById('myTable-rate')!
+      .cloneNode(true);
+    var wb = XLSX.utils.table_to_book(exportFileContent, { sheet: 'sheet1' });
+    XLSX.writeFile(wb, `复费率报表.xlsx`);
+  };
   const formatResponseDataTotal = (data: any) => {
     const keys = Object.keys(data);
     const seriesdata1: any = {};
@@ -433,7 +439,7 @@ const RatePage = () => {
           </Button>
         </div>
         <div className="right">
-          <Button size="large" type="primary">
+          <Button size="large" type="primary" onClick={export2Excel}>
             导出
           </Button>
         </div>
@@ -468,6 +474,7 @@ const RatePage = () => {
           <RateBodyRightBottomContainer>
             {/* <Table size="middle" dataSource={dataSource} columns={columns} /> */}
             <Table
+              id="myTable-rate"
               dataSource={dataSource}
               rowKey="key"
               key="key"

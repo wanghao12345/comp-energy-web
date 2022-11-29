@@ -19,12 +19,12 @@ import {
   WarnColumns,
 } from './data';
 import MyChartBox from '@/components/myChartsBox';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import MyTemplate, { TemplateContext } from '@/components/myTemplate';
 import { formatTime } from '@/utils/common';
 import { dayRealTime } from '@/apis/monitor';
 import { EnergyType } from '@/commonInterface';
-
+import * as XLSX from 'xlsx';
 const { Option } = Select;
 const { TabPane } = Tabs;
 const RealPage = () => {
@@ -853,9 +853,11 @@ const RealBodyOption = () => {
   };
   const export2Excel = () => {
     var exportFileContent = document.getElementById('myTable')!.cloneNode(true);
-    console.log(XLSX);
     var wb = XLSX.utils.table_to_book(exportFileContent, { sheet: 'sheet1' });
-    XLSX.writeFile(wb, 'name');
+    const searchDate = form.getFieldValue('date') as Moment;
+    const { queryEndDate } = formatTime(searchDate.toDate());
+    const currentDay = queryEndDate.split(' ')[0];
+    XLSX.writeFile(wb, `${currentDay}实时监控.xlsx`);
   };
   useEffect(() => {
     if (options.length === 1) {

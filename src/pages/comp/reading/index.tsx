@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
 import { EnergyType } from '@/commonInterface';
 import { formatNumer } from '@/utils/common';
+import * as XLSX from 'xlsx';
 const { RangePicker, TimePicker } = DatePicker;
 const RealPage = () => {
   return (
@@ -35,13 +36,109 @@ const RealBodyOption = () => {
     console.log(range);
     setrangePickerValue(range);
   };
-
+  const [exportLoading, setExportLoading] = useState(false);
   const onChangeTime = (val: moment.Moment | null) => {
     setTimePicker(val || moment());
   };
 
   const onClickSearch = () => {
     getTableSourceData(true);
+  };
+  const export2Excel = () => {
+    setExportLoading(true);
+    const queryStartDate =
+      (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
+    const queryEndDate =
+      (rangePickerValue[1] as Moment).format('YYYY-MM-DD') +
+      ' ' +
+      timePicker.format('HH:mm') +
+      ':00';
+    getEnergyElectricData({
+      type: templateProps.energyType,
+      regionIdList: templateProps.area,
+      current: 1,
+      size: pagination.total,
+      queryStartDate: queryStartDate,
+      queryEndDate: queryEndDate,
+    }).then((res: any) => {
+      if (res?.meta?.code === 200) {
+        const list = res?.data?.list;
+        if (!list.length) {
+          setDataSource([]);
+        }
+        list.map((item: any) => {
+          item.regionId = getRegionName(parseInt(item.regionId || '1'));
+          item.activeElectricalEnergyCurrent = formatNumer(
+            item.activeElectricalEnergyCurrent,
+          );
+          item.activeElectricalEnergy = formatNumer(
+            item.activeElectricalEnergy,
+          );
+          item.flowCurrent = formatNumer(item.flowCurrent);
+          item.flow = formatNumer(item.flow);
+          item.dstart = formatNumer(
+            item.activeElectricalEnergyCurrent - item.activeElectricalEnergy,
+          );
+          item.start = formatNumer(item.flowCurrent - item.flow);
+        });
+        let exportData: any = [];
+        list.map((item: any) => {
+          const obj = {
+            createDate: item.createDate,
+            regionId: item.regionId,
+            dstart: item.dstart,
+            activeElectricalEnergyCurrent: item.activeElectricalEnergyCurrent,
+            activeElectricalEnergy: item.activeElectricalEnergy,
+          };
+          exportData.push(obj);
+        });
+        let header: any = [
+          'createDate',
+          'regionId',
+          'dstart',
+          'activeElectricalEnergyCurrent',
+          'activeElectricalEnergy',
+        ];
+        let headerDisplay: any = {
+          createDate: '抄表时间',
+          regionId: '节点名称',
+          dstart: '起始抄表值',
+          activeElectricalEnergyCurrent: '截止数值',
+          activeElectricalEnergy: '差值',
+        };
+        if (templateProps.energyType !== EnergyType.Electric) {
+          header = ['createDate', 'regionId', 'start', 'flowCurrent', 'flow'];
+          headerDisplay = {
+            createDate: '抄表时间',
+            regionId: '节点名称',
+            start: '起始抄表值',
+            flowCurrent: '截止数值',
+            flow: '差值',
+          };
+          list.map((item: any) => {
+            const obj = {
+              createDate: item.createDate,
+              regionId: item.regionId,
+              start: item.start,
+              flowCurrent: item.flowCurrent,
+              flow: item.flow,
+            };
+            exportData.push(obj);
+          });
+        }
+        //将表头放到原始数据里面去，要保证表头在数组的最前面
+        const newData = [headerDisplay, ...exportData];
+        const worksheet = XLSX.utils.json_to_sheet(newData, {
+          header: header,
+          skipHeader: true,
+        });
+        const book = XLSX.utils.book_new();
+        // sheet1表示要导出的分区名字
+        XLSX.utils.book_append_sheet(book, worksheet, 'sheet1');
+        XLSX.writeFile(book, `能源集抄报表.xlsx`);
+        setExportLoading(false);
+      }
+    });
   };
   const getTableSourceData = (isReset?: boolean) => {
     setLoading(true);
@@ -207,12 +304,18 @@ const RealBodyOption = () => {
             查询
           </Button>
         </div>
-        <Button size="large" type="primary">
+        <Button
+          size="large"
+          type="primary"
+          onClick={export2Excel}
+          loading={exportLoading}
+        >
           导出
         </Button>
       </div>
       <div className="table-box">
         <Table
+          id="myTable-reading"
           size="large"
           dataSource={dataSource}
           columns={columns}

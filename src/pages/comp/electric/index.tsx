@@ -14,7 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import { getEnergyElectricData } from '@/apis/baseinfo';
 import { columns, columnsOther } from './data';
 import { EnergyType } from '@/commonInterface';
-import { formatNumer } from '@/utils/common';
+import * as XLSX from 'xlsx';
 const { RangePicker } = DatePicker;
 const RealPage = () => {
   return (
@@ -38,6 +38,7 @@ const RealBodyOption = () => {
     current: 1,
     size: defaultSize,
   });
+  const [exportLoading, setExportLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const onChangeRangePick = (range: any) => {
     console.log(range);
@@ -51,6 +52,124 @@ const RealBodyOption = () => {
   const onClickSearch = () => {
     getTableSourceData(true);
   };
+
+  const export2Excel = () => {
+    setExportLoading(true);
+    let header, headerDisplay;
+    const queryStartDate =
+      (rangePickerValue[0] as Moment).format('YYYY-MM-DD') + ' ' + '00:00:00';
+    const queryEndDate =
+      (rangePickerValue[1] as Moment).format('YYYY-MM-DD') +
+      ' ' +
+      timePicker.format('HH:mm') +
+      ':00';
+    getEnergyElectricData({
+      type: templateProps.energyType,
+      regionIdList: templateProps.area,
+      current: 1,
+      size: pagination.total,
+      queryStartDate: queryStartDate,
+      queryEndDate: queryEndDate,
+    }).then((res: any) => {
+      if (res.meta.code !== 200) {
+        setExportLoading(false);
+        return;
+      }
+      const list = res?.data?.list || [];
+      const exportData: any = [];
+      if (templateProps.energyType === EnergyType.Electric) {
+        list.map((item: any) => {
+          item.regionId = getRegionName(parseInt(item.regionId || '1'));
+          const obj = {
+            regionId: item.regionId,
+            createDate: item.createDate,
+            activePower: item.activePower,
+            reactivePower: item.reactivePower,
+            currentA: item.currentA,
+            currentB: item.currentB,
+            currentC: item.currentC,
+            voltageA: item.voltageA,
+            voltageB: item.voltageB,
+            voltageC: item.voltageC,
+            activeElectricalEnergy: item.activeElectricalEnergy,
+            frequency: item.frequency,
+            cosZ: item.cosZ,
+            activePowerA: item.activePowerA,
+            activePowerB: item.activePowerB,
+            activePowerC: item.activePowerC,
+          };
+          exportData.push(obj);
+        });
+        header = [
+          'createDate',
+          'regionId',
+          'activePower',
+          'reactivePower',
+          'currentA',
+          'currentB',
+          'currentC',
+          'voltageA',
+          'voltageB',
+          'voltageC',
+          'activeElectricalEnergy',
+          'frequency',
+          'cosZ',
+          'activePowerA',
+          'activePowerB',
+          'activePowerC',
+        ];
+        headerDisplay = {
+          createDate: '时间',
+          regionId: '节点名称',
+          activePower: 'Ps',
+          reactivePower: 'Qs',
+          currentA: 'Ia',
+          currentB: 'Ib',
+          currentC: 'Ic',
+          voltageA: 'Ua',
+          voltageB: 'Ub',
+          voltageC: 'Uc',
+          activeElectricalEnergy: 'EPI',
+          frequency: 'F r ',
+          cosZ: 'PF',
+          activePowerA: 'Pa',
+          activePowerB: 'Pb',
+          activePowerC: 'Pc',
+        };
+      } else {
+        list.map((item: any) => {
+          item.regionId = getRegionName(parseInt(item.regionId || '1'));
+          const obj = {
+            regionId: item.regionId,
+            createDate: item.createDate,
+            flowRate: item.flowRate,
+            flowAccumulate: item.flowAccumulate,
+          };
+          exportData.push(obj);
+        });
+        header = ['createDate', 'regionId', 'flowRate', 'flowAccumulate'];
+        headerDisplay = {
+          createDate: '时间',
+          regionId: '节点名称',
+          flowRate: '瞬时流量',
+          flowAccumulate: '累计流量',
+        };
+      }
+      //将表头放到原始数据里面去，要保证表头在数组的最前面
+      const newData = [headerDisplay, ...exportData];
+      const worksheet = XLSX.utils.json_to_sheet(newData, {
+        header: header,
+        skipHeader: true,
+      });
+      const book = XLSX.utils.book_new();
+      // sheet1表示要导出的分区名字
+      XLSX.utils.book_append_sheet(book, worksheet, 'sheet1');
+      XLSX.writeFile(book, `参量采集报表.xlsx`);
+
+      setExportLoading(false);
+    });
+  };
+
   const getTableSourceData = (isReset?: boolean) => {
     setLoading(true);
     const queryStartDate =
@@ -144,7 +263,12 @@ const RealBodyOption = () => {
             查询
           </Button>
         </div>
-        <Button size="large" type="primary">
+        <Button
+          size="large"
+          type="primary"
+          onClick={export2Excel}
+          loading={exportLoading}
+        >
           导出
         </Button>
       </div>
@@ -152,7 +276,11 @@ const RealBodyOption = () => {
         <Table
           size="large"
           dataSource={dataSource}
-          columns={templateProps.energyType === 1 ? columns : columnsOther}
+          columns={
+            templateProps.energyType === EnergyType.Electric
+              ? columns
+              : columnsOther
+          }
           rowKey="key"
           key="key"
           onChange={onTableChange}
