@@ -277,10 +277,10 @@ export default () => {
     getTbEquipmentList({
       current: isPageReset ? 1 : params.current,
       size: isPageReset ? defaultSize : params.size,
-      name: isSearchReset ? undefined : name,
+      // name: isSearchReset ? undefined : name,
       type: isSearchReset ? undefined : selectTypeData?.value, //设备类型
       model: isSearchReset ? undefined : model, //仪表型号
-      nodeName: isSearchReset ? undefined : nodeName, //节点
+      name: isSearchReset ? undefined : nodeName, //仪表名称
       isEnable: isSearchReset ? undefined : selectEnableData?.value, //是否禁用
     }).then((res) => {
       setLoading(false);
@@ -397,7 +397,7 @@ export default () => {
           <Input
             style={{ width: '160px' }}
             size="large"
-            placeholder="节点名称"
+            placeholder="仪表名称"
             allowClear
             value={nodeName}
             onChange={onChangeNodeInput}

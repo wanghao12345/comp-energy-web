@@ -45,7 +45,11 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   // 前缀
-  prefix: process.env.API_ENV === 'development' ? '/api' : '/api',
+  // prefix: process.env.API_ENV === 'development' ? '/api' : '/api',
+  prefix:
+    process.env.API_ENV === 'development'
+      ? 'http://47.113.119.138'
+      : 'http://47.113.119.138',
   errorHandler,
   credentials: 'include', // 默认请求是否带上cookie
 });
